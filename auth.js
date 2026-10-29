@@ -49,7 +49,7 @@ async function doLogin(){err('');const raw=$('#lid').value.trim().replace(/^@/,'
  catch(e){err(e.m||AE[e.code]||'حصلت مشكلة، حاول تاني')}
  go.disabled=false}
 $('#go').onclick=doLogin;
-$('#pw').onkeydown=$('#lid').onkeydown=e=>e.key=='Enter'&&doLogin();
+$('#pw').onkeydown=$('#lid').onkeydown=e=>{if(e.key=='Enter')doLogin()};
 
 /* ---------- إنشاء الحساب (الكتابة الفعلية في قاعدة البيانات) ---------- */
 window.signup=async function signup(n,pw,name,x){x=x||{};

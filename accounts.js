@@ -21,7 +21,7 @@ function askPin(title){return new Promise(res=>{
   const i=$('#pinq');i.focus();let done=0;
   const ok=async()=>{if(done)return;const v=i.value;if(v.length<4)return $('#pinm').textContent='PIN من 4 أرقام على الأقل';done=1;
    if(await ACCT.lockCheck(v)){closeSh();res(true)}else{done=0;const w2=ACCT.waitMs();draw(w2?'محاولات كتير، استنى '+Math.ceil(w2/1000)+' ثانية':'الـ PIN غلط')}};
-  $('#pinok').onclick=ok;$('#pinno').onclick=()=>{closeSh();res(false)};i.onkeydown=e=>e.key=='Enter'&&ok()};
+  $('#pinok').onclick=ok;$('#pinno').onclick=()=>{closeSh();res(false)};i.onkeydown=e=>{if(e.key=='Enter')ok()}};
  draw()})}
 /* إعداد PIN جديد (مرتين) */
 function newPin(){return new Promise(res=>{

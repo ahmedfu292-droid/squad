@@ -76,7 +76,7 @@ function hideBot(){B=null;$('#bot').hidden=true}
 function openBot(k){B=k;cid=null;$('#app').classList.add('in');$('#bot').hidden=false;$('#bn').textContent=BOTS[k].n;
  $('#bq').innerHTML=BOTS[k].q.map(q=>`<button data-q="${q[1]}">${q[0]}</button>`).join('');H[k].length?drw():say(k,BOTS[k].hi,0);renderHome()}
 function bsend(t){t=(t||$('#bin').value).trim();if(!t||!B)return;const k=B;$('#bin').value='';say(k,t,1);setTimeout(()=>say(k,botReply(k,t),0),350)}
-$('#bbk').onclick=()=>{bclose();renderHome()};$('#bs').onclick=()=>bsend();$('#bin').onkeydown=e=>e.key=='Enter'&&bsend();$('#bq').onclick=e=>e.target.dataset.q&&bsend(e.target.dataset.q);
+$('#bbk').onclick=()=>{bclose();renderHome()};$('#bs').onclick=()=>bsend();$('#bin').onkeydown=e=>{if(e.key=='Enter')bsend()};$('#bq').onclick=e=>e.target.dataset.q&&bsend(e.target.dataset.q);
 const rh0=renderHome;renderHome=function(){rh0();if(flt=='p'||flt=='g'||$('#q').value)return;
  $('#list').insertAdjacentHTML('afterbegin',Object.keys(BOTS).map(k=>{const l=H[k][H[k].length-1];return `<div class="wi${B==k?' on':''}" data-bot="${k}"><u class="av rb">${RB}</u><div><b>📌 ${BOTS[k].n} <i class="vf">✔</i></b><span>${l?esc(l[1].split('\n')[0].slice(0,60)):BOTS[k].d}</span></div><em></em></div>`}).join(''))};
 $('#list').addEventListener('click',e=>{const w=e.target.closest('[data-bot]');w&&openBot(w.dataset.bot)});
