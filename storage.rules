@@ -1,0 +1,14 @@
+rules_version = '2';
+// v29: أفلام السينما. أي مستخدم مسجّل يقدر يشوف، وصاحب الملف بس يرفع/يحذف في فولدره، فيديو بس وحد أقصى 1.5 جيجا.
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /cinema/{room}/{uid}/{file} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null && request.auth.uid == uid
+        && request.resource.size < 1500 * 1024 * 1024
+        && request.resource.contentType.matches('video/.*');
+      allow delete: if request.auth != null && request.auth.uid == uid;
+      allow update: if false;
+    }
+  }
+}

@@ -1,0 +1,79 @@
+/* The Squad v26 — شاشة الدخول والتسجيل الجديدة: تقسيمة (واجهة تعريفية + كارت)، خطوات، قص صورة، حسابات محفوظة.
+   خفيفة: CSS بس، من غير مكتبات. بتحترم الوضع الفاتح/الغامق وتقليل الحركة. */
+#auth.v2{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);align-items:stretch;justify-items:stretch;gap:0;padding:0;overflow:auto;-webkit-overflow-scrolling:touch}
+#auth.v2 .ahero{position:relative;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:6px;padding:48px 8% 48px 6%;z-index:1}
+#auth.v2 .ahero .logo{width:84px;height:84px}
+#auth.v2 .ahero h1{font:800 clamp(34px,4.4vw,58px) 'Sora','Cairo';letter-spacing:.06em;margin:10px 0 0;background:linear-gradient(135deg,#f9e7a3,#d4af37 55%,#b8860b);-webkit-background-clip:text;background-clip:text;color:transparent}
+#auth.v2 .tag{margin:0;font-size:clamp(15px,1.5vw,20px);color:var(--mu)}
+#auth.v2 .feats{list-style:none;margin:26px 0 0;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:10px;width:min(440px,100%)}
+#auth.v2 .feats li{display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:16px;background:var(--glass2,rgba(16,14,10,.6));border:1px solid var(--ln);font-weight:700;font-size:13.5px}
+#auth.v2 .feats b{font-size:20px}
+#auth.v2 .card{align-self:center;justify-self:center;width:min(460px,calc(100% - 40px));max-width:none;margin:24px 0;padding:26px 24px 22px;border-radius:30px;text-align:start;display:flex;flex-direction:column;gap:0}
+#auth.v2 .card::before{border-radius:32px}
+#auth.v2 .ah2{font:800 22px 'Cairo','Sora';margin:4px 0 2px}
+#auth.v2 .sub{margin:0 0 16px;font-size:13.5px}
+#auth.v2 label{font-size:13px;color:var(--mu)}
+#auth.v2 label .mu{font-weight:400}
+#auth.v2 input,#auth.v2 select,#auth.v2 textarea{width:100%;box-sizing:border-box;padding:13px 14px;border-radius:14px;font-size:15px}
+#auth.v2 textarea{resize:none}
+#auth.v2 .row{display:flex;gap:8px;align-items:center}
+#auth.v2 .row.ltr{direction:ltr;border:1px solid var(--ln);border-radius:14px;background:rgba(4,4,3,.72);padding:0 0 0 12px}
+#auth.v2 .row.ltr input{border:0;background:none;margin:0}
+#auth.v2 .pre{color:var(--c1);font-weight:800;font-family:'Sora',sans-serif}
+#auth.v2 small{display:block;margin-top:6px;min-height:16px;font-size:12px;color:var(--mu)}
+#auth.v2 small.ok{color:var(--ok)}#auth.v2 small.bad{color:var(--bad)}
+#auth.v2 .hint{font-size:12px;margin:-4px 0 10px}
+#auth.v2 .note{font-size:12px;line-height:1.7;padding:10px 12px;border-radius:12px;background:rgba(230,195,92,.08);border:1px solid var(--ln);color:var(--mu);margin:4px 0 8px}
+#auth.v2 #aerr{min-height:20px;margin:10px 0 0;color:var(--bad);font-weight:700;font-size:13px;text-align:center}
+#auth.v2 .tb{margin-bottom:16px}
+#auth.v2 #go,#auth.v2 .nav2 .pri{width:100%;padding:14px;font-size:16px;margin-top:4px}
+#auth.v2 .gh{color:var(--mu);font-weight:700;padding:10px 14px;border-radius:12px}
+#auth.v2 .gh:hover{color:var(--tx);background:rgba(212,175,55,.1)}
+#auth.v2 #abk{align-self:flex-start;margin:-6px 0 8px}
+/* خطوات */
+.stp{display:flex;gap:6px;margin:2px 0 14px}
+.stp i{flex:1;height:5px;border-radius:5px;background:rgba(255,255,255,.1);transition:background .3s,flex .3s}
+.stp i.dn{background:var(--c2)}.stp i.cu{background:var(--c1);flex:1.6;box-shadow:0 0 12px rgba(230,195,92,.5)}
+html[data-theme=light] .stp i{background:rgba(0,0,0,.1)}
+.sth{position:relative;margin-bottom:6px}.sth .sn{position:absolute;inset-inline-end:0;top:6px;font:700 12px 'Sora';color:var(--mu)}
+.sbody{animation:aIn .28s var(--ease,ease-out)}
+@keyframes aIn{from{opacity:0;transform:translateX(14px)}to{opacity:1;transform:none}}
+html[dir=rtl] .sbody{animation-name:aInR}@keyframes aInR{from{opacity:0;transform:translateX(-14px)}to{opacity:1;transform:none}}
+.nav2{display:flex;align-items:center;gap:8px;margin-top:10px}.nav2 .pri{flex:1}.nav2 .gh{flex:0 0 auto}
+.trio{display:grid;grid-template-columns:.8fr 1.2fr 1fr;gap:8px}
+.agebox{margin:12px 0;padding:14px;border-radius:14px;text-align:center;background:rgba(230,195,92,.08);border:1px dashed var(--ln);font-size:15px}.agebox b{font:800 26px 'Sora';color:var(--c1);margin:0 4px}
+/* الصورة */
+.phs{display:flex;flex-direction:column;align-items:center;gap:10px}
+.phv{position:relative;width:220px;height:220px;border-radius:50%;overflow:hidden;border:3px solid var(--c1);box-shadow:0 0 0 6px rgba(230,195,92,.12),0 18px 40px -18px rgba(230,195,92,.6);background:#15130c;touch-action:none}
+.phv canvas{width:100%;height:100%;display:block;cursor:grab}.phv canvas:active{cursor:grabbing}
+.phe{position:absolute;inset:0;display:grid;place-items:center;font-size:58px;opacity:.5;pointer-events:none}
+.phs input[type=range]{width:220px;padding:0;accent-color:#d4af37}
+.btns{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.btns button{padding:10px 16px;border-radius:14px;background:var(--p3);border:1px solid var(--ln);font-weight:700}
+.btns button.pri{background:var(--g)}
+#camx{display:flex;flex-direction:column;align-items:center;gap:10px}
+#camx video{width:min(100%,320px);aspect-ratio:1;object-fit:cover;border-radius:50%;border:3px solid var(--c1);transform:scaleX(-1);background:#000}
+/* خصوصية */
+.pvb{display:flex;flex-direction:column;gap:8px;margin-top:4px}.pvb b{font-size:13px}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;padding:4px;border-radius:14px;background:rgba(4,4,3,.72);border:1px solid var(--ln)}
+.seg button{padding:9px 4px;border-radius:10px;font-size:13px;font-weight:700;color:var(--mu);transition:.2s}
+.seg button.on{background:var(--g);color:#16120a}
+html[data-theme=light] .seg,html[data-theme=light] #auth.v2 .row.ltr{background:#eef1f7}
+.pm{height:4px;border-radius:4px;background:rgba(255,255,255,.1);margin-top:8px;overflow:hidden}.pm i{display:block;height:100%;width:0;transition:width .25s,background .25s;background:var(--c1)}
+/* حسابات محفوظة */
+.dv{display:flex;align-items:center;gap:10px;margin:18px 0 10px;color:var(--mu);font-size:12px}.dv::before,.dv::after{content:"";flex:1;height:1px;background:var(--ln)}
+.sacc{display:flex;flex-direction:column;gap:8px}
+.sacc button{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:16px;background:var(--p2);border:1px solid var(--ln);text-align:start;transition:transform .12s,border-color .2s}
+.sacc button:hover{border-color:var(--c1)}.sacc button:active{transform:scale(.98)}
+.sacc .av{width:42px;height:42px;font-size:17px}.sacc span{flex:1;min-width:0}.sacc b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.sacc small{margin:0;min-height:0}.sacc i{font-style:normal;color:var(--mu);font-size:22px}
+@media(max-width:860px){
+ #auth.v2{grid-template-columns:1fr;grid-template-rows:minmax(150px,1fr) auto}
+ #auth.v2 .ahero{flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:2px;padding:22px 22px 14px}
+ #auth.v2 .ahero .logo{width:68px;height:68px}#auth.v2 .ahero h1{font-size:32px;margin:6px 0 0}
+ #auth.v2 .tag{font-size:13.5px}#auth.v2 .feats{display:none}
+ #auth.v2 .card{width:100%;margin:0;align-self:end;border-radius:30px 30px 0 0;padding:22px 18px calc(22px + env(safe-area-inset-bottom,0px))}
+ #auth.v2 .card::before{border-radius:32px 32px 0 0}
+ .phv{width:190px;height:190px}.phs input[type=range]{width:190px}
+}
+#auth.v2 #pws{display:none}
+@media(prefers-reduced-motion:reduce){.sbody{animation:none}.stp i{transition:none}}

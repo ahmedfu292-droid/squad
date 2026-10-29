@@ -1,0 +1,63 @@
+/* The Squad v30 — الواجهة الفخمة (أسود + ذهبي + زجاج) حسب الصورة المرجعية. طبقة فوق الملفات القديمة، شيل سطر <link> بتاعها من index.html ترجع للقديم. */
+:root{--gold:#f3d77a;--gold2:#c9a227;--gold3:#8a6508;--lx-glass:linear-gradient(160deg,rgba(32,27,18,.78),rgba(10,9,7,.86));--lx-edge:rgba(230,195,92,.22);--lx-glow:0 0 0 1px rgba(230,195,92,.25),0 18px 50px -20px rgba(230,162,60,.45)}
+html[data-theme=light]{--lx-glass:linear-gradient(160deg,rgba(255,252,243,.94),rgba(247,238,214,.9));--lx-edge:rgba(154,116,16,.28);--lx-glow:0 0 0 1px rgba(154,116,16,.2),0 18px 44px -22px rgba(154,116,16,.45)}
+body{background:radial-gradient(900px 600px at 85% -10%,rgba(230,162,60,.16),transparent 65%),radial-gradient(800px 600px at 5% 110%,rgba(92,120,255,.12),transparent 65%),#050504}
+html[data-theme=light] body{background:radial-gradient(900px 600px at 85% -10%,rgba(230,162,60,.18),transparent 65%),#f4eee0}
+
+/* ---- شعار التاج ---- */
+.lx-crown{width:1.15em;height:1.15em;display:inline-block;vertical-align:-.18em;filter:drop-shadow(0 0 6px rgba(243,215,122,.55))}
+#side>header h2{display:flex;align-items:center;gap:8px;font-weight:800;letter-spacing:.3px}
+#side>header .lx-crown.hd{width:30px;height:30px;color:var(--gold);flex:0 0 auto;margin-inline-start:2px}
+
+/* ---- الشريط الجانبي (ديسكتوب) ---- */
+#lxrail{display:none}
+@media(min-width:1000px){
+ #lxrail{display:flex;flex-direction:column;align-items:stretch;gap:6px;width:92px;flex:0 0 auto;direction:rtl;padding:18px 10px;background:var(--lx-glass);border-inline-end:1px solid var(--lx-edge);position:relative;z-index:3;backdrop-filter:blur(18px)}
+ #lxrail .lg{display:grid;place-items:center;margin:2px 0 14px;color:var(--gold)}
+ #lxrail .lg svg{width:44px;height:44px}
+ #lxrail button{display:flex;flex-direction:column;align-items:center;gap:6px;padding:11px 4px;border:1px solid transparent;border-radius:16px;background:none;color:var(--mu);font:700 12px Cairo,sans-serif;cursor:pointer;transition:.18s var(--ease,ease);position:relative}
+ #lxrail button svg{width:24px;height:24px}
+ #lxrail button:hover{color:var(--gold);background:rgba(230,195,92,.08)}
+ #lxrail button.on{color:#16120a;background:linear-gradient(135deg,#f3d77a,#c9a227 60%,#a67c00);box-shadow:0 10px 26px -10px rgba(230,162,60,.9);border-color:rgba(255,255,255,.2)}
+ #lxrail .sp{flex:1}
+ #lxrail .nb{position:absolute;top:4px;inset-inline-end:14px;min-width:18px;height:18px;border-radius:9px;background:#ff4f6a;color:#fff;font:800 11px/18px Sora,sans-serif;text-align:center;padding:0 4px}
+ #side{width:min(420px,32vw);background:var(--lx-glass)!important;border-inline-end:1px solid var(--lx-edge)}
+ #app.lxon #side>#nav{display:none}
+}
+
+/* ---- لوحة الملف الشخصي (بدل شاشة "اختار محادثة") ---- */
+#empty{background:radial-gradient(520px 420px at 50% 28%,rgba(230,162,60,.18),transparent 70%)}
+#empty>.logo,#empty>h2,#empty>p{display:none}
+.lxp{width:min(420px,92%);display:flex;flex-direction:column;align-items:center;gap:16px;animation:lxin .5s cubic-bezier(.2,.8,.2,1) both}
+@keyframes lxin{from{opacity:0;transform:translateY(14px) scale(.98)}to{opacity:1;transform:none}}
+.lxp .ph{position:relative;width:170px;height:170px;border-radius:50%;padding:5px;background:conic-gradient(from 200deg,#f3d77a,#8a6508,#f3d77a,#c9a227,#f3d77a);box-shadow:0 0 60px -6px rgba(230,162,60,.65),0 20px 50px -24px #000}
+.lxp .ph u.av{width:100%!important;height:100%!important;border:4px solid #0b0a07}
+.lxp .ph u.av::after{display:none}
+.lxp h3{margin:2px 0 0;font:800 26px Sora,Cairo,sans-serif;display:flex;align-items:center;gap:8px;color:var(--tx)}
+.lxp h3 .lx-crown{color:var(--gold);width:26px;height:26px}
+.lxp .st{display:flex;align-items:center;gap:7px;color:var(--mu);font-size:14px}
+.lxp .st i{width:9px;height:9px;border-radius:50%;background:#35d27a;box-shadow:0 0 10px #35d27a}
+.lxp .bio{width:100%;padding:18px;border-radius:22px;background:var(--lx-glass);border:1px solid var(--lx-edge);text-align:center;box-shadow:var(--lx-glow)}
+.lxp .bio b{display:block;font-size:17px;color:var(--tx);margin-bottom:5px}.lxp .bio span{color:var(--mu);font-size:13.5px}
+.lxp .acts{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;width:100%}
+.lxp .acts button{display:flex;flex-direction:column;align-items:center;gap:9px;padding:18px 6px;border-radius:20px;background:var(--lx-glass);border:1px solid var(--lx-edge);color:var(--gold);font:700 14px Cairo,sans-serif;cursor:pointer;transition:.2s;box-shadow:var(--lx-glow)}
+.lxp .acts button:hover{transform:translateY(-3px);border-color:var(--gold)}
+.lxp .acts button svg{width:28px;height:28px}
+.lxp .acts button span{color:var(--tx)}
+
+/* ---- صفوف المحادثات: كروت زجاجية + حالة الاتصال ---- */
+#list .wi{background:rgba(255,255,255,.035);border:1px solid rgba(230,195,92,.1);border-radius:18px}
+#list .wi:hover,#list .wi.on{background:rgba(230,195,92,.09);border-color:var(--lx-edge);box-shadow:0 10px 30px -18px rgba(230,162,60,.7)}
+#recent u.av,.wi u.av{box-shadow:0 0 0 2px #070605,0 0 0 4px rgba(230,195,92,.55)!important}
+#q{border-radius:16px!important;background:rgba(255,255,255,.05)!important;border:1px solid var(--lx-edge)!important}
+#tabs button.on{background:linear-gradient(135deg,#f3d77a,#c9a227)!important;color:#16120a!important;border-color:transparent!important}
+
+/* ---- شاشة الشات ---- */
+#chat .cv>header{background:var(--lx-glass);border-bottom:1px solid var(--lx-edge);backdrop-filter:blur(16px)}
+#chat .cv>footer{background:var(--lx-glass);border-top:1px solid var(--lx-edge)}
+#in{border-radius:18px!important;border:1px solid var(--lx-edge)!important;background:rgba(255,255,255,.05)!important}
+.m.me,.msg.me{background:linear-gradient(135deg,rgba(243,215,122,.95),rgba(201,162,39,.95))!important;color:#16120a!important}
+
+/* ---- موبايل: الشريط السفلي ذهبي زجاجي ---- */
+@media(max-width:999px){#nav{background:var(--lx-glass)!important;border:1px solid var(--lx-edge)!important;box-shadow:var(--lx-glow)}#nav button.on{color:#16120a!important;background:linear-gradient(135deg,#f3d77a,#c9a227)!important}}
+@media(prefers-reduced-motion:reduce){.lxp{animation:none}}

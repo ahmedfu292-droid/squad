@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>The Squad</title>
+<meta name="theme-color" content="#050505"><meta name="color-scheme" content="dark light">
+<script>try{var t=localStorage.theme||"dark";document.documentElement.dataset.theme=t=="auto"?(matchMedia("(prefers-color-scheme: light)").matches?"light":"dark"):t}catch(e){document.documentElement.dataset.theme="dark"}</script>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/svg+xml" href="icon.svg">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&family=Sora:wght@500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="squad.css">
+<link rel="stylesheet" href="ui2.css">
+<link rel="stylesheet" href="gold.css">
+<link rel="stylesheet" href="auth.css">
+<link rel="stylesheet" href="v27.css">
+<link rel="stylesheet" href="luxe.css">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f3d77a"/><stop offset="1" stop-color="#b8860b"/></linearGradient></defs></svg>
+
+<div id="splash"><svg class="logo" viewBox="0 0 64 64" fill="none"><path d="M32 4 56 18v28L32 60 8 46V18z" stroke="url(#lg)" stroke-width="3" stroke-linejoin="round"/><path d="M40 22c-3-3-16-4-16 4 0 9 17 5 17 14 0 8-13 7-17 3" stroke="url(#lg)" stroke-width="5" stroke-linecap="round"/></svg><h1>The Squad</h1><p>أكثر من مجرد محادثة</p><i class="bar"></i></div>
+
+<main id="auth" class="v2" hidden>
+ <div class="ahero">
+  <svg class="logo" viewBox="0 0 64 64" fill="none"><path d="M32 4 56 18v28L32 60 8 46V18z" stroke="url(#lg)" stroke-width="3" stroke-linejoin="round"/><path d="M40 22c-3-3-16-4-16 4 0 9 17 5 17 14 0 8-13 7-17 3" stroke="url(#lg)" stroke-width="5" stroke-linecap="round"/></svg>
+  <h1>The Squad</h1>
+  <p class="tag">شلتك كلها في مكان واحد</p>
+  <ul class="feats"><li><b>💬</b>محادثات وجروبات</li><li><b>📞</b>مكالمات صوت وفيديو</li><li><b>☕</b>كافيه ثلاثي الأبعاد</li><li><b>🔒</b>خصوصيتك في إيدك</li></ul>
+ </div>
+ <div class="card">
+  <button id="abk" class="gh" type="button" hidden>← رجوع للحساب الحالي</button>
+  <div class="tb"><button data-m="in" class="on">دخول</button><button data-m="up">حساب جديد</button></div>
+  <section id="vin">
+   <h2 class="ah2">أهلاً بيك تاني 👋</h2><p class="mu sub">ادخل برقمك الخاص أو باسم المستخدم</p>
+   <label>رقمك الخاص أو اسم المستخدم<input id="lid" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="رقمك الخاص أو اسم المستخدم" dir="auto"></label>
+   <label>كلمة السر<div class="row"><input id="pw" type="password" autocomplete="current-password" placeholder="كلمة السر"><button id="eye" class="ic" type="button" title="إظهار">👁</button></div></label>
+   <button id="go" class="pri">دخول</button>
+  </section>
+  <section id="vup" hidden></section>
+  <p id="aerr" role="alert"></p>
+  <section id="vacc" hidden></section>
+ </div>
+</main>
+
+<div id="app" hidden>
+ <aside id="side">
+  <header><svg class="logo sm" viewBox="0 0 64 64" fill="none"><path d="M32 4 56 18v28L32 60 8 46V18z" stroke="url(#lg)" stroke-width="4" stroke-linejoin="round"/><path d="M40 22c-3-3-16-4-16 4 0 9 17 5 17 14 0 8-13 7-17 3" stroke="url(#lg)" stroke-width="6" stroke-linecap="round"/></svg><h2>The Squad</h2><button id="gear" class="ic" title="الإعدادات">⚙️</button><button id="plus" class="ic" title="جديد"></button></header>
+  <div id="home">
+   <div class="sr"><input id="q" placeholder="ابحث عن محادثة أو جروب..."></div>
+   <div id="recent"></div>
+   <div id="tabs"><button data-f="all" class="on">الكل</button><button data-f="p">المحادثات</button><button data-f="g">المجموعات</button><button data-f="pin">المثبتة</button></div>
+   <div id="list"></div>
+  </div>
+  <div id="oth" hidden></div>
+  <nav id="nav"><button data-go="home" class="on"><i></i>الرئيسية</button><button data-go="up"><i></i>التحديثات</button><button data-go="find"><i></i>استكشاف</button><button data-go="me"><i></i>حسابي</button></nav>
+ </aside>
+ <section id="chat">
+  <div id="empty"><svg class="logo big" viewBox="0 0 64 64" fill="none"><path d="M32 4 56 18v28L32 60 8 46V18z" stroke="url(#lg)" stroke-width="2.5" stroke-linejoin="round"/><path d="M40 22c-3-3-16-4-16 4 0 9 17 5 17 14 0 8-13 7-17 3" stroke="url(#lg)" stroke-width="4.5" stroke-linecap="round"/></svg><h2>اختار محادثة</h2><p>أو دوّر على صاحبك برقمه من تبويب استكشاف.</p></div>
+  <div class="cv">
+   <header><button id="bk" class="ic"></button><div id="ct"></div><button id="cla" class="ic" title="مكالمة صوتية"></button><button id="clv" class="ic" title="مكالمة فيديو"></button><button id="mn" class="ic"></button></header>
+   <div id="cb" hidden></div>
+   <div id="ms"></div>
+   <div id="rp" hidden><span></span><button id="xr">✕</button></div>
+   <footer><button id="em" class="ic"></button><button id="ph" class="ic"></button><textarea id="in" rows="1" placeholder="اكتب رسالة..."></textarea><button id="vn" class="ic"></button><button id="snd" class="ic pri"></button></footer>
+   <input id="pf" type="file" accept="image/*" hidden>
+  </div>
+ </section>
+</div>
+
+<div id="sh" hidden><div class="box"></div></div>
+<div id="ts" hidden></div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-functions-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script src="acct.js"></script>
+<script src="time.js"></script><script src="app.js"></script>
+<script src="auth.js"></script>
+<script src="stories.js"></script>
+<script src="calls.js"></script><script src="cafe.js"></script><script src="extras.js"></script><script src="games.js"></script>
+<script src="push.js"></script>
+<script src="bot.js"></script><script src="channel.js"></script><script src="cafe2.js"></script><script src="cafe3.js"></script><script src="community.js"></script><script src="plus.js"></script><script src="theme.js"></script><script src="look.js"></script><script src="chatx.js"></script><script src="settings.js"></script><script src="ads.js"></script><script src="accounts.js"></script><script src="ui2.js"></script><script src="profile.js"></script><script src="world.js"></script><script src="district-core.js"></script><script src="district.js"></script><script src="cinema.js"></script><script src="welcome.js"></script><script src="luxe.js"></script>
+<script>
+/* تحديث تلقائي: لما ترفع نسخة جديدة الموقع بيتحدّث لوحده */
+(()=>{const F=['index.html','app.js','stories.js','calls.js','cafe.js','extras.js','games.js','channel.js','cafe2.js','community.js','plus.js','bot.js','cafe3.js','theme.js','look.js','chatx.js','settings.js','ads.js','accounts.js','acct.js','auth.js','auth.css','ui2.js','ui2.css','v27.css','profile.js','world.js','district-core.js','district.js','cinema.js','time.js','welcome.js','luxe.js','luxe.css','gold.css','push.js','squad.css','firebase-config.js'];let base=null;
+const chk=async()=>{try{const t=(await Promise.all(F.map(f=>fetch(f,{cache:'no-store'}).then(r=>r.text())))).map(s=>s.length+':'+[...s].reduce((h,c)=>(h*31+c.charCodeAt(0))|0,7)).join();
+if(base===null)base=t;else if(t!=base){const a=document.activeElement;if(a&&a.value)return;caches.keys().then(k=>k.forEach(x=>caches.delete(x)));const e=document.getElementById('ts');if(e){e.textContent='فيه تحديث جديد، بيتحمّل...';e.hidden=false}setTimeout(()=>location.reload(),1200)}}catch(e){}};
+setTimeout(chk,4000);setInterval(chk,12e4);document.addEventListener('visibilitychange',()=>document.hidden||chk())})();
+</script>
+</body>
+</html>

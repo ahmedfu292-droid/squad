@@ -1,0 +1,47 @@
+
+[1] قناة جديدة بتبدأ من غير توثيق
+  ✓ القناة الجديدة fc=0 من غير علامة
+  ✓ إنشاء قناة بـ fc=5000 مرفوض → PERMISSION_DENIED create channels/chBad
+  ✓ إنشاء قناة بـ off:true من حساب عادي مرفوض → PERMISSION_DENIED create channels/chBad2
+
+[2] 4999 ثم 5000 ثم إلغاء متابعة
+  ✓ العدد بعد 4999 مستخدم = 4999
+  ✓ عدد مستندات المتابعين = 4999 (العدد مطابق للقاعدة)
+  ✓ عند 4999: مفيش علامة
+  ✓ بعد المتابع رقم 5000 العدد = 5000
+  ✓ عند 5000: العلامة الزرقاء ظهرت (توثيق وصول)
+  ✓ بعد إلغاء المتابعة العدد رجع 4999
+  ✓ بعد إلغاء المتابعة (4999): العلامة اختفت
+  ✓ متابعة تاني: رجع 5000 والعلامة رجعت
+  ✓ قايمة متابعات المستخدم اتحدّثت
+
+[3] محاولات التزوير (لازم كلها تترفض)
+  ✓ زيادة العداد من غير مستند متابع → PERMISSION_DENIED update channels/ch1
+  ✓ زيادة العداد +500 → PERMISSION_DENIED update channels/ch1
+  ✓ متابعة تاني لنفس المستخدم (مستند موجود) = عدّ مرتين → PERMISSION_DENIED update channels/ch1/followers/1
+  ✓ مسح مستند المتابع من غير إنقاص العداد → PERMISSION_DENIED delete channels/ch1/followers/1
+  ✓ مسح متابع مع إنقاص -2 → PERMISSION_DENIED delete channels/ch1/followers/1
+  ✓ إنشاء مستند متابع باسم مستخدم تاني → PERMISSION_DENIED update channels/ch1/followers/1
+  ✓ مستند متابع + عداد +2 → PERMISSION_DENIED create channels/ch1/followers/7001
+  ✓ مستند متابع بحقول زيادة → PERMISSION_DENIED create channels/ch1/followers/7001
+  ✓ تعديل قايمة المتابعات بس من غير مستند متابع → PERMISSION_DENIED update channels/ch1
+  ✓ العدد لسه 5000 بعد كل المحاولات
+   صاحب القناة:
+  ✓ المالك يتابع قناته → PERMISSION_DENIED create channels/ch1/followers/900100
+  ✓ المالك يكتب fc بإيده → PERMISSION_DENIED update channels/ch1
+  ✓ المالك يكتب off:true على قناته → PERMISSION_DENIED update channels/ch1
+  ✓ المالك يزوّد العداد → PERMISSION_DENIED update channels/ch1
+  ✓ المالك يقدر يعدّل الوصف (مسموح)
+  ✓ زرار المتابعة في الواجهة بيرفض المالك والعدد ما اتغيّرش
+  ✓ مستخدم عادي يعدّل وصف القناة → PERMISSION_DENIED update channels/ch1
+
+[4] التوثيق اليدوي للقناة الرسمية منفصل
+  ✓ الرسمية موثّقة يدوياً وهي على fc=0
+  ✓ عند 5000: لسه موثّقة كـ«رسمية» (مش كتوثيق وصول)
+  ✓ بعد النزول لـ 4999: الرسمية محتفظة بعلامتها اليدوية
+  ✓ القناة العادية عند 5000 علامتها «موثّقة 5000» مش «رسمية»
+
+[5] متابعة قديمة (قبل نظام العدّ)
+  ✓ المتابعة القديمة بتتشال من قايمة المستخدم بس والعدد ما بيتخرّبش
+
+النتيجة: 34 نجح، 0 فشل

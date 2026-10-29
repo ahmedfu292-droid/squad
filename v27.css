@@ -1,0 +1,64 @@
+/* The Squad v27 — طبقة تصميم جديدة فوق القديم (ما بتمسح حاجة). لو عايز ترجع للقديم شيل سطر v27.css من index.html */
+:root{--r:20px;--aur:linear-gradient(135deg,#f3d77a 0%,#e6a23c 45%,#5cc4ff 100%);--card:rgba(255,255,255,.045);--card-h:rgba(255,255,255,.085);--edge:rgba(255,255,255,.09)}
+html[data-theme=light]{--card:rgba(255,255,255,.75);--card-h:#fff;--edge:rgba(120,90,20,.14)}
+body{background-image:radial-gradient(900px 520px at 100% -10%,rgba(92,196,255,.10),transparent 65%),radial-gradient(800px 520px at 0% 110%,rgba(230,195,92,.10),transparent 65%)}
+
+/* هيدر القايمة */
+#side>header{padding:18px 16px 8px}
+#side h2{font-size:23px;background:var(--aur);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+#side>header .ic{width:42px;height:42px;border-radius:14px;background:var(--card);border:1px solid var(--edge);backdrop-filter:blur(10px);transition:transform .15s,background .15s}
+#side>header .ic:hover{background:var(--card-h);transform:translateY(-1px)}
+#side>header #plus{background:var(--aur);color:#1b1405;border:0;box-shadow:0 8px 22px -8px rgba(230,162,60,.8)}
+
+/* البحث */
+.sr input,#q{border-radius:16px;background:var(--card);border:1px solid var(--edge);padding-inline:16px;height:46px;backdrop-filter:blur(10px)}
+
+/* صف الأصحاب (الأخيرين) */
+#recent{display:flex;gap:14px;padding:6px 16px 4px;overflow-x:auto;scrollbar-width:none}
+#recent>div{display:flex;flex-direction:column;align-items:center;gap:6px;min-width:66px;font-size:12px;cursor:pointer}
+#recent>div span{max-width:68px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--mu)}
+
+/* الصور الشخصية: إطار متدرّج + نبض خفيف */
+u.av{position:relative;box-shadow:none!important;background-color:var(--p2);border:0}
+u.av::after{content:"";position:absolute;inset:0;border-radius:50%;padding:2.5px;background:var(--aur);
+ -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none}
+u.av[data-u]{cursor:pointer;transition:transform .18s}
+u.av[data-u]:hover{transform:scale(1.07)}
+u.av[data-u]:active{transform:scale(.96)}
+.pw u.av::after{padding:4px}
+
+/* كروت المحادثات */
+#list{padding:4px 10px 12px;display:flex;flex-direction:column;gap:6px}
+#list .wi,#oth .wi{background:var(--card);border:1px solid var(--edge);border-radius:var(--r);backdrop-filter:blur(8px);transition:background .15s,transform .15s,border-color .15s}
+#list .wi:hover,#oth .wi:hover{background:var(--card-h);transform:translateX(-2px);border-color:rgba(230,195,92,.35)}
+#list .wi.on{background:linear-gradient(120deg,rgba(230,195,92,.16),rgba(92,196,255,.10));border-color:rgba(230,195,92,.5)}
+.wi em i{background:var(--aur);color:#1b1405;font-weight:800;box-shadow:0 4px 12px -3px rgba(230,162,60,.8)}
+#tabs button.on{background:var(--aur);color:#1b1405;border-color:transparent;box-shadow:0 8px 20px -8px rgba(230,162,60,.9)}
+
+/* الناف: كبسولة زجاجية عايمة */
+#nav{margin:0 12px calc(10px + env(safe-area-inset-bottom,0px));padding:6px;border:1px solid var(--edge);border-radius:26px;background:rgba(12,12,14,.72);backdrop-filter:blur(18px) saturate(1.4);box-shadow:0 18px 40px -18px #000}
+html[data-theme=light] #nav{background:rgba(255,255,255,.8)}
+#nav button.on i{background:var(--aur);color:#1b1405;box-shadow:0 8px 18px -6px rgba(230,162,60,.9)}
+#nav button.on{color:var(--tx)}
+
+/* شاشة الشات */
+.cv>header{backdrop-filter:blur(16px);background:rgba(10,10,12,.7);border-bottom:1px solid var(--edge)}
+html[data-theme=light] .cv>header{background:rgba(255,253,247,.8)}
+#ct{cursor:pointer;border-radius:14px;padding:2px 6px;transition:background .15s}
+#ct:hover{background:var(--card)}
+.m{border-radius:20px;box-shadow:0 6px 16px -12px #000;border:1px solid var(--edge)}
+.m.me{background:linear-gradient(135deg,#e6b23c 0%,#c4871a 55%,#9a6a10 100%);color:#1b1405;border:0;box-shadow:0 10px 22px -12px rgba(230,162,60,.8)}
+.m.me small,.m.me .dl{color:rgba(27,20,5,.7)}
+.cv>footer{margin:6px 10px calc(8px + env(safe-area-inset-bottom,0px));border:1px solid var(--edge);border-radius:26px;background:var(--card);backdrop-filter:blur(14px);padding:6px 8px}
+.cv>footer textarea{background:transparent;border:0;box-shadow:none}
+#snd{background:var(--aur)!important;color:#1b1405!important;border-radius:50%;box-shadow:0 8px 20px -6px rgba(230,162,60,.9)}
+
+/* شيت الملف الشخصي */
+#sh .box{border-radius:28px 28px 0 0;border:1px solid var(--edge);backdrop-filter:blur(20px)}
+.pfcard{position:relative;text-align:center;padding-top:62px}
+.pfcard::before{content:"";position:absolute;inset:-20px -20px auto -20px;height:120px;background:var(--aur);opacity:.55;filter:blur(2px);border-radius:28px 28px 60% 60%/28px 28px 40px 40px}
+.pfcard u.av{width:112px;height:112px;margin:0 auto;box-shadow:0 14px 34px -10px rgba(0,0,0,.6)!important}
+.pfcard h3{font-size:22px}
+.gh2{width:100%;height:44px;border-radius:14px;background:var(--card);border:1px solid var(--edge);color:var(--tx);font-weight:700}
+@media(min-width:900px){#side{border-inline-end:1px solid var(--edge)}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}

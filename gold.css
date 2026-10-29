@@ -1,0 +1,12 @@
+/* The Squad — الثيم الأسود والذهبي (فخم للشباب). شيل سطر <link> بتاعه من index.html لو عايز ترجع للقديم */
+:root{--glass2:rgba(16,14,10,.7);--hair:rgba(212,175,55,.2);--sh-card:0 14px 34px -22px rgba(212,175,55,.5);--g:linear-gradient(135deg,#f3d77a,#b8860b)}
+html[data-theme=light]{--bg:#f6f1e4;--p1:#fffdf7;--p2:#faf4e4;--p3:#f0e6c8;--ln:rgba(154,116,16,.2);--tx:#1a1608;--mu:#6e6446;--c1:#b8890b;--c2:#8a6508;--glass:rgba(255,253,247,.8);--glass2:rgba(255,253,247,.8);--hair:rgba(154,116,16,.2)}
+.pri,#snd,.ic.pri,#plus,.tb button.on,.cam,html[data-theme=light] .pri,html[data-theme=light] #snd,html[data-theme=light] .ic.pri,html[data-theme=light] #plus{color:#16120a!important;background:linear-gradient(135deg,#f3d77a,#c9a227 55%,#a67c00)!important;font-weight:800}
+#side h2,.logo{filter:drop-shadow(0 0 8px rgba(230,195,92,.35))}
+#nav button.on{color:#f3d77a}
+.u2ai{flex-direction:row!important;align-items:center;gap:12px}
+.u2ai .rbx{width:54px;height:54px;border-radius:16px;background:#0e0d0a;border:1px solid #c9a227;color:#f3d77a;font:800 26px Sora,sans-serif;box-shadow:0 0 22px rgba(230,195,92,.25)}
+.u2ai h3{color:#f3d77a}.u2ai .go{margin-inline-start:auto;padding:8px 18px;border-radius:12px;font-size:14px}
+.u2row2{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px;padding:0 12px}
+.u2empty{margin:6px 12px;padding:22px;text-align:center;border:1px dashed var(--hair)}.u2empty b{color:#f3d77a}.u2empty p{color:var(--mu);font-size:13px;line-height:1.7}
+.u2ad .pr{color:#f3d77a;font-weight:800}

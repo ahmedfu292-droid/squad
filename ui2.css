@@ -1,0 +1,156 @@
+/* ===== The Squad — طبقة التحسين البصري (ui2) =====
+   بتتحمّل بعد squad.css وما بتغيّرش فيه. كل حاجة هنا تقدر تشيلها بحذف سطر <link> من index.html وترجع للشكل القديم.
+   الألوان بتعتمد على متغيّرات squad.css (--c1 --c2 --ln --glass ...) عشان الوضع الفاتح يشتغل لوحده. */
+:root{
+  --r-lg:22px;--r-md:16px;--ease:cubic-bezier(.2,.8,.2,1);
+  --glass2:rgba(16,14,10,.58);--hair:rgba(212,175,55,.14);
+  --sh-card:0 14px 34px -22px rgba(184,134,11,.55);
+}
+html[data-theme=light]{--glass2:rgba(255,255,255,.72);--hair:rgba(40,70,140,.14);--sh-card:0 12px 28px -20px rgba(30,70,160,.35)}
+
+/* ---------- انتقالات عامة ناعمة ---------- */
+#oth>*{animation:u2in .28s var(--ease) both}
+@keyframes u2in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.wi,.u2c,#tabs button,#nav button,.ic,.pri{transition:background .18s var(--ease),transform .12s,box-shadow .2s,border-color .2s,color .18s}
+@media(prefers-reduced-motion:reduce){#oth>*{animation:none}*{transition-duration:.01ms!important;animation-duration:.01ms!important}}
+
+/* ---------- الهيدر والبحث ---------- */
+#side>header{padding:12px 12px 6px;gap:2px;align-items:center}
+#side>header .ic:not(#plus){width:38px;height:38px}
+#oth{padding-bottom:96px}
+.sr input,#q{border-radius:999px;background:var(--glass2);border:1px solid var(--hair);padding:12px 18px;-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+#tabs{padding:6px 14px 10px}
+#tabs button{border-color:var(--hair);background:var(--glass2);font-size:13.5px;padding:6px 15px}
+
+/* ---------- قايمة المحادثات ---------- */
+#list{padding:2px 8px 90px}
+#list .wi,#oth .wi{border-radius:var(--r-md);margin-bottom:2px}
+.wi:hover{background:rgba(230,195,92,.07)}
+.wi u.av{box-shadow:0 0 0 2px var(--bg),0 0 0 3.5px rgba(230,195,92,.45)}
+.wi em i{box-shadow:0 4px 12px -2px rgba(230,195,92,.6)}
+
+/* ---------- الشريط الرئيسي: 4 شاشات، زجاجي عايم ---------- */
+#nav{margin:0 12px calc(10px + env(safe-area-inset-bottom,0px));padding:6px;border-radius:26px;border:1px solid var(--hair)!important;
+  background:var(--glass2)!important;box-shadow:0 18px 40px -18px rgba(0,0,0,.7),inset 0 1px 0 rgba(255,255,255,.07);gap:2px}
+html[data-theme=light] #nav{box-shadow:0 14px 30px -16px rgba(30,70,160,.4),inset 0 1px 0 #fff}
+#nav button{position:relative;border-radius:20px;padding:4px 0 2px;min-height:52px}
+#nav button i{width:56px;height:30px}
+#nav button.on i{background:linear-gradient(135deg,rgba(230,195,92,.28),rgba(184,134,11,.22))}
+#nav .nb{position:absolute;top:1px;inset-inline-start:calc(50% + 8px);min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:var(--bad);color:#fff;
+  font:800 11px 'Sora',sans-serif;display:grid;place-items:center;box-shadow:0 0 0 2px var(--p1)}
+#plus{bottom:calc(86px + env(safe-area-inset-bottom,0px))!important}
+
+/* ---------- الشات: هيدر مرتّب ---------- */
+.cv>header{padding:8px 8px;border-bottom:1px solid var(--hair);background:var(--glass2)}
+#gal,#gm,#blk,#msr{display:none!important} /* لسه موجودين وبيتفتحوا من قايمة ⋮ */
+.u2m{display:flex!important;align-items:center;gap:12px}
+.u2m span{font-size:19px;width:26px;text-align:center}
+.u2m b{font-weight:700}
+
+/* ---------- فقاعات الرسايل ---------- */
+#ms{padding:14px 12px;gap:3px}
+.m{border-radius:20px;border-start-start-radius:6px;padding:8px 14px 6px;box-shadow:0 3px 12px -6px rgba(0,0,0,.65)}
+.m.me{border-start-start-radius:20px;border-start-end-radius:6px}
+.m .tm{opacity:.75;font-size:11px}
+.m img.ph{border-radius:14px;max-width:min(260px,100%);max-height:320px;object-fit:cover}
+.m .cap{margin:5px 0 0}
+.dy{background:var(--glass2);border:1px solid var(--hair);padding:3px 14px;border-radius:999px;font-size:12px}
+
+/* ---------- شريط الكتابة ---------- */
+.cv>footer{padding:8px 10px calc(8px + env(safe-area-inset-bottom,0px));gap:6px;border-top:1px solid var(--hair);background:var(--glass2);align-items:flex-end}
+#in{border-radius:22px;background:var(--glass2);border:1px solid var(--hair);padding:11px 16px;max-height:120px}
+#snd{width:44px;height:44px}
+#ph{color:var(--c1)}
+#ph:hover{background:rgba(230,195,92,.14)}
+
+/* ---------- معاينة الصور قبل الإرسال ---------- */
+.u2p{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:8px;margin:8px 0}
+.u2p div{position:relative;aspect-ratio:1;border-radius:14px;overflow:hidden;border:1px solid var(--hair);background:var(--p3)}
+.u2p img{width:100%;height:100%;object-fit:cover;display:block}
+.u2p button{position:absolute;top:4px;inset-inline-end:4px;width:26px;height:26px;border-radius:50%;background:rgba(0,0,0,.65)!important;color:#fff;border:0!important;padding:0!important;font-size:13px;line-height:26px}
+.u2pv{max-height:46vh;overflow:auto}
+.u2one img{max-height:44vh;width:100%;object-fit:contain}
+#sh .u2sp{display:flex;gap:8px}#sh .u2sp>button{flex:1;margin:0!important}
+
+/* ---------- بطاقات عامة ---------- */
+.u2c{background:var(--glass2);border:1px solid var(--hair);border-radius:var(--r-lg);box-shadow:var(--sh-card);overflow:hidden;
+  -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+.u2h{display:flex;align-items:center;justify-content:space-between;margin:18px 6px 8px}
+.u2h h4{margin:0;font-size:15px;font-weight:800}.u2h small{color:var(--mu)}
+.u2h button{padding:5px 14px;border-radius:999px;border:1px solid var(--hair);background:var(--glass2);font-size:13px;font-weight:700}
+
+/* ---------- القنوات: اكتشاف ---------- */
+.u2s{position:relative;margin:6px 4px}
+.u2s input{border-radius:999px;padding-inline-start:44px;background:var(--glass2);border-color:var(--hair)}
+.u2s::before{content:"🔍";position:absolute;inset-inline-start:16px;top:50%;transform:translateY(-50%);font-size:15px;opacity:.7;pointer-events:none}
+.u2cats{display:flex;gap:8px;overflow-x:auto;padding:6px 4px 10px;scrollbar-width:none}.u2cats::-webkit-scrollbar{display:none}
+.u2cats button{flex:0 0 auto;padding:6px 16px;border-radius:999px;border:1px solid var(--hair);background:var(--glass2);font-weight:700;font-size:13.5px;color:var(--mu)}
+.u2cats button.on{color:#fff;background:var(--g);border-color:transparent;box-shadow:0 8px 20px -10px rgba(230,195,92,.8)}
+.u2g{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;padding:0 4px}
+.u2k{cursor:pointer;display:flex;flex-direction:column}
+.u2k:active{transform:scale(.98)}
+.u2cv{height:74px;background-size:cover;background-position:center;position:relative}
+.u2k .av2{width:52px;height:52px;border-radius:50%;margin:-26px 12px 0;border:3px solid var(--p1);display:grid;place-items:center;font-weight:800;font-size:20px;color:#fff;
+  background:hsl(var(--h,220) 60% 38%);background-size:cover;background-position:center;position:relative;z-index:1}
+.u2k .bd{padding:6px 12px 12px;display:flex;flex-direction:column;gap:3px;flex:1}
+.u2k b{font-size:15px;display:flex;align-items:center;gap:4px}
+.u2k p{margin:0;color:var(--mu);font-size:12.5px;line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:38px}
+.u2k .ft{display:flex;align-items:center;justify-content:space-between;gap:6px;margin-top:6px}
+.u2k .ft span{font-size:12px;color:var(--mu)}
+.u2k .ft button{padding:6px 14px;border-radius:999px;font-weight:800;font-size:13px;background:var(--p3);border:1px solid var(--hair)}
+.u2k .ft button.pri{border:0;background:var(--g);color:#fff}
+.u2k .tg{position:absolute;top:8px;inset-inline-start:8px;padding:2px 10px;border-radius:999px;background:rgba(0,0,0,.5);color:#fff;font-size:11px;font-weight:700;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.u2row{display:flex;gap:12px;overflow-x:auto;padding:2px 4px 8px;scroll-snap-type:x proximity;scrollbar-width:none}.u2row::-webkit-scrollbar{display:none}
+.u2row .u2k{flex:0 0 172px;scroll-snap-align:start}
+
+/* ---------- صفحة القناة ---------- */
+html #chv{background:var(--bg)!important;color:var(--tx)!important}
+html #chv header{background:var(--glass2)!important;border-bottom:1px solid var(--hair)!important;-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px)}
+html #chv header small{color:var(--mu)!important}
+html #chv footer{background:var(--glass2)!important;border-top:1px solid var(--hair)!important}
+html #chv footer textarea{background:var(--glass2)!important;color:var(--tx)!important;border:1px solid var(--hair)!important}
+html #chf .cp{background:var(--glass2)!important;border:1px solid var(--hair)!important;border-radius:20px 20px 20px 6px!important;box-shadow:var(--sh-card);align-self:stretch!important;max-width:min(620px,100%)!important}
+html #chf .cp img{cursor:zoom-in;border-radius:14px!important;width:100%;max-height:420px;object-fit:cover}
+#chv .u2banner{height:110px;flex:0 0 auto;background-size:cover;background-position:center;position:relative}
+#chv .u2banner::after{content:"";position:absolute;inset:0;background:linear-gradient(transparent 40%,var(--bg))}
+#chv .u2info{padding:0 16px 8px;margin-top:-30px;position:relative;z-index:1;display:flex;align-items:flex-end;gap:12px}
+#chv .u2info .av2{width:64px;height:64px;border-radius:50%;border:3px solid var(--bg);display:grid;place-items:center;font:800 24px 'Cairo';color:#fff;background:hsl(var(--h,220) 60% 38%);background-size:cover;background-position:center;flex:0 0 auto}
+#chv .u2info p{margin:0 0 6px;color:var(--mu);font-size:13.5px;flex:1}
+#chfo{padding:8px 20px;border-radius:999px;font-weight:800;background:var(--p3);border:1px solid var(--hair)}
+#chfo.pri{border:0}
+.u2pvc{display:flex;align-items:center;gap:8px;padding:6px 10px 0}
+.u2pvc img{width:54px;height:54px;border-radius:12px;object-fit:cover}
+
+/* ---------- شاشة AI ---------- */
+.u2ai{padding:18px 16px;display:flex;flex-direction:column;gap:10px;position:relative;cursor:pointer}
+.u2ai::before{content:"";position:absolute;inset:0;background:radial-gradient(260px 120px at 100% 0,rgba(230,195,92,.22),transparent 70%);pointer-events:none}
+.u2ai .top{display:flex;align-items:center;gap:14px;position:relative}
+.u2ai .rbx{width:68px;height:68px;border-radius:22px;background:linear-gradient(145deg,#1b1913,#0e0d0a);display:grid;place-items:center;box-shadow:0 0 0 1px var(--hair),0 0 26px rgba(230,195,92,.35);flex:0 0 auto}
+.u2ai .rbx svg{width:52px;height:52px}
+.u2ai h3{margin:0;font-size:17px}.u2ai p{margin:2px 0 0;color:var(--mu);font-size:13.5px;line-height:1.55}
+.u2ai .go{align-self:flex-start;position:relative}
+.u2note{margin:12px 6px;padding:12px 14px;border-radius:var(--r-md);border:1px dashed var(--hair);color:var(--mu);font-size:13px;line-height:1.7}
+
+/* ---------- الإعلانات التجارية ---------- */
+.u2ad{display:flex;flex-direction:column}
+.u2ad .im{aspect-ratio:16/9;background-size:cover;background-position:center;background-color:var(--p3);position:relative}
+.u2ad .lb{position:absolute;top:8px;inset-inline-start:8px;padding:2px 10px;border-radius:999px;background:rgba(0,0,0,.55);color:#fff;font-size:11px;font-weight:800}
+.u2ad .bd{padding:12px 14px 14px;display:flex;flex-direction:column;gap:6px}
+.u2ad b{font-size:16px}.u2ad p{margin:0;color:var(--mu);font-size:13.5px}
+.u2ad .pr{font:800 15px 'Sora','Cairo';color:var(--glow)}
+.u2ad a.pri{align-self:flex-start;text-decoration:none;display:inline-block;margin-top:4px}
+
+/* ---------- سجل المكالمات ---------- */
+.u2call{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:6px 4px 4px}
+.u2call div{padding:12px 6px;text-align:center;border-radius:var(--r-md)}
+.u2call b{display:block;font:800 20px 'Sora',sans-serif}.u2call small{color:var(--mu);font-size:12px}
+[data-cl]{border:1px solid transparent}
+[data-cl] button.pri{padding:7px 16px;border-radius:999px;font-size:13px}
+.u2cx{color:var(--bad)}
+
+/* ---------- شاشات كبيرة ---------- */
+@media(min-width:900px){
+  #nav{margin:0 14px 12px}
+  #plus{bottom:96px!important}
+  .u2g{grid-template-columns:repeat(auto-fill,minmax(190px,1fr))}
+}
