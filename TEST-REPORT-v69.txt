@@ -1,0 +1,13 @@
+The Squad v69 test report
+
+PASS: JavaScript syntax checks: district.js, world.js, firebase-functions/index.js
+PASS: v35 catalog test (120 entries)
+PASS: v40 economy security source checks (17/17)
+PASS: v49 automotive PBR tests (10/10)
+PASS: v50 environment/reflections tests (9/9; updated for lower pixel-ratio cap)
+PASS: v68 economy compatibility test (120 unique stable IDs and transfer compatibility checks)
+PASS: v69 performance test (5/5)
+PARTIAL/FAIL: v33 core navigation test 86/87; known palace stair route failure near x=69.1, z=378.9. This is not marked fixed.
+NOT RUN: Firebase Emulator integration; live Firebase; browser visual verification.
+
+Summary: v69 applies bounded rendering and update-frequency optimizations. These changes are syntax-checked and source-tested, but they do not prove that the full app works against the user's Firebase project or that every gameplay bug is fixed. Test on staging before production deployment.
