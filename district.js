@@ -372,7 +372,7 @@ function build(){
    add(new THREE.BoxGeometry(2.15*s,4.2*s,.42*s),base,-4.42*s,2.3*s,3.79*s);add(new THREE.BoxGeometry(2.15*s,4.2*s,.42*s),base,4.42*s,2.3*s,3.79*s);add(new THREE.BoxGeometry(6.2*s,.62*s,.42*s),base,0,4.12*s,3.79*s);
    add(new THREE.BoxGeometry(10.5*s,.16*s,7.45*s),new THREE.MeshLambertMaterial({color:0x9b8e7c}),0,.16*s,0);
    /* Interior lounge: marble feature wall, sofa blocks, coffee table, rug, chandelier and warm fixtures. */
-   const intDark=new THREE.MeshPhongMaterial({color:0x302b31,shininess:35}),ivorySeat=new THREE.MeshPhongMaterial({color:0xe0d5c4,shininess:25}),rugMat=new THREE.MeshLambertMaterial({color:0x6d4c3d}),lampMat=new THREE.MeshBasicMaterial({color:0xffd88b});
+   const intDark=new THREE.MeshPhongMaterial({color:0x302b31,shininess:35}),ivorySeat=new THREE.MeshPhongMaterial({color:0xe0d5c4,shininess:25}),rugMat=new THREE.MeshLambertMaterial({color:0x6d4c3d}),lampMat=new THREE.MeshBasicMaterial({color:0xffd88b}),trim=new THREE.MeshLambertMaterial({color:0xb9a47b});
    add(new THREE.BoxGeometry(5.4*s,.045*s,3.2*s),rugMat,0,.27*s,-.05*s);
    add(new THREE.BoxGeometry(3.2*s,.42*s,.72*s),ivorySeat,0,.55*s,-1.45*s);add(new THREE.BoxGeometry(3.2*s,.85*s,.2*s),ivorySeat,0,.86*s,-1.78*s);
    [-1,1].forEach(side=>{add(new THREE.BoxGeometry(.22*s,.65*s,.8*s),ivorySeat,side*1.48*s,.68*s,-1.45*s);add(new THREE.BoxGeometry(1.05*s,.38*s,.62*s),ivorySeat,side*2.35*s,.52*s,-.2*s);add(new THREE.BoxGeometry(.12*s,.72*s,.7*s),ivorySeat,side*2.82*s,.76*s,-.2*s)});
@@ -408,7 +408,7 @@ function build(){
    add(new THREE.BoxGeometry(5.7*s,.13*s,.2*s),gold,0,1.05*s,7.5*s);
    [-1,1].forEach(side=>{const gx=side*2.45*s;add(new THREE.CylinderGeometry(.22*s,.27*s,1.05*s,7),uniform,gx,.65*s,6.65*s);add(new THREE.SphereGeometry(.25*s,8,6),skin,gx,1.35*s,6.65*s);add(new THREE.BoxGeometry(.65*s,.16*s,.3*s),gold,gx,1.0*s,6.65*s)});
    /* Palace-grade facade: columns, cornice bands, upper balcony, roof pavilion and garden pool. */
-   const ivory=new THREE.MeshLambertMaterial({color:0xe3d8c3}),trim=new THREE.MeshLambertMaterial({color:0xb9a47b}),roof=new THREE.MeshLambertMaterial({color:0x202638}),water=new THREE.MeshPhongMaterial({color:0x43c9ef,transparent:true,opacity:.72,shininess:110,emissive:0x07384a});
+   const ivory=new THREE.MeshLambertMaterial({color:0xe3d8c3}),roof=new THREE.MeshLambertMaterial({color:0x202638}),water=new THREE.MeshPhongMaterial({color:0x43c9ef,transparent:true,opacity:.72,shininess:110,emissive:0x07384a});
    /* Main entrance portico with visible column bases/capitals and a triangular pediment. */
    [-1,1].forEach(side=>{const px=side*2.25*s;add(new THREE.BoxGeometry(.82*s,.22*s,.82*s),trim,px,.22*s,4.28*s);add(new THREE.CylinderGeometry(.24*s,.3*s,2.5*s,10),ivory,px,1.58*s,4.28*s);add(new THREE.CylinderGeometry(.34*s,.34*s,.18*s,10),trim,px,2.88*s,4.28*s);add(new THREE.BoxGeometry(.95*s,.18*s,.95*s),ivory,px,3.0*s,4.28*s)});
    add(new THREE.BoxGeometry(6.5*s,.28*s,.55*s),trim,0,3.18*s,4.24*s);
