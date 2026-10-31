@@ -101,7 +101,7 @@ async function svClick(e){const x=e.target.closest('[data-x]');if(!x)return;cons
  if(k=='t'){const r=$('#sv').getBoundingClientRect();return e.clientX<r.left+r.width/2?svNext():(svI>0?(svI--,svShow()):svShow())}
  if(k=='r'){db.doc(`stories/${s.id}/views/${me.uid}`).set({n:nm(),t:FV.serverTimestamp(),r:x.dataset.e},{merge:true}).then(()=>toast('وصل تفاعلك '+x.dataset.e)).catch(()=>{})}
  if(k=='s'){const v=$('#srp').value.trim();if(!v)return;await db.doc(`stories/${s.id}/views/${me.uid}`).set({n:nm(),t:FV.serverTimestamp(),rp:v},{merge:true}).catch(()=>{});$('#srp').value='';toast('اتبعت الرد ✅')}
- if(k=='del'){if(!confirm('تمسح الحالة؟'))return;await db.doc('stories/'+s.id).delete().catch(()=>{});delete sa[s.id];delete ST[s.id];svL.splice(svI,1);if(!svL.length)return svClose();svI=Math.min(svI,svL.length-1);svShow()}
+ if(k=='del'){if(!await SquadDialog.confirm('تمسح الحالة؟'))return;await db.doc('stories/'+s.id).delete().catch(()=>{});delete sa[s.id];delete ST[s.id];svL.splice(svI,1);if(!svL.length)return svClose();svI=Math.min(svI,svL.length-1);svShow()}
  if(k=='v'){const q=await db.collection(`stories/${s.id}/views`).get().catch(()=>null);
   sheet(`<h3>👁 ${q?q.size:0} مشاهدة</h3>`+(q?q.docs.map(d=>{const v=d.data();return `<div class="mc"><b>${esc(v.n)} ${v.r||''}</b>${v.rp?`<p>${esc(v.rp)}</p>`:''}</div>`}).join(''):'')||'<p class="mu">لسه محدش شاف</p>')}}
 

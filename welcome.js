@@ -3,7 +3,7 @@
 let dp=null;const IOS=/iPad|iPhone|iPod/.test(navigator.userAgent),STAND=matchMedia('(display-mode: standalone)').matches||navigator.standalone;
 function btn(){if(STAND||document.getElementById('wins'))return;const h=document.querySelector('#side>header');if(!h)return;h.insertAdjacentHTML('afterbegin','<button id="wins" class="ic" title="تثبيت التطبيق" style="font-size:18px">📲</button>');
  document.getElementById('wins').onclick=async()=>{if(dp){dp.prompt();try{await dp.userChoice}catch(e){}dp=null;return}
-  alert(IOS?'على الآيفون: افتح الموقع في Safari، اضغط زر المشاركة، ثم «إضافة إلى الشاشة الرئيسية».':'لو مفيش نافذة تثبيت: افتح قائمة المتصفح (⋮) واختار «تثبيت التطبيق» أو «إضافة إلى الشاشة الرئيسية».')}}
+  await SquadDialog.alert(IOS?'على الآيفون: افتح الموقع في Safari، اضغط زر المشاركة، ثم «إضافة إلى الشاشة الرئيسية».':'لو مفيش نافذة تثبيت: افتح قائمة المتصفح (⋮) واختار «تثبيت التطبيق» أو «إضافة إلى الشاشة الرئيسية».')}}
 addEventListener('beforeinstallprompt',e=>{e.preventDefault();dp=e;btn()});addEventListener('appinstalled',()=>{const b=document.getElementById('wins');b&&b.remove()});
 /* الترحيب الصوتي */
 let said=0,pend=null;const nameNow=()=>{try{return (typeof U!='undefined'&&U&&U.name)||(typeof me!='undefined'&&me&&me.displayName)||''}catch(e){return ''}};const SS=window.speechSynthesis;

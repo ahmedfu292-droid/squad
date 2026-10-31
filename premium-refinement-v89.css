@@ -1,0 +1,41 @@
+/* The Squad v89 — responsive premium interface refinement */
+:root{--sq-gold:#e8c878;--sq-blue:#64cfff;--sq-glass:rgba(12,18,32,.78)}
+html{scroll-behavior:smooth}body{ text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased }
+button,input,textarea,select{font:inherit}button{touch-action:manipulation;transition:transform .16s ease,filter .16s ease,background .16s ease,border-color .16s ease}
+button:active{transform:translateY(1px) scale(.985)}
+:where(button,a,input,textarea,select,[tabindex]):focus-visible{outline:2px solid var(--sq-blue);outline-offset:3px}
+#splash h1,#auth .ahero h1{letter-spacing:.02em;text-shadow:0 8px 28px rgba(232,200,120,.22)}
+#auth .card{border:1px solid rgba(232,200,120,.2);box-shadow:0 24px 70px rgba(0,0,0,.34),inset 0 1px rgba(255,255,255,.07)}
+#side>header,#chat .cv>header{min-height:62px}
+#list{overscroll-behavior:contain;scrollbar-width:thin}
+#ms{overscroll-behavior:contain;scrollbar-width:thin;scroll-behavior:smooth}
+#ms .m{overflow-wrap:anywhere;max-width:min(78%,680px)}
+#chat .cv>footer{padding-bottom:max(10px,env(safe-area-inset-bottom))}
+#chat .cv>footer textarea{min-height:42px;max-height:140px;resize:none}
+#nav button{min-height:54px;gap:5px}
+#ts{z-index:10000;box-shadow:0 12px 40px #0007;border:1px solid rgba(232,200,120,.28);border-radius:14px;padding:10px 14px;backdrop-filter:blur(16px)}
+@media(max-width:899px){
+ #app{min-height:100dvh}
+ #side{padding-bottom:env(safe-area-inset-bottom)}
+ #nav{padding-bottom:max(5px,env(safe-area-inset-bottom));min-height:62px}
+ #chat .cv{padding-bottom:env(safe-area-inset-bottom)}
+ #chat .cv>header{padding-top:max(7px,env(safe-area-inset-top))}
+ #chat .cv>footer{gap:5px}
+ #chat .cv>footer textarea{font-size:16px}
+ #ms .m{max-width:86%}
+}
+@media(max-width:380px){#side>header h2{font-size:17px}#nav button{font-size:11px;padding-inline:4px}#chat .cv>footer .ic{width:34px;min-width:34px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+
+/* Home hub: functional launch cards, not decorative placeholders */
+#squadHub{width:min(820px,100%);display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:26px auto 0;text-align:start}
+#squadHub .hubTile{min-width:0;min-height:145px;padding:16px;border-radius:20px;border:1px solid rgba(232,200,120,.24);background:linear-gradient(145deg,rgba(24,37,61,.94),rgba(7,12,23,.94));color:#edf3ff;display:flex;flex-direction:column;align-items:flex-start;gap:6px;box-shadow:0 16px 36px -25px #000;position:relative;overflow:hidden}
+#squadHub .hubTile:after{content:"";position:absolute;width:120px;height:120px;border-radius:50%;background:rgba(232,200,120,.09);filter:blur(20px);inset-inline-end:-40px;top:-50px;pointer-events:none}
+#squadHub .hubTile i{font-style:normal;font-size:25px;width:42px;height:42px;display:grid;place-items:center;border-radius:13px;background:rgba(232,200,120,.12);border:1px solid rgba(232,200,120,.18)}
+#squadHub .hubTile b{font-size:15px;font-weight:800;color:#ffe4a5}
+#squadHub .hubTile small{font-size:12px;line-height:1.6;color:#b8c7df}
+#squadHub .hubTile span{font-size:12px;color:#73d8ff;font-weight:800;margin-top:auto}
+#squadHub .hubTile:active{transform:translateY(1px) scale(.99)}
+#squadHub .hubCity{background:linear-gradient(135deg,rgba(22,56,83,.97),rgba(7,12,23,.96))}
+#squadHub .hubCafe{background:linear-gradient(135deg,rgba(67,43,26,.92),rgba(10,13,24,.96))}
+@media(max-width:560px){#empty{justify-content:flex-start;padding:24px 14px 90px}#empty h2{font-size:25px;margin:12px 0 5px}#squadHub{gap:9px;margin-top:18px}#squadHub .hubTile{min-height:140px;padding:12px;border-radius:16px}#squadHub .hubTile b{font-size:13px}#squadHub .hubTile small{font-size:11px}}

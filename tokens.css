@@ -1,0 +1,15 @@
+/* The Squad — Dark Room Design Tokens | v94 */
+:root{
+ --dr-bg:#080909;--dr-bg-2:#101211;--dr-panel:#151816;--dr-panel-2:#1b1f1b;--dr-panel-glass:rgba(20,23,20,.88);
+ --dr-ink:#f4f0e7;--dr-muted:#a49c8c;--dr-muted-2:#746f65;--dr-line:rgba(210,177,112,.18);--dr-line-soft:rgba(255,255,255,.075);
+ --dr-gold:#c9a66b;--dr-gold-hi:#f0d59a;--dr-gold-deep:#80633c;--dr-gold-wash:rgba(201,166,107,.12);
+ --dr-danger:#d77c70;--dr-success:#9dbb91;--dr-blue:#8da8bd;
+ --dr-font-ar:'IBM Plex Sans Arabic','Cairo',sans-serif;--dr-font-latin:'Manrope','Sora',sans-serif;
+ --dr-text-xs:11px;--dr-text-sm:13px;--dr-text:15px;--dr-text-lg:18px;--dr-title:24px;--dr-display:32px;
+ --dr-space-1:4px;--dr-space-2:8px;--dr-space-3:12px;--dr-space-4:16px;--dr-space-5:20px;--dr-space-6:24px;--dr-space-8:32px;--dr-space-10:40px;
+ --dr-r-xs:8px;--dr-r-sm:12px;--dr-r-md:17px;--dr-r-lg:22px;--dr-r-xl:28px;--dr-r-pill:999px;
+ --dr-shadow:0 18px 55px rgba(0,0,0,.38);--dr-shadow-gold:0 0 30px rgba(201,166,107,.12);--dr-inset:inset 0 1px 0 rgba(255,255,255,.035);
+ --dr-ease:cubic-bezier(.2,.75,.25,1);--dr-fast:150ms;--dr-mid:260ms;--dr-slow:520ms;
+ --dr-nav-h:72px;--dr-top-h:64px;--dr-content:680px;--dr-sidebar:248px;
+ color-scheme:dark;
+}

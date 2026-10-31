@@ -10,5 +10,51 @@ service firebase.storage {
       allow delete: if request.auth != null && request.auth.uid == uid;
       allow update: if false;
     }
+
+    // v95 SOCIAL ADDITION: صور منشورات؛ 4 صور لكل منشور، 2 MiB للصورة، JPEG/PNG/WebP فقط.
+    // القراءة العامة للمنشور العام، وقراءة منشور المتابعين للمتابع فقط عبر Firestore lookup.
+    match /posts/{ownerUid}/{postId}/{fileName} {
+      function postDoc() { return firestore.get(/databases/(default)/documents/posts/$(postId)); }
+      function followsOwner() { return firestore.exists(/databases/(default)/documents/users/$(request.auth.uid)/following/$(ownerUid)); }
+      function blockedEitherWay() {
+        return firestore.exists(/databases/(default)/documents/users/$(ownerUid)/blocked/$(request.auth.uid))
+          || firestore.exists(/databases/(default)/documents/users/$(request.auth.uid)/blocked/$(ownerUid));
+      }
+      allow read: if request.auth != null && postDoc().data.status == 'published'
+        && !blockedEitherWay()
+        && postDoc().data.imagePaths.hasAny([ 'posts/' + ownerUid + '/' + postId + '/' + fileName ])
+        && (postDoc().data.visibility == 'public' || request.auth.uid == ownerUid || followsOwner());
+      allow create: if request.auth != null && request.auth.uid == ownerUid
+        && request.resource.size <= 2 * 1024 * 1024
+        && request.resource.contentType in ['image/jpeg','image/png','image/webp']
+        && postDoc().data.authorUid == ownerUid
+        && postDoc().data.status == 'published'
+        && postDoc().data.imagePaths.hasAny([ 'posts/' + ownerUid + '/' + postId + '/' + fileName ]);
+      allow delete: if request.auth != null && request.auth.uid == ownerUid;
+      allow update: if false;
+    }
+
+
+    // Private chat media: authenticated chat members only; blocked direct-chat peers lose access.
+    match /chat-media/{chatId}/{ownerUid}/{fileName} {
+      function chatDoc() { return firestore.get(/databases/(default)/documents/chats/$(chatId)); }
+      function isChatMember() {
+        return request.auth != null && chatDoc().data.members is list
+          && request.auth.uid in chatDoc().data.members
+          && ownerUid in chatDoc().data.members;
+      }
+      function directChatUnblocked() {
+        return chatDoc().data.type != 'p'
+          || (!firestore.exists(/databases/(default)/documents/users/$(ownerUid)/blocked/$(request.auth.uid))
+            && !firestore.exists(/databases/(default)/documents/users/$(request.auth.uid)/blocked/$(ownerUid)));
+      }
+      allow read: if isChatMember() && directChatUnblocked();
+      allow create: if request.auth != null && request.auth.uid == ownerUid
+        && isChatMember() && request.resource.size <= 5 * 1024 * 1024
+        && request.resource.contentType.matches('(image/jpeg|image/png|image/webp|audio/.*)');
+      allow delete: if request.auth != null && request.auth.uid == ownerUid && isChatMember();
+      allow update: if false;
+    }
+
   }
 }

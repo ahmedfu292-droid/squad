@@ -8,38 +8,13 @@ IC.phone2='M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-
 
 /* ================= 1) الشريط الرئيسي: 4 شاشات ================= */
 const nav=$('#nav'),btn=k=>nav.querySelector(`[data-go=${k}]`);
-if(!btn('ai')){nav.insertAdjacentHTML('beforeend','<button data-go="ai"><i></i>AI</button>');btn('ai').querySelector('i').innerHTML=ic('ai')}
-const L={home:'الشات',up:'التحديثات',ai:'العروض',calls:'المكالمات'};
-['home','up','ai','calls'].forEach(k=>{const b=btn(k);if(!b)return;b.lastChild.textContent=L[k];nav.appendChild(b)});
-['find','me'].forEach(k=>{const b=btn(k);b&&(b.hidden=true)}); /* موجودين لسه، والوصول ليهم من الهيدر: ➕ استكشاف / ⚙️ الإعدادات والملف الشخصي */
-$('#gear').title='الإعدادات والملف الشخصي';$('#plus').title='استكشاف · جروب جديد · مجتمعات';
-
-const go0=go;go=function(t){
- if(t!='ai')return go0(t);
- tab='ai';$$('#nav button').forEach(b=>b.classList.toggle('on',b.dataset.go=='ai'));
- $('#home').hidden=true;$('#oth').hidden=false;viewAI()};
-
-/* شارة الرسايل الغير مقروءة على «الشات» */
-function badge(){const b=btn('home');if(!b||typeof me=='undefined'||!me)return;const m=U.mute||[],a=U.arch||[];
- const n=Object.values(C).reduce((s,c)=>s+(m.includes(c.id)||a.includes(c.id)?0:((c.un||{})[me.uid]||0)),0);
- let e=b.querySelector('.nb');if(!n){e&&e.remove();return}
- e||(e=document.createElement('b'),e.className='nb',b.appendChild(e));e.textContent=n>99?'99+':n}
+const L={home:'الرسائل',up:'الحالات',calls:'المكالمات'};
+['home','up','calls'].forEach(k=>{const b=btn(k);if(b){b.lastChild.textContent=L[k];}});
+['find','me'].forEach(k=>{const b=btn(k);b&&(b.hidden=false)});
+$('#gear').title='الإعدادات';$('#plus').title='استكشاف';
+const go0=go;go=function(t){if(t==='ai')return go0('find');return go0(t)};
+function badge(){const b=btn('home');if(!b||typeof me=='undefined'||!me)return;const m=U.mute||[],a=U.arch||[];const n=Object.values(C).reduce((s,c)=>s+((U.hiddenChats||[]).includes(c.id)||m.includes(c.id)||a.includes(c.id)?0:((c.un||{})[me.uid]||0)),0);let e=b.querySelector('.nb');if(!n){e&&e.remove();return}e||(e=document.createElement('b'),e.className='nb',b.appendChild(e));e.textContent=n>99?'99+':n;['#dr-unread','#dr-top-count'].forEach(sel=>{const x=$(sel);if(x){x.textContent=n>99?'99+':n;x.hidden=!n}})}
 const rh0=renderHome;renderHome=function(){rh0();badge()};
-
-/* ================= 2) شاشة العروض: إعلانات المواقع التجارية + روابط ChatGPT و Gemini ================= */
-const AIS=[['C','ChatGPT','محادثة ذكية من OpenAI. بيفتح في تبويب جديد.','https://chatgpt.com'],
-           ['G','Gemini','مساعد Google الذكي. بيفتح في تبويب جديد.','https://gemini.google.com']];
-let adc='';
-const adList=()=>(window.SQUAD_ADS||[]).filter(a=>a&&a.t&&/^https:\/\//.test(a.url||''));
-function adCard(a){return `<div class="u2c u2ad"><div class="im" style="${/^(https:\/\/|data:image\/)/.test(a.img||'')?`background-image:url(&quot;${esc(a.img)}&quot;)`:`background-image:${gcol(a.t)}`}"><span class="lb">إعلان</span></div><div class="bd"><b>${esc(a.t)}</b>${a.d?`<p>${esc(a.d)}</p>`:''}${a.price?`<span class="pr">${esc(a.price)}</span>`:''}<a class="pri" href="${esc(a.url)}" target="_blank" rel="noopener noreferrer sponsored">${esc(a.btn||'زيارة الموقع')}</a></div></div>`}
-function adBody(){const A=adList();if(!A.length)return `<div class="u2c u2empty"><b>مساحتك الإعلانية</b><p>لسه مفيش إعلانات. ضيف إعلانات مواقعك في ملف ads.js وهتظهر هنا مرتبة حسب التصنيف.</p></div>`;
- const cs=[...new Set(A.map(a=>a.cat||'عام'))],L=A.filter(a=>!adc||(a.cat||'عام')==adc);
- return (cs.length>1?`<div class="u2cats"><button data-u2a="" class="${adc?'':'on'}">الكل</button>${cs.map(c=>`<button data-u2a="${esc(c)}" class="${c==adc?'on':''}">${esc(c)}</button>`).join('')}</div>`:'')+`<div class="u2g" id="u2al">${L.map(adCard).join('')}</div>`}
-function viewAI(){
- $('#oth').innerHTML=`<div class="u2h"><h4>الذكاء الاصطناعي</h4></div><div class="u2row2">${AIS.map(([l,n,d,u])=>`<a class="u2c u2ai" href="${u}" target="_blank" rel="noopener noreferrer"><div class="rbx">${l}</div><div><h3>${n}</h3><p>${d}</p></div><span class="pri go">افتح</span></a>`).join('')}</div>
- <div class="u2h"><h4>إعلانات المواقع التجارية</h4></div><div id="u2ab">${adBody()}</div>`}
-$('#oth').addEventListener('click',e=>{const c=e.target.closest('[data-u2a]');if(!c||tab!='ai')return;adc=c.dataset.u2a;$('#u2ab').innerHTML=adBody()});
-
 /* ================= 3) هيدر الشات: قايمة ⋮ فيها المعرض والألعاب والبحث والحظر ================= */
 const MI=[['gal','🖼','معرض صور المحادثة'],['msr','🔍','بحث في المحادثة'],['gm','🎮','ألعاب'],['blk','⚠️','حظر وإبلاغ']];
 const addMenu=()=>{const box=$('#sh .box');if(!C[cid]||!box||box.querySelector('[data-u2m]'))return;
@@ -138,6 +113,49 @@ function manage(id){const c=CH[id];if(!c)return;let cv=null;
 const vc0=viewCalls;viewCalls=function(){vc0();if(tab!='calls')return;
  const n=CL.length,x=CL.filter(e=>e.x).length,s=CL.reduce((a,e)=>a+(e.d||0),0),t=s>=3600?(s/3600).toFixed(1)+' س':s>=60?(s/60|0)+' د':s+' ث';
  $('#oth').insertAdjacentHTML('afterbegin',`<div class="u2call"><div class="u2c"><b>${n}</b><small>مكالمات</small></div><div class="u2c"><b class="${x?'u2cx':''}">${x}</b><small>مرفوضة</small></div><div class="u2c"><b>${t}</b><small>إجمالي الوقت</small></div></div>`)};
+
+/* ===== v94 Social shell: presentation layer, existing services remain intact ===== */
+const drIcons={heart:'<svg viewBox="0 0 24 24"><path d="M20.5 8.8c0 5-8.5 11-8.5 11s-8.5-6-8.5-11a4.5 4.5 0 0 1 8.5-1.2 4.5 4.5 0 0 1 8.5 1.2Z"/></svg>',comment:'<svg viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3h11A2.5 2.5 0 0 1 20 5.5v9a2.5 2.5 0 0 1-2.5 2.5H10l-5 4v-4.2A2.5 2.5 0 0 1 4 14.5z"/></svg>',share:'<svg viewBox="0 0 24 24"><path d="M12 15V3m-5 5 5-5 5 5M5 13v7h14v-7"/></svg>',save:'<svg viewBox="0 0 24 24"><path d="M6 4h12v17l-6-4-6 4z"/></svg>'};
+const drPosts=[{id:'p1',name:'ليلى منصور',initial:'ل',time:'منذ 12 دقيقة',text:'ليلة هادئة في المدينة… الإضاءة الذهبية والتفاصيل المعمارية بتخلي كل زاوية لها حكاية.',media:'city',likes:248,comments:32},{id:'p2',name:'عمر فؤاد',initial:'ع',time:'منذ ساعة',text:'أجمل وقت للقهوة هو لما تجمعك الصدفة بأصحابك. نشوفكم في الكافيه الليلة.',media:'cafe',likes:96,comments:14}];
+let drRoute='feed',drLikes=new Set(),drSaves=new Set(),drComments={p1:[],p2:[]};
+const drScreen=$('#dr-screen');
+function drPost(p){return `<article class="dr-post" data-post="${p.id}"><header class="dr-post-head"><span class="dr-avatar">${p.initial}</span><div><b>${p.name}</b><small>${p.time} · عام</small></div><button class="dr-more" data-post-menu="${p.id}" aria-label="المزيد">⋯</button></header><div class="dr-post-copy">${p.text}</div><div class="dr-post-media ${p.media}"><span class="media-label">THE SQUAD · ${p.media==='city'?'CITY LIGHTS':'PRIVATE LOUNGE'}</span></div><div class="dr-post-stats"><span>${p.likes+(drLikes.has(p.id)?1:0)} إعجاب</span><span>${(p.comments||0)+((drComments[p.id]||[]).length)} تعليق</span></div><div class="dr-post-actions"><button data-like="${p.id}" class="${drLikes.has(p.id)?'active':''}">${drIcons.heart} إعجاب</button><button data-comments="${p.id}">${drIcons.comment} تعليق</button><button data-share="${p.id}">${drIcons.share} مشاركة</button><button data-save="${p.id}" class="${drSaves.has(p.id)?'active':''}">${drIcons.save} حفظ</button></div></article>`}
+function drStories(){return `<div class="dr-stories"><button class="dr-story mine" data-create-story><span class="dr-story-ring"><span>＋</span></span>قصتك</button>${[['مريم','م'],['يوسف','ي'],['نور','ن'],['سارة','س']].map(([n,i])=>`<button class="dr-story" data-story="${n}"><span class="dr-story-ring"><span>${i}</span></span>${n}<small>حالة جديدة</small></button>`).join('')}</div>`}
+function drRender(){if(!drScreen)return;const title={feed:['الرئيسية','أحدث ما يشاركه مجتمعك'],videos:['الفيديوهات','مقاطع قصيرة — معاينة واجهة'],explore:['استكشاف','اكتشف المساحات والأشخاص'],profile:['حسابي','ملفك الشخصي'],messages:['الرسائل','محادثاتك ومكالماتك'] ,create:['إنشاء','شارك لحظة مع مجتمعك']}[drRoute]||['الرئيسية',''];$('#dr-title').textContent=title[0];$('#dr-subtitle').textContent=title[1];
+ if(drRoute==='feed'){drScreen.innerHTML=drStories()+`<div class="dr-feed"><div class="dr-empty dr-loading">جارٍ تحميل الفيد…</div></div>`;window.SquadSocial&&window.SquadSocial.startFeed();}
+ else if(drRoute==='videos')drScreen.innerHTML=`<div class="dr-video-feed"><div class="dr-video-view"><div><small>THE SQUAD · VIDEO 01</small></div><div class="dr-video-actions"><button>♡</button><button data-video-comments>◯</button><button>↗</button><button>＋</button></div><div class="dr-video-caption"><b>@squad.creator</b><p>لقطة من أضواء المدينة — نموذج واجهة للفيديوهات.</p><small>المقطع تجريبي وليس فيديو منشورًا.</small></div></div><div class="dr-video-view cafe"><div><small>THE SQUAD · VIDEO 02</small></div><div class="dr-video-actions"><button>♡</button><button data-video-comments>◯</button><button>↗</button><button>＋</button></div><div class="dr-video-caption"><b>@night.coffee</b><p>تفاصيل الكافيه في أجواء المساء.</p><small>نموذج بصري ثانٍ للتنقل الرأسي.</small></div></div></div>`;
+ else if(drRoute==='explore')drScreen.innerHTML=`<div class="dr-feed"><div class="dr-panel" style="padding:18px"><h3>استكشف The Squad</h3><p style="color:var(--dr-muted)">الأقسام الموجودة في المشروع</p><div class="dr-shortcut" data-hub="city"><i>⌂</i><span>المدينة المفتوحة<small>افتح عالم المدينة</small></span></div><div class="dr-shortcut" data-hub="cafe"><i>◈</i><span>الكافيه<small>ادخل الكافيه ثلاثي الأبعاد</small></span></div><div class="dr-shortcut" data-hub="cinema"><i>▣</i><span>السينما<small>افتح مساحة السينما</small></span></div><div class="dr-shortcut" data-social="messages"><i>✉</i><span>المحادثات<small>انتقل للرسائل</small></span></div></div><div class="dr-empty"><strong>استكشاف الأشخاص</strong>النتائج الحقيقية هتظهر بعد ربط الفيد الاجتماعي ببياناته.</div></div>`;
+ else if(drRoute==='profile')drScreen.innerHTML=`<div class="dr-panel" style="padding:14px"><div class="dr-profile-cover"><span class="dr-profile-avatar">${(typeof U!=='undefined'&&U.name||'أ').slice(0,1)}</span></div><h2>${typeof U!=='undefined'&&U.name?esc(String(U.name)):'حسابي'}</h2><small style="color:var(--dr-muted)">ملفك على The Squad</small><div class="dr-profile-stats"><span><b>0</b>منشورات</span><span><b>0</b>متابعون</span><span><b>0</b>يتابع</span></div><div class="dr-post-actions"><button class="dr-primary">متابعة</button><button class="dr-secondary" data-social="messages">رسالة</button></div><div class="dr-post-actions"><button class="active">منشورات</button><button>فيديوهات</button><button>محفوظ</button></div><div class="dr-empty">مفيش منشورات لعرضها في المعاينة الحقيقية.</div></div>`;if(window.SquadSocial&&typeof me!=='undefined'&&me){window.SquadSocial.profileStats(me.uid).then(x=>{const n=document.querySelectorAll('.dr-profile-stats b');if(n.length===3){n[0].textContent=x.posts;n[1].textContent=x.followers;n[2].textContent=x.following}}).catch(()=>{})}
+ else if(drRoute==='messages'){const list=typeof C!=='undefined'?Object.values(C).filter(c=>!(U.hiddenChats||[]).includes(c.id)).sort((a,b)=>ms(b.lt)-ms(a.lt)):[];drScreen.innerHTML=`<div class="dr-message-list"><input class="dr-field" id="dr-chat-search" placeholder="ابحث في المحادثات"><div class="s4-filterbar"><button class="on" data-chat-filter="all">الكل</button><button data-chat-filter="private">خاص</button><button data-chat-filter="groups">جروبات</button><button data-chat-filter="pinned">مثبتة</button><button data-chat-filter="archived">الأرشيف</button></div><div id="dr-chat-list">${list.map(c=>`<button class="dr-conversation" data-open-chat="${c.id}"><span class="dr-avatar">${esc((c.type=='g'?c.nm:cname(c)).slice(0,1))}</span><span><b>${esc(c.type=='g'?c.nm:cname(c))}</b><small>${esc(c.last&&c.last.tx||'ابدأ المحادثة')}</small></span><small>${(c.un||{})[me.uid]||''}</small></button>`).join('')||'<div class="dr-empty"><strong>لسه مفيش محادثات</strong>ابدأ محادثة مع أصحابك من استكشاف.</div>'}</div><button class="dr-conversation" data-open-calls><span class="dr-avatar">☎</span><span><b>المكالمات</b><small>سجل المكالمات الموجود</small></span></button></div>`;const q=$('#dr-chat-search');q&&q.addEventListener('input',()=>$$('#dr-chat-list .dr-conversation').forEach(b=>b.hidden=!b.textContent.toLowerCase().includes(q.value.toLowerCase())));}
+ else if(drRoute==='create')drCreate();}
+function drCreate(){drScreen.innerHTML=`<div class="dr-panel" style="padding:17px"><h3>إنشاء منشور</h3><textarea class="dr-field" id="dr-post-text" rows="5" maxlength="2000" placeholder="إيه الجديد عندك؟"></textarea><div class="dr-create-tools"><label class="dr-secondary">إضافة صور (حتى 4 صور، 2MB للصورة) <input id="dr-media" type="file" accept="image/jpeg,image/png,image/webp" multiple></label></div><input type="hidden" id="dr-privacy" value="public"><div class="dr-privacy-note">🌐 النشر متاح للكل حاليًا</div><h4>معاينة قبل النشر</h4><div class="dr-create-preview" id="dr-create-preview">هيظهر نص منشورك هنا.</div><button class="dr-primary" data-preview-post>تحديث المعاينة</button><button class="dr-secondary" data-publish-post>نشر فعلي</button><p style="color:var(--dr-muted);font-size:11px">JPEG / PNG / WebP فقط. الحد الأقصى 4 صور، 2MB للصورة.</p></div>`}
+function drRouteTo(r){drRoute=r;$('#app').classList.add('social-mode');document.querySelectorAll('[data-social]').forEach(b=>b.classList.toggle('active',b.dataset.social===r));drRender()}
+function drModal(html){let el=$('#dr-overlay');if(!el){document.body.insertAdjacentHTML('beforeend','<div id="dr-overlay" class="dr-modal-backdrop" hidden><div class="dr-modal"></div></div>');el=$('#dr-overlay');el.addEventListener('click',e=>{if(e.target===el)el.hidden=true})}el.querySelector('.dr-modal').innerHTML=html;el.hidden=false;return el}
+window.SquadOpenModal=drModal;
+window.SquadDialog={confirm:async(message)=>new Promise(resolve=>{const e=drModal(`<h3>تأكيد</h3><p>${String(message).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}</p><div class="dr-modal-actions"><button class="dr-secondary" data-answer="no">إلغاء</button><button class="dr-primary" data-answer="yes">تأكيد</button></div>`);e.querySelectorAll('[data-answer]').forEach(b=>b.onclick=()=>{e.hidden=true;resolve(b.dataset.answer==='yes')})}),prompt:async(message,initial='')=>new Promise(resolve=>{const e=drModal(`<h3>${String(message).replace(/[&<>]/g,'')}</h3><input class="dr-field" id="dr-dialog-input" value="${String(initial).replace(/[&<>"']/g,'')}" autofocus><div class="dr-modal-actions"><button class="dr-secondary" data-answer="no">إلغاء</button><button class="dr-primary" data-answer="yes">متابعة</button></div>`);e.querySelector('input').focus();e.querySelectorAll('[data-answer]').forEach(b=>b.onclick=()=>{const v=e.querySelector('input').value;e.hidden=true;resolve(b.dataset.answer==='yes'?v:null)})}),alert:async(message)=>new Promise(resolve=>{const e=drModal(`<h3>تنبيه</h3><p>${String(message).replace(/[&<>]/g,'')}</p><div class="dr-modal-actions"><button class="dr-primary" data-answer="yes">حسنًا</button></div>`);e.querySelector('[data-answer]').onclick=()=>{e.hidden=true;resolve()}})};
+$('#app').addEventListener('click',async e=>{const b=e.target.closest('[data-social]');if(b){const r=b.dataset.social;if(r==='messages'){drRouteTo('messages')}else drRouteTo(r);return}
+ const hub=e.target.closest('[data-hub]');if(hub){e.preventDefault();$('#app').classList.remove('social-mode');const k=hub.dataset.hub;const old=document.querySelector(`#squadHub [data-hub="${k}"]`);if(old)old.click();else if(k==='cinema'&&window.CINEMA&&CINEMA.enter)CINEMA.enter();return}
+ const open=e.target.closest('[data-open-chat]');if(open){$('#app').classList.remove('social-mode');openChat(open.dataset.openChat);return}
+ if(e.target.closest('[data-open-legacy]')){$('#app').classList.remove('social-mode');$('#side').style.display='';$('#chat').style.display='';go('home');return}
+ if(e.target.closest('[data-open-calls]')){$('#app').classList.remove('social-mode');go('calls');return}
+ const like=e.target.closest('[data-like]');if(like){window.SquadSocial?.toggleLike(like.dataset.like).catch(x=>toast(x.message||'فشل الإعجاب'));return}
+ const save=e.target.closest('[data-save]');if(save){window.SquadSocial?.toggleSave(save.dataset.save).catch(x=>toast(x.message||'فشل الحفظ'));return}
+ const share=e.target.closest('[data-share]');if(share){const id=share.dataset.share;drModal(`<h3>مشاركة المنشور</h3><p>رابط تجريبي للمنشور ${id}</p><button class="dr-primary" data-copy-post="${id}">نسخ الرابط</button>`);return}
+ const cm=e.target.closest('[data-comments]');if(cm){window.SquadSocial?.commentsModal(cm.dataset.comments).catch(x=>toast(x.message||'فشل تحميل التعليقات'));return}
+ if(e.target.closest('[data-copy-post]')){navigator.clipboard?.writeText(location.href+'#'+e.target.dataset.copyPost);$('#dr-overlay').hidden=true;return}
+ if(e.target.closest('[data-story]')){$('#app').classList.remove('social-mode');go('up');return}
+ if(e.target.closest('[data-create-story]')){drModal('<h3>قصتك</h3><p>إنشاء الحالة الفعلية موجود في قسم الحالات الحالي.</p><button class="dr-primary" data-open-stories>فتح الحالات</button>');return}
+ if(e.target.closest('[data-open-stories]')){$('#dr-overlay').hidden=true;$('#app').classList.remove('social-mode');go('up');return}
+ if(e.target.closest('[data-preview-post]')){$('#dr-create-preview').textContent=$('#dr-post-text').value||'هيظهر نص منشورك هنا.';return}
+ if(e.target.closest('[data-publish-post]')){const b=e.target.closest('[data-publish-post]'),files=[...($('#dr-media')?.files||[])];b.disabled=true;b.textContent='جارٍ النشر…';try{await window.SquadSocial.publish($('#dr-post-text').value,files,$('#dr-privacy').value);drRouteTo('feed');toast('تم نشر المنشور ✅')}catch(x){toast(x.message||'فشل النشر')}finally{b.disabled=false;b.textContent='نشر فعلي'}return}
+ if(e.target.closest('[data-social-more]')){window.SquadSocial?.loadMore();return}
+ if(e.target.closest('[data-close-modal]'))$('#dr-overlay').hidden=true;
+});
+// Style existing live chat with Dark Room tokens without replacing its messaging logic.
+const drOpenLegacy=openChat,drCloseLegacy=closeChat;openChat=function(id){$('#app').classList.remove('social-mode');$('#app').classList.add('dr-legacy-chat');return drOpenLegacy(id)};closeChat=function(){const r=drCloseLegacy();$('#app').classList.remove('dr-legacy-chat');return r};
+// Start social home after successful auth; legacy chat/calls remain reachable from message center.
+const authObserver=()=>{if(typeof me!=='undefined'&&me&&$('#app')&&!$('#app').hidden){drRouteTo('feed');}};
+const appObserver=new MutationObserver(authObserver);appObserver.observe($('#app'),{attributes:true,attributeFilter:['hidden']});
 
 badge();
 })();

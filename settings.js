@@ -53,7 +53,7 @@ const S={
   sec('المحادثات')+`<div class="st-list">${tg('rr','✓✓','تأكيد القراءة','لو قفلته الناس مش هتشوف إنك قريت رسايلهم',pv('rr'))}
   ${row('blocked','🚫','المحظورين',Object.keys(BL).length?Object.keys(BL).length+' محظور':'مفيش حد')}</div>`,
 
- blocked:()=>{const ids=Object.keys(BL);ids.forEach(id=>BLN[id]===undefined&&(BLN[id]=null,db.doc('users/'+id).get().then(s=>{BLN[id]=s.exists?s.data().name||'عضو':'عضو';SV=='blocked'&&tab=='me'&&render(true)}).catch(()=>{BLN[id]='عضو'})));
+ blocked:()=>{const ids=Object.keys(BL);ids.forEach(id=>BLN[id]===undefined&&(BLN[id]=null,db.doc('publicProfiles/'+id).get().then(s=>{BLN[id]=s.exists?s.data().name||'عضو':'عضو';SV=='blocked'&&tab=='me'&&render(true)}).catch(()=>{BLN[id]='عضو'})));
   return top('المحظورين')+(ids.length?`<div class="st-list">${ids.map(id=>`<div class="st-row" style="cursor:default"><span class="ch">🚫</span><span class="tt"><b>${esc(BLN[id]||'...')}</b></span><button class="pri" style="padding:7px 14px;font-size:13px" data-sx="unblock" data-id="${esc(id)}">إلغاء الحظر</button></div>`).join('')}</div>`:`<div class="st-list"><div class="st-empty">مفيش حد محظور.<br>تقدر تحظر من زر ⚠️ جوه أي محادثة خاصة.</div></div>`)+
   `<p class="st-note">الحظر بيخفي رسايل الشخص عندك إنت.</p>`},
 
@@ -109,14 +109,14 @@ $('#oth').addEventListener('click',async e=>{const b=e.target.closest('[data-sx]
  else if(k=='arch'){go('home');const t=document.querySelector('#tabs [data-f=arch]');t&&t.click()}
  else if(k=='gopen'){go('home');openChat(d.id)}
  else if(k=='gmute'){const m=(U.mute||[]).includes(d.id);await db.doc('users/'+me.uid).update({mute:m?FV.arrayRemove(d.id):FV.arrayUnion(d.id)}).then(()=>toast(m?'الإشعارات رجعت 🔔':'اتكتم 🔕')).catch(()=>toast('مقدرتش. انشر القواعد الجديدة'))}
- else if(k=='gleave'){if(!confirm('تخرج من الجروب؟'))return;await db.doc('chats/'+d.id).update({members:FV.arrayRemove(me.uid),['names.'+me.uid]:FV.delete()}).then(()=>toast('خرجت من الجروب')).catch(()=>toast('مقدرتش'))}
+ else if(k=='gleave'){if(!await SquadDialog.confirm('تخرج من الجروب؟'))return;await db.doc('chats/'+d.id).update({members:FV.arrayRemove(me.uid),['names.'+me.uid]:FV.delete()}).then(()=>toast('خرجت من الجروب')).catch(()=>toast('مقدرتش'))}
  else if(k=='newg'){go('find')}
  else if(k=='lang'){localStorage.lang=localStorage.lang=='en'?'ar':'en';location.reload()}
  else if(k=='photo'){$('#sphf').click()}
- else if(k=='rmph'){if(!confirm('تشيل صورتك؟'))return;const bt=db.batch();bt.delete(db.doc('photos/'+me.uid));bt.update(db.doc('users/'+me.uid),{ph:FV.delete()});
+ else if(k=='rmph'){if(!await SquadDialog.confirm('تشيل صورتك؟'))return;const bt=db.batch();bt.delete(db.doc('photos/'+me.uid));bt.update(db.doc('users/'+me.uid),{ph:FV.delete()});
   await bt.commit().then(()=>{delete PH[me.uid];PQ[me.uid]=0;renderHome();render(true);toast('اتشالت الصورة')}).catch(()=>db.doc('photos/'+me.uid).delete().then(()=>{delete PH[me.uid];render(true)}).catch(()=>toast('مقدرتش')))}
  else if(k=='pwd')chPw2();
- else if(k=='out'){if(!(window.ACCTUI?await ACCTUI.askPin('تسجيل الخروج'):true))return;if(confirm('تسجّل خروج؟'))await ACCT.remove(ACCT.slot)}});
+ else if(k=='out'){if(!(window.ACCTUI?await ACCTUI.askPin('تسجيل الخروج'):true))return;if(await SquadDialog.confirm('تسجّل خروج؟'))await ACCT.remove(ACCT.slot)}});
 window.stRender=()=>{tab=='me'&&render(true)};
 $('#oth').addEventListener('change',e=>{if(e.target.id!='sphf')return;const f=e.target.files[0];if(!f)return;
  shrink(f,200,d=>db.doc('photos/'+me.uid).set({ph:d}).then(()=>{PH[me.uid]=d;renderHome();render(true);window.hdr&&cid&&hdr();toast('اتغيّرت الصورة ✅')}).catch(()=>toast('مقدرتش أحفظ الصورة. انشر القواعد الجديدة')))});
