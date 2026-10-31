@@ -1,0 +1,11 @@
+The Squad v116 local verification
+
+- node --check world.js: PASS
+- node --check sw.js: PASS
+- node tests/run_quality_gate.js: see final run below
+- Firebase production rules deployment: NOT RUN
+- Firebase live multi-account test: NOT RUN
+- Real device / network latency test: NOT RUN
+- 20-player capacity stress test: NOT RUN
+
+This is local source validation only; it is not a production deployment certification.

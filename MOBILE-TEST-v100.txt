@@ -1,0 +1,39 @@
+The Squad v100 — manual mobile release checklist
+
+Use Android Chrome and a staging deployment. Test with two separate accounts.
+
+A. Install/update
+[ ] Open staging URL.
+[ ] Refresh and confirm build 100 is loaded.
+[ ] Close/reopen the site; confirm it loads without stale CSS/JS.
+[ ] Check no blank screen or repeated reload loop.
+
+B. Signup/login
+[ ] Select country; verify calling code.
+[ ] Enter a valid email and password; complete signup.
+[ ] Try an invalid email and weak password; confirm clear validation.
+[ ] Try duplicate email; confirm safe error.
+[ ] Sign out and sign in with email/password.
+[ ] Try wrong password; confirm access denied.
+[ ] Check official 10-digit account ID validation.
+[ ] Confirm phone formatting; do not assume phone ownership is verified unless OTP is implemented.
+
+C. Chat
+[ ] Account A sends Account B a direct message.
+[ ] Verify received, unread count, read state, and ordering.
+[ ] Test emoji, long text, reply, reaction, image/file if enabled.
+[ ] Test group message, mute/archive/pin if present.
+[ ] Test block/report and verify expected access restrictions.
+[ ] Test voice/video call both directions if enabled.
+
+D. Platform and layout
+[ ] Open feed, profile, comments, post composer, services hub.
+[ ] Check buttons are tappable and no controls overlap.
+[ ] Rotate device; test narrow and wide viewport.
+[ ] Check keyboard does not cover chat composer or signup fields.
+
+E. Diagnostics
+[ ] Check browser console for errors.
+[ ] Check Network for failed JS/CSS/API requests.
+[ ] Run Lighthouse mobile and record Performance, Accessibility, Best Practices.
+[ ] Do not publish broadly until critical issues are resolved.

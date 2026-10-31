@@ -1,0 +1,20 @@
+v95 Stage 3 test report
+
+Automated checks completed:
+- Node syntax: 79 JavaScript files checked, 0 syntax errors.
+- Existing static Node tests: 37 passed (plus the new v95 test = 38 passed); fakefb.js and fakefb2.js are browser test helpers and are not standalone Node tests.
+- New v95 static assertions: passed.
+- tests/ui2_harness.py: passed.
+- app-preview.html inline JavaScript syntax: passed.
+- Protected files audit: auth.js, acct.js, calls.js, firebase-config.js, .firebaserc, firebase.json, and Firebase Functions files unchanged byte-for-byte from v94.
+- Rule preservation audit: the original v94 Firestore and Storage rule bodies are preserved; v95 blocks are additive.
+- Package audit: 21 existing files changed, 8 added, 0 removed. ZIP integrity checked.
+
+Not tested: Firebase Rules Emulator (not available in this environment), live Rules Playground, live Firebase authentication, live Firestore transactions/getAfter() invariants, live Storage uploads, two-account privacy behavior, billing, and real browser/mobile interaction.
+
+Important limitations before production:
+1) The batched personal feed uses authorUid IN chunks of 30 and caps the followed list at 300. It lists public posts from followed accounts. Followers-only posts are protected and can be fetched by authorized direct document access, but are not discoverable through this batched query because Firestore Rules are not filters. Including them in the personal feed safely without per-followed queries requires a server-side fan-out/index or a different approved design.
+2) Block and hide are applied to the signed-in user's feed UI. Public list queries are public by design; block does not revoke access to public posts through all possible query paths.
+3) Delete is soft delete plus best-effort Storage image deletion. Firestore subcollections may remain; no background cleanup exists.
+4) The current v94 firebase-config.js and .firebaserc point to projectId chatapp-67eb6. Do not paste the rules into another project (for example the previously identified The Squad project) until the intended Firebase project is confirmed. The config files were intentionally not changed.
+5) Storage upload requires Blaze. Budget alerts are notifications, not a hard spending cap.

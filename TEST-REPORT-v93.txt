@@ -1,0 +1,39 @@
+THE SQUAD v93 — THE DARK ROOM / STAGE 1 TEST REPORT
+
+Delivered:
+- Ten visual states are represented in login-preview.html: before pull, pulling, threshold, lamp flash, card, error, loading, success, signup, account switch.
+- login-preview.html is standalone: its CSS is inline; it does not load Firebase SDKs, auth.js, acct.js, accounts.js, or connect to a backend. The preview buttons are visual simulations only.
+- Live login presentation remains wired to the existing auth DOM and auth.js flow through auth-scene.js.
+
+Preservation checks:
+- Login/auth IDs checked: 13 IDs, each appears exactly once in index.html.
+- Protected files byte-identical to v91: auth.js, acct.js, accounts.js, firebase-config.js, .firebaserc, firebase.json, firestore.rules, storage.rules, firebase-functions/index.js, firebase-functions/package.json.
+- Existing tests changed: 0.
+- Original v91 files removed: 0.
+- App/backend JavaScript syntax check: 38 files checked, 0 syntax errors.
+- HTML parser: index.html and login-preview.html parsed successfully.
+- ZIP integrity: 201 entries, no corrupt entries.
+
+Historical JavaScript test run:
+- 38 .js files in tests/: 24 passed; 14 did not pass when invoked individually.
+- 12 are stale version-label tests still expecting v90 cache/version strings:
+  v72_living_palace_engine_test.js
+  v73_premium_design_test.js
+  v74_city_expansion_test.js
+  v80_city_life_test.js
+  v81_neighborhood_realism_test.js
+  v82_living_city_test.js
+  v83_photoreal_city_test.js
+  v84_vehicles_roads_water_test.js
+  v85_realism_drive_water_test.js
+  v86_camera_collision_stability_test.js
+  v87_economy_guardrails_test.js
+  v88_multiplayer_sync_test.js
+- fakefb.js and fakefb2.js are test fixtures/helpers, not standalone test cases; direct execution is not a valid test invocation.
+- No test file was edited to hide or bypass these failures.
+
+Not tested / limitations:
+- A headless Chromium screenshot attempt timed out; no successful browser visual capture was obtained.
+- No physical iPhone/Android device test was performed.
+- No live Firebase login, signup, saved-account switching, or backend test was performed.
+- Success, loading, error, signup, and account-switch preview buttons are demo states; real backend behavior still depends on the existing auth.js/account flow and must be tested on the user's device with their Firebase project.

@@ -1,0 +1,15 @@
+MOBILE TEST CHECKLIST — v98
+
+1. Open Messages and verify assistant cards appear.
+2. Open The Squad assistant; send greeting, ask for help, save a note, view notes.
+3. Open Games assistant; ask about PUBG, request recommendations, start quiz.
+4. Open a private conversation; menu > pin. Return to list and verify pin indicator and Pinned tab.
+5. Menu > mute. Verify muted indicator; unmute and verify it disappears.
+6. Menu > archive. Verify it leaves All and appears in Archived; unarchive it.
+7. Search conversations by contact name and last-message text.
+8. Verify group/private tabs still work.
+9. Verify unread count is still visible and muted/archived chats do not inflate it.
+10. Open a conversation and test existing send/reply/reaction/image/voice/call functions.
+11. Repeat on narrow mobile screen in portrait and landscape.
+
+Do not paste new Firebase rules for v98. If Firestore denies a user-document update, stop and report the exact error; do not loosen rules blindly.

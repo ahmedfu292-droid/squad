@@ -1,0 +1,12 @@
+The Squad v110 local validation
+
+Scope: static/local validation only. No Firebase project, browser session, or deployed website was connected.
+
+Checks performed:
+- JavaScript syntax checks for all root-level JS files (recorded separately after packaging).
+- HTML source checks: eager world.js/district-core.js/district.js script tags removed; lazy loader present.
+- Transition checks: home city/cafe, cafe-to-city, and city-to-cafe call the lazy loader.
+- Service worker check: no eager precache entries for world.js, district-core.js, district.js, or the four vehicle GLBs.
+- Protected config/rules compared byte-for-byte with v109.
+
+Not tested: live browser execution, Firebase reads/writes, multi-user concurrency, network throttling, GLB rendering, or Cloudflare deployment.

@@ -1,0 +1,29 @@
+THE SQUAD v111 — LOCAL QUALITY REPORT
+Date: 2026-10-31
+
+Executed checks:
+- Node.js: v22.16.0
+- Quality gate: 7/7 suites passed (v102, v103, v104, v109, v110, v111, multiplayer sync).
+- Recursive JavaScript syntax validation: passed for every discovered .js file (node --check).
+- v110 lazy-loading regression checks: 8/8 passed.
+- v109 nearby-player query static checks: 5/5 passed.
+- Multiplayer synchronization checks: 17/17 passed.
+- v111 release/compatibility checks: 7/7 passed.
+
+Historical test maintenance:
+- Updated v110 lazy-loading test to accept later build numbers while preserving its behavioral assertions.
+- Updated v88 multiplayer test to require build >= 111 rather than a fixed v110 label.
+- Other older tests contain fixed historical release assertions; they were not included in the current quality gate. See QA-PLAYBOOK-v111.md.
+
+Integrity:
+- Existing project files retained; only added QA documentation/test runner and updated release/cache metadata plus two stale version assertions.
+- firebase-config.js, .firebaserc, firestore.rules, and storage.rules were compared byte-for-byte with v110 and are unchanged.
+
+Not performed:
+- No live browser/Playwright run.
+- No Firebase Emulator or production Firebase test.
+- No Cloudflare deployment.
+- No 1000-user load test.
+- No paid service enabled or used.
+
+This report records local static and Node-based tests only; it is not a production readiness certification.

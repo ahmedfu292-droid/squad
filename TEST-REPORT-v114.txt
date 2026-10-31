@@ -1,0 +1,27 @@
+THE SQUAD v114 — TEST REPORT
+Date: 2026-10-31
+
+Changes:
+- Added browser-gated PWA install prompt in app.js.
+- Added accessible Arabic label and safe-area-aware button placement.
+- Removed install prompt after appinstalled / accepted install.
+- Updated Service Worker cache namespace to squad-v114-pwa-install.
+- Updated version.json to build 114.
+- Updated v111 quality gate assertions for current release and added install-prompt assertion.
+
+Local test results:
+- tests/run_quality_gate.js: 7/7 suites passed.
+- v111 quality gate: 11/11 checks passed.
+- v88 multiplayer synchronization: 17/17 checks passed.
+- v110 lazy loading: 8/8 checks passed.
+- v109 nearby player query: 5/5 checks passed.
+- JavaScript syntax: 94 files checked, 0 failures.
+- Previous v113 files: 293; v114 files: 294; missing previous files: 0; added files: 1.
+- firebase-config.js, .firebaserc, firestore.rules, storage.rules: byte-identical to v113.
+
+Not tested:
+- Actual install prompt on Android/Chrome or iOS/Safari.
+- Offline behavior on a physical device or deployed origin.
+- Firebase production connectivity or concurrent multiplayer load.
+
+No Firebase deployment, billing change, or paid service was used.

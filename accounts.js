@@ -71,16 +71,16 @@ async function saveExtra(){if(BUSY)return;BUSY=1;
  catch(e){toast(e&&e.code=='permission-denied'?'مقدرتش أحفظ. انشر firestore.rules الجديدة':'مقدرتش أحفظ')}
  finally{BUSY=0}}
 async function claimUn(){const u=($('#axun').value||'').trim().toLowerCase();if(!UNRE.test(u))return toast('الاسم 3 لـ 20 حرف إنجليزي صغير/رقم/_/. وبيبدأ بحرف');if(RESERVED.includes(u))return toast('الاسم ده محجوز للنظام');
- try{const s=await db.doc('usernames/'+u).get();if(s.exists)return toast('الاسم محجوز');const b=db.batch();b.update(db.doc('users/'+me.uid),{un:u});b.set(db.doc('usernames/'+u),{u:me.uid,sid:U.sid});await b.commit();toast('اتحجز @'+u+' ✅');rerender()}
- catch(e){toast(e&&e.code=='permission-denied'?'مقدرتش. انشر firestore.rules الجديدة':'مقدرتش أحجز الاسم')}}
+ try{await fbApp.functions('europe-west1').httpsCallable('claimUsername')({username:u});toast('اتحجز @'+u+' ✅');rerender()}
+ catch(e){toast(e&&e.code==='functions/already-exists'?'الاسم محجوز':'مقدرتش أحجز الاسم دلوقتي')}}
 
 /* ---------- الأحداث ---------- */
 async function onClick(e){const b=e.target.closest('[data-ax]');if(!b)return;const k=b.dataset.ax,sl=b.dataset.sl;
  if(k=='sw'){if(await askPin('تبديل الحساب'))ACCT.switchTo(sl)}
- else if(k=='rm'){if(!(await askPin('إزالة حساب')))return;const a=ACCT.list().find(x=>x.slot==sl);if(!confirm('تشيل «'+(a?nameOf(a):'الحساب')+'» من الجهاز ده؟ الحساب نفسه مش هيتمسح.'))return;await ACCT.remove(sl);toast('اتشال من القايمة');rerender()}
+ else if(k=='rm'){if(!(await askPin('إزالة حساب')))return;const a=ACCT.list().find(x=>x.slot==sl);if(!await SquadDialog.confirm('تشيل «'+(a?nameOf(a):'الحساب')+'» من الجهاز ده؟ الحساب نفسه مش هيتمسح.'))return;await ACCT.remove(sl);toast('اتشال من القايمة');rerender()}
  else if(k=='add'){ACCT.addNew()}
- else if(k=='outone'){if(!(await askPin('تسجيل الخروج')))return;if(!confirm('تسجّل خروج من الحساب ده؟'))return;await ACCT.remove(ACCT.slot)}
- else if(k=='outall'){if(!(await askPin('الخروج من كل الحسابات')))return;if(!confirm('تسجّل خروج من كل الحسابات على الجهاز ده؟'))return;await ACCT.removeAll()}
+ else if(k=='outone'){if(!(await askPin('تسجيل الخروج')))return;if(!await SquadDialog.confirm('تسجّل خروج من الحساب ده؟'))return;await ACCT.remove(ACCT.slot)}
+ else if(k=='outall'){if(!(await askPin('الخروج من كل الحسابات')))return;if(!await SquadDialog.confirm('تسجّل خروج من كل الحسابات على الجهاز ده؟'))return;await ACCT.removeAll()}
  else if(k=='lock'){if(ACCT.lockOn()){if(!(await askPin('إيقاف القفل')))return;ACCT.lockOff();toast('القفل اتقفل');rerender()}else if(await newPin()){toast('القفل اشتغل 🔒');rerender()}}
  else if(k=='savex')saveExtra();else if(k=='claim')claimUn()}
 document.addEventListener('click',onClick);

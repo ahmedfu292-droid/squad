@@ -1,0 +1,20 @@
+The Squad v100 — Audit test report
+
+PASSED
+- 82/82 JavaScript files passed Node.js syntax checking.
+- 25 historical Node regression tests passed.
+- New v100 static regression test passed.
+- 64/64 Service Worker precache entries exist.
+- Local src/href references checked in 4 HTML files: zero missing.
+- ZIP integrity check passed.
+- Compared against v99: 0 existing files removed; 5 files added.
+- 9 protected files unchanged byte-for-byte versus v99.
+
+FAILED / NEEDS REVIEW
+- 15 historical Node regression tests failed. Multiple failures are stale hard-coded release/cache-version expectations; see console output in the audit run. They are not counted as passes and need review.
+- Python Playwright/browser tests could not launch because Chromium is absent.
+
+NOT TESTED
+- Real browser/mobile session, Lighthouse, load/stress, Firebase live auth, live Firestore/Storage rules, two-account messaging and calls.
+
+Firebase project ID in package: chatapp-67eb6 (from .firebaserc). User confirmation still required before production rules or data operations.

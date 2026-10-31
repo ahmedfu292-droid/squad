@@ -1,15 +1,17 @@
 /* The Squad — الدفعة 1: الدخول بالرقم، القايمة، الشات الخاص والجروبات */
 /* v26: كل حساب محفوظ ليه نسخة Firebase باسم خانته (acct.js). الخانة الأساسية '' = النسخة الافتراضية القديمة، فحسابك الحالي ما بيتأثرش. */
 const fbApp=firebase.initializeApp(firebaseConfig,(window.ACCT&&ACCT.slot)||undefined);
-const auth=fbApp.auth(),db=fbApp.firestore(),FV=firebase.firestore.FieldValue;
+const auth=fbApp.auth(),db=fbApp.firestore(),FV=firebase.firestore.FieldValue,callables=fbApp.functions('europe-west1'),storage=fbApp.storage();
 auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(()=>{}); // يفضل مسجّل دخول
 
 const $=s=>document.querySelector(s);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const hue=s=>{let h=0;for(const c of String(s))h=(h*31+c.charCodeAt(0))%360;return h};
-const PH={},PQ={};
+const PH={},PQ={},MEDIA_URLS=Object.create(null),MEDIA_LOADING=Object.create(null);
+function loadChatMedia(path){if(!path||MEDIA_URLS[path]||MEDIA_LOADING[path])return;MEDIA_LOADING[path]=1;storage.ref(path).getBlob(6*1024*1024).then(blob=>{MEDIA_URLS[path]=URL.createObjectURL(blob);delete MEDIA_LOADING[path];if(cid&&Object.values(M).some(m=>m.imPath===path||m.auPath===path))draw()}).catch(()=>{delete MEDIA_LOADING[path];MEDIA_URLS[path]='error';if(cid)draw()})}
+
 function phLoad(id){if(PQ[id])return;PQ[id]=1;const done=p=>{if(p){PH[id]=p;renderHome();tab=='me'&&viewMe();window.hdr&&cid&&hdr()}};
- db.doc('photos/'+id).get().then(s=>s.exists?done(s.data().ph):db.doc('users/'+id).get().then(u=>done(u.exists&&u.data().ph))).catch(()=>{})}
+ db.doc('photos/'+id).get().then(s=>s.exists?done(s.data().ph):done(null)).catch(()=>{})}
 const av=(id,n,g)=>{const a=g?'':` data-u="${id}"`;return PH[id]?`<u class="av"${a} style="background:center/cover url('${PH[id]}')"></u>`:(phLoad(id),`<u class="av"${a} style="--h:${hue(id)}">${cart(id)}</u>`)};
 /* v27: المحادثة الخاصة صورتها = صورة الطرف التاني (مش رقم المحادثة). الجروب بيفضل بصورته الافتراضية */
 const peerOf=c=>c&&c.type=='p'?(c.members||[]).find(x=>x!=me.uid):null;
@@ -45,7 +47,10 @@ auth.onAuthStateChanged(u=>{
  [unU,unC,unM].forEach(f=>f&&f());unU=unC=unM=null;booted=0;cid=null;C={};M={};closeSh();
  $('#app').classList.remove('in');$('#chat').classList.remove('open');
  me=u;$('#auth').hidden=!!u;$('#app').hidden=!u;if(!u)return;
- unU=db.doc('users/'+u.uid).onSnapshot(s=>{if(!s.exists)return;U=s.data();if(!booted){booted=1;start()}if(tab=='me')viewMe()},e=>toast('مشكلة في الاتصال'))});
+ unU=db.doc('users/'+u.uid).onSnapshot(s=>{if(!s.exists)return;U=s.data();
+  const pub={name:U.name||u.displayName||'عضو',bio:U.bio||'',...(U.un?{un:U.un}:{}),...(U.city?{city:U.city}:{})};
+  db.doc('publicProfiles/'+u.uid).set(pub,{merge:true}).catch(()=>{});
+  if(!booted){booted=1;start()}if(tab=='me')viewMe()},e=>toast('مشكلة في الاتصال'))});
 
 /* ---------- القايمة ---------- */
 function start(){
@@ -61,13 +66,13 @@ function start(){
 function renderHome(){
  if(tab!='home')return;
  const q=$('#q').value.trim().toLowerCase(),pins=U.pins||[];
- let l=Object.values(C).map(c=>({c,n:cname(c),s:0}));
+ let l=Object.values(C).filter(c=>!(U.hiddenChats||[]).includes(c.id)).map(c=>({c,n:cname(c),s:0}));
  if(flt=='p')l=l.filter(x=>x.c.type=='p');if(flt=='g')l=l.filter(x=>x.c.type=='g');if(flt=='pin')l=l.filter(x=>pins.includes(x.c.id));
  if(q)l=l.map(x=>({...x,s:x.n.toLowerCase().startsWith(q)?2:x.n.toLowerCase().includes(q)?1:0})).filter(x=>x.s);
  l.sort((a,b)=>b.s-a.s||pins.includes(b.c.id)-pins.includes(a.c.id)||ms(b.c.lt)-ms(a.c.lt));
  $('#list').innerHTML=l.map(({c,n})=>{const u=(c.un||{})[me.uid]||0,ls=c.last;
   return `<div class="wi${c.id==cid?' on':''}" data-id="${c.id}">${avc(c,n)}<div><b>${pins.includes(c.id)?'📌 ':''}${esc(n)}</b><span>${ls?esc((ls.u==me.uid?'أنت: ':c.type=='g'?ls.n+': ':'')+ls.tx):'ابدأ المحادثة'}</span></div><em>${ls?fmt(c.lt):''}${u?`<i>${u>99?'99+':u}</i>`:''}</em></div>`}).join('')||'<p class="es">لسه مفيش محادثات.<br>دوّر على صاحبك برقمه من تبويب استكشاف.</p>';
- $('#recent').innerHTML=Object.values(C).filter(c=>c.type=='p').sort((a,b)=>ms(b.lt)-ms(a.lt)).slice(0,8).map(c=>`<div data-id="${c.id}">${avc(c,cname(c))}<span>${esc(cname(c))}</span></div>`).join('')}
+ $('#recent').innerHTML=Object.values(C).filter(c=>c.type=='p'&&!(U.hiddenChats||[]).includes(c.id)).sort((a,b)=>ms(b.lt)-ms(a.lt)).slice(0,8).map(c=>`<div data-id="${c.id}">${avc(c,cname(c))}<span>${esc(cname(c))}</span></div>`).join('')}
 $('#list').onclick=$('#recent').onclick=e=>{const w=e.target.closest('[data-id]');w&&openChat(w.dataset.id)};
 $('#q').oninput=renderHome;
 $('#tabs').onclick=e=>{if(!e.target.dataset.f)return;flt=e.target.dataset.f;document.querySelectorAll('#tabs button').forEach(b=>b.classList.toggle('on',b==e.target));renderHome()};
@@ -83,9 +88,8 @@ function viewFind(){
  <div class="box2"><h3>🔑 ادخل جروب بكود</h3><input id="gc" placeholder="كود الجروب"><button data-act="join">دخول</button></div>`}
 async function find(){const n=$('#fq').value.trim(),r=$('#fr');
  if(!OK(n))return toast('الرقم 10 أرقام');
- const s=await db.doc('ids/'+n).get().catch(()=>null);if(!s||!s.exists)return r.innerHTML='<p class="mu">مفيش حد بالرقم ده</p>';
- const u=s.data().u;if(u==me.uid)return r.innerHTML='<p class="mu">ده رقمك إنت 🙂</p>';
- const x=(await db.doc('users/'+u).get().catch(()=>null))?.data()||{};
+ const s=await callables.httpsCallable('resolveAccountId')({id:n}).catch(()=>null);const u=s&&s.data.uid;if(!u)return r.innerHTML='<p class="mu">مفيش حد بالرقم ده</p>';if(u==me.uid)return r.innerHTML='<p class="mu">ده رقمك إنت 🙂</p>';
+ const x=(await db.doc('publicProfiles/'+u).get().catch(()=>null))?.data()||{};
  r.innerHTML=`<div class="wi">${av(u,x.name)}<div><b>${esc(x.name||'عضو')}</b><span>${esc(x.bio||'')}</span></div><button data-act="prof" data-u="${u}">الملف</button><button class="pri" data-act="dm" data-u="${u}" data-n="${esc(x.name||'عضو')}">راسله</button></div>`}
 async function dm(u,n){const id=[me.uid,u].sort().join('_'),r=db.doc('chats/'+id);let ok=false;
  try{ok=(await r.get()).exists}catch(e){}
@@ -108,10 +112,10 @@ function viewMe(){$('#oth').innerHTML=`<div class="pf"><div class="pw">${av(me.u
  <div class="mlist"><button data-act="pwd"><span>🔒 الأمان وكلمة السر</span><i>‹</i></button><button data-act="notif"><span>🔔 الإشعارات</span><i>‹</i></button><button data-act="out" class="red"><span>🚪 تسجيل الخروج</span><i>‹</i></button></div>`;
  $('#phf').onchange=e=>{const f=e.target.files[0];f&&shrink(f,200,d=>db.doc('photos/'+me.uid).set({ph:d}).then(()=>{PH[me.uid]=d;viewMe();renderHome();toast('اتغيّرت الصورة ✅')}).catch(()=>toast('مقدرتش أحفظ الصورة. انشر القواعد الجديدة')))}}
 async function saveMe(){const n=$('#mn').value.trim();if(!n)return toast('اكتب اسمك');
- await db.doc('users/'+me.uid).update({name:n,bio:$('#mb').value.trim()}).catch(()=>toast('مقدرتش أحفظ'));
+ const bio=$('#mb').value.trim();await db.doc('users/'+me.uid).update({name:n,bio}).catch(()=>toast('مقدرتش أحفظ'));await db.doc('publicProfiles/'+me.uid).set({name:n,bio},{merge:true}).catch(()=>{});
  await me.updateProfile({displayName:n}).catch(()=>{});
  const b=db.batch();Object.keys(C).forEach(id=>b.update(db.doc('chats/'+id),{['names.'+me.uid]:n}));await b.commit().catch(()=>{});toast('اتحفظ ✅')}
-async function chPw(){const o=prompt('كلمة السر الحالية'),n=o&&prompt('كلمة السر الجديدة (6 حروف على الأقل)');if(!n||n.length<6)return;
+async function chPw(){const o=await SquadDialog.prompt('كلمة السر الحالية'),n=o&&await SquadDialog.prompt('كلمة السر الجديدة (6 حروف على الأقل)');if(!n||n.length<6)return;
  try{await me.reauthenticateWithCredential(firebase.auth.EmailAuthProvider.credential(me.email,o));await me.updatePassword(n);toast('كلمة السر اتغيّرت ✅')}catch(e){toast('كلمة السر الحالية غلط')}}
 
 /* ---------- الشات ---------- */
@@ -126,11 +130,12 @@ function draw(){const c=C[cid];if(!c)return;const o=c.members.filter(x=>x!=me.ui
  Object.entries(M).forEach(([id,m])=>{const d=m.t&&m.t.toDate?m.t.toDate():new Date(Date.now()),ds=d.toDateString();
   if(ds!=day){day=ds;h+=`<div class="dy">${esc(d.toLocaleDateString('ar-EG',{weekday:'long',day:'numeric',month:'long'}))}</div>`}
   const mine=m.u==me.uid,rd=mine&&m.t&&o.length&&o.every(x=>c.seen&&c.seen[x]&&ms(c.seen[x])>=ms(m.t)),rc={};Object.values(m.r||{}).forEach(e=>rc[e]=(rc[e]||0)+1);
-  const body=m.del?'<p class="dl">🚫 الرسالة اتمسحت</p>':m.im?`<img class="ph" src="${esc(m.im)}" data-a="img">`:m.au?`<audio controls src="${esc(m.au)}"></audio>`:`<p>${esc(m.tx)}</p>`;
-  const txt=!m.del&&!m.im&&!m.au;
+  const ip=m.imPath&&MEDIA_URLS[m.imPath],ap=m.auPath&&MEDIA_URLS[m.auPath];
+  const body=m.del?'<p class="dl">🚫 الرسالة اتمسحت</p>':m.im?`<img class="ph" src="${esc(m.im)}" data-a="img">`:m.imPath?(ip&&ip!=='error'?`<img class="ph" src="${esc(ip)}" data-a="img">`:ip==='error'?'<p class="dl">تعذر تحميل الصورة</p>':'<p class="mu">جاري تحميل الصورة…</p>'):m.au?`<audio controls src="${esc(m.au)}"></audio>`:m.auPath?(ap&&ap!=='error'?`<audio controls src="${esc(ap)}"></audio>`:ap==='error'?'<p class="dl">تعذر تحميل الصوت</p>':'<p class="mu">جاري تحميل الصوت…</p>'):`<p>${esc(m.tx)}</p>`;
+  const txt=!m.del&&!m.im&&!m.au&&!m.imPath&&!m.auPath;
   h+=`<div class="m${mine?' me':''}${sel==id?' sel':''}" data-id="${id}">${!mine&&c.type=='g'?`<small style="--h:${hue(m.u)}">${esc(m.n)}</small>`:''}${m.fw?'<small class="fw">↪️ محوّلة</small>':''}${m.rp?`<q>${esc(m.rp.n)}: ${esc(m.rp.tx)}</q>`:''}${body}<div class="rx">${Object.entries(rc).map(([e,n])=>`<span>${e}${n>1?' '+n:''}</span>`).join('')}</div><span class="tm">${m.ed?'معدّلة':''}<span>${m.t?hm(d):'⏳'}</span>${mine&&m.t?`<b class="${rd?'rd':''}">${rd?'✓✓':'✓'}</b>`:''}</span>
-  <div class="ac">${['❤️','😂','🔥','👍','😮'].map(e=>`<i data-a="x" data-e="${e}">${e}</i>`).join('')}${m.del?'':'<i data-a="rp" title="رد">↩</i>'}${txt?'<i data-a="cp" title="نسخ">📋</i><i data-a="fw" title="تحويل">↪️</i>':''}${mine&&txt?'<i data-a="ed" title="تعديل">✏️</i>':''}${(mine&&!m.del)||(!mine&&c.ad==me.uid)?'<i data-a="dl" title="مسح">🗑</i>':''}</div></div>`});
- el.innerHTML=h||'<div class="es">ابدأ أول رسالة 👋</div>';if(stick||bot){el.scrollTop=1e9;stick=0}}
+  <div class="ac">${['❤️','😂','🔥','👍','😮'].map(e=>`<i data-a="x" data-e="${e}">${e}</i>`).join('')}${m.del?'':'<i data-a="rp" title="رد">↩</i>'}${txt?'<i data-a="cp" title="نسخ">📋</i><i data-a="fw" title="تحويل">↪️</i>':''}${mine&&txt?'<i data-a="ed" title="تعديل">✏️</i>':''}${(mine&&!m.del)||(!mine&&c.ad==me.uid)?'<i data-a="dl" title="حذف نهائي للجميع">🗑</i>':''}</div></div>`});
+ el.innerHTML=h||'<div class="es">ابدأ أول رسالة 👋</div>';Object.values(M).forEach(m=>{if(m.imPath)loadChatMedia(m.imPath);if(m.auPath)loadChatMedia(m.auPath)});if(stick||bot){el.scrollTop=1e9;stick=0}}
 function mark(){const c=C[cid];if(!c||document.hidden)return;const l=Object.entries(M).pop();if(!l)return;
  if(l[1].u==me.uid&&!((c.un||{})[me.uid]))return;if(lastMark==l[0])return;lastMark=l[0];
  db.doc('chats/'+cid).update((U.pv||{}).rr===false?{['un.'+me.uid]:0}:{['un.'+me.uid]:0,['seen.'+me.uid]:FV.serverTimestamp()}).catch(()=>{})}
@@ -139,22 +144,22 @@ document.addEventListener('visibilitychange',()=>{lastMark='';cid&&mark()});
 $('#ms').onclick=async e=>{const el=e.target.closest('.m');if(!el||e.target.tagName=='AUDIO')return;
  const id=el.dataset.id,m=M[id],a=e.target.dataset.a,ref=db.doc(`chats/${cid}/messages/${id}`);
  if(!a||a=='img'&&sel!=id){sel=sel==id?null:id;return draw()}
- if(a=='img')return sheet(`<img class="full" src="${esc(m.im)}">`);
+ if(a=='img')return sheet(`<img class="full" src="${esc(m.im||MEDIA_URLS[m.imPath]||'')}">`);
  sel=null;
  if(a=='x'){const em=e.target.dataset.e;ref.update({['r.'+me.uid]:(m.r||{})[me.uid]==em?FV.delete():em}).catch(()=>{})}
- if(a=='rp'){reply={n:m.n,tx:(m.im?'📷 صورة':m.au?'🎤 رسالة صوتية':m.tx).slice(0,60)};$('#rp').hidden=false;$('#rp span').textContent='رد على '+m.n+': '+reply.tx;$('#in').focus()}
+ if(a=='rp'){reply={n:m.n,tx:(m.im||m.imPath?'📷 صورة':m.au||m.auPath?'🎤 رسالة صوتية':m.tx).slice(0,60)};$('#rp').hidden=false;$('#rp span').textContent='رد على '+m.n+': '+reply.tx;$('#in').focus()}
  if(a=='cp'){navigator.clipboard.writeText(m.tx||'');toast('اتنسخ ✅')}
- if(a=='ed'){const t=(prompt('عدّل الرسالة',m.tx)||'').trim();if(t&&t!=m.tx)ref.update({tx:t.slice(0,2000),ed:true}).catch(()=>toast('مقدرتش أعدّل'))}
- if(a=='dl'&&confirm('تمسح الرسالة للجميع؟'))(m.u==me.uid?ref.update({del:true,tx:'',im:FV.delete(),au:FV.delete(),ed:FV.delete()}):ref.delete()).catch(()=>toast('مقدرتش أمسح'));
+ if(a=='ed'){const t=((await SquadDialog.prompt('عدّل الرسالة',m.tx))||'').trim();if(t&&t!=m.tx)ref.update({tx:t.slice(0,2000),ed:true}).catch(()=>toast('مقدرتش أعدّل'))}
+ if(a=='dl'&&await SquadDialog.confirm('حذف الرسالة نهائيًا من المحادثة عند كل الأعضاء؟ لا يمكن التراجع.'))ref.delete().then(()=>toast('تم حذف الرسالة نهائيًا')).catch(()=>toast('مقدرتش أمسح؛ راجع صلاحيات المحادثة'));
  if(a=='fw')sheet('<h3>↪️ حوّل لـ</h3>'+Object.values(C).map(c=>`<button data-fw="${c.id}" data-m="${id}">${esc(cname(c))}</button>`).join(''));
  draw()};
 $('#xr').onclick=()=>{reply=null;$('#rp').hidden=true};
 
 async function send(o){const c=C[cid];if(!c)return;const id=o.cid||cid;delete o.cid;const t=C[id];
- const b=db.batch(),m=db.collection(`chats/${id}/messages`).doc(),pv=o.tx||(o.im?'📷 صورة':'🎤 رسالة صوتية');
+ const b=db.batch(),m=db.collection(`chats/${id}/messages`).doc(),pv=o.tx||(o.im||o.imPath?'📷 صورة':'🎤 رسالة صوتية');
  b.set(m,{u:me.uid,n:nm(),t:FV.serverTimestamp(),...(id==cid&&reply?{rp:reply}:{}),...o});
  const up={last:{tx:pv.slice(0,80),u:me.uid,n:nm()},lt:FV.serverTimestamp(),['seen.'+me.uid]:FV.serverTimestamp(),['ty.'+me.uid]:FV.delete()};
- t.members.filter(x=>x!=me.uid).forEach(x=>up['un.'+x]=FV.increment(1));
+ // Recipient unread counters are updated by the trusted message-created trigger.
  b.update(db.doc('chats/'+id),up);
  try{await b.commit();window.pushNotify&&pushNotify('msg',id,pv)}catch(e){toast('الرسالة ماتبعتتش — نصّك لسه محفوظ، جرّب تاني');return false}
  reply=null;$('#rp').hidden=true;stick=1;return true}
@@ -166,13 +171,12 @@ $('#in').onkeydown=e=>{if(e.key=='Enter'&&!e.shiftKey&&innerWidth>899&&localStor
 
 /* صور وصوت وإيموجي */
 $('#ph').onclick=()=>cid&&$('#pf').click();
-$('#pf').onchange=e=>{[...e.target.files].slice(0,5).forEach(f=>{const i=new Image();i.onload=()=>{const c=document.createElement('canvas'),s=Math.min(1,900/Math.max(i.width,i.height));c.width=i.width*s;c.height=i.height*s;c.getContext('2d').drawImage(i,0,0,c.width,c.height);
- let q=.7,d=c.toDataURL('image/jpeg',q);while(d.length>190000&&q>.3){q-=.1;d=c.toDataURL('image/jpeg',q)}send({im:d})};i.src=URL.createObjectURL(f)});e.target.value=''};
+$('#pf').onchange=e=>{const chatId=cid;[...e.target.files].slice(0,5).forEach(f=>{if(!/^image\/(jpeg|png|webp)$/.test(f.type)||f.size>5*1024*1024)return toast('الصورة لازم تكون JPEG أو PNG أو WebP وأقل من 5 ميجا');const i=new Image();i.onload=async()=>{const c=document.createElement('canvas'),sc=Math.min(1,1600/Math.max(i.width,i.height));c.width=i.width*sc;c.height=i.height*sc;c.getContext('2d').drawImage(i,0,0,c.width,c.height);c.toBlob(async blob=>{if(!blob)return toast('تعذر تجهيز الصورة');const id=db.collection('chats/'+chatId+'/messages').doc().id,path=`chat-media/${chatId}/${me.uid}/${id}.jpg`;try{await storage.ref(path).put(blob,{contentType:'image/jpeg'});await send({imPath:path,cid:chatId})}catch(err){toast('تعذر رفع الصورة أو إرسالها')}} ,'image/jpeg',.84)};i.onerror=()=>toast('تعذر قراءة الصورة');i.src=URL.createObjectURL(f)});e.target.value=''};
 let rec,ch,rt;
-$('#vn').onclick=async()=>{if(!cid)return;if(rec&&rec.state=='recording')return rec.stop();
+$('#vn').onclick=async()=>{if(!cid)return;if(rec&&rec.state=='recording')return rec.stop();const chatId=cid;
  const s=await navigator.mediaDevices.getUserMedia({audio:true}).catch(()=>0);if(!s)return toast('المايك مش متاح');
  ch=[];rec=new MediaRecorder(s,{audioBitsPerSecond:24000});rec.ondataavailable=e=>ch.push(e.data);
- rec.onstop=()=>{s.getTracks().forEach(t=>t.stop());$('#vn').classList.remove('rec');clearTimeout(rt);const r=new FileReader();r.onload=()=>send({au:r.result});r.readAsDataURL(new Blob(ch,{type:rec.mimeType}))};
+ rec.onstop=async()=>{s.getTracks().forEach(t=>t.stop());$('#vn').classList.remove('rec');clearTimeout(rt);const blob=new Blob(ch,{type:rec.mimeType});if(blob.size>5*1024*1024)return toast('التسجيل كبير جدًا');const id=db.collection('chats/'+chatId+'/messages').doc().id,ext=rec.mimeType.includes('ogg')?'ogg':'webm',path=`chat-media/${chatId}/${me.uid}/${id}.${ext}`;try{await storage.ref(path).put(blob,{contentType:rec.mimeType});await send({auPath:path,cid:chatId})}catch(e){toast('تعذر رفع الرسالة الصوتية')}};
  rec.start();$('#vn').classList.add('rec');rt=setTimeout(()=>rec.stop(),30000);toast('بيسجّل... اضغط تاني للإرسال')};
 const EM='😂 🤣 😍 🥰 😎 🤩 😭 😡 🥶 🤯 🙄 😏 🤝 👏 🙏 💪 🔥 💯 ✨ 🎉 ❤️ 💔 👀 😴 🤡 💀 👑 🍕 ☕ ⚽ 🎮 🚀 🌹 😅 🤔 🫡 👍 😮 🥳 😇'.split(' ');
 $('#em').onclick=()=>cid&&sheet('<div class="gr">'+EM.map(e=>`<i data-e="${e}">${e}</i>`).join('')+'</div>');
@@ -195,8 +199,20 @@ $('#sh').addEventListener('click',async e=>{const d=e.target.dataset,c=C[cid];
  if(d.s=='kick'){await ref.update({members:FV.arrayRemove(d.u),['names.'+d.u]:FV.delete()}).catch(()=>toast('مقدرتش'));closeSh()}
  if(d.s=='leave'){await ref.update({members:FV.arrayRemove(me.uid),['names.'+me.uid]:FV.delete()}).catch(()=>toast('مقدرتش'));closeSh();closeChat()}
  if(d.s=='add'){const n=$('#an').value.trim();if(!OK(n))return toast('الرقم 10 أرقام');
-  const s=await db.doc('ids/'+n).get().catch(()=>null);if(!s||!s.exists)return toast('مفيش حد بالرقم ده');
-  const u=s.data().u,x=(await db.doc('users/'+u).get().catch(()=>null))?.data()||{};
+  const s=await callables.httpsCallable('resolveAccountId')({id:n}).catch(()=>null);const u=s&&s.data.uid;if(!u)return toast('مفيش حد بالرقم ده');
+  const x=(await db.doc('publicProfiles/'+u).get().catch(()=>null))?.data()||{};
   await ref.update({members:FV.arrayUnion(u),['names.'+u]:x.name||'عضو'}).then(()=>toast('اتضاف ✅')).catch(()=>toast('مقدرتش أضيفه'));closeSh()}});
 
+/* v114: واجهة تثبيت التطبيق على الأجهزة التي تدعم beforeinstallprompt. */
+let squadInstallPrompt=null;
+window.addEventListener('beforeinstallprompt',e=>{
+ e.preventDefault();squadInstallPrompt=e;
+ if(document.getElementById('squadInstallBtn'))return;
+ const b=document.createElement('button');b.id='squadInstallBtn';b.type='button';b.textContent='＋ تثبيت The Squad';
+ b.setAttribute('aria-label','تثبيت تطبيق The Squad على الجهاز');
+ b.style.cssText='position:fixed;z-index:99999;inset-inline-end:14px;bottom:calc(14px + env(safe-area-inset-bottom));padding:11px 16px;border:1px solid #d6b45b;border-radius:24px;background:#17130a;color:#ffe7a0;font:600 14px system-ui;box-shadow:0 5px 22px #0008;cursor:pointer';
+ b.addEventListener('click',async()=>{if(!squadInstallPrompt)return;const prompt=squadInstallPrompt;squadInstallPrompt=null;await prompt.prompt();const choice=await prompt.userChoice.catch(()=>null);if(choice&&choice.outcome==='accepted')b.remove();else if(!document.querySelector('#squadInstallBtn'))document.body.appendChild(b)});
+ document.body.appendChild(b);
+});
+window.addEventListener('appinstalled',()=>{squadInstallPrompt=null;document.getElementById('squadInstallBtn')?.remove()});
 if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});

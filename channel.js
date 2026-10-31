@@ -23,7 +23,7 @@ function openCh(id){const c=CH[id];if(!c)return toast('القناة لسه بت�
  const fo=$('#chfo');fo&&(fo.onclick=()=>{const f=(U.follow||[]).includes(id);toggleFollow(id).then(()=>setTimeout(info,500)).catch(()=>toast('مقدرتش. اتأكد إن القواعد الجديدة اتنشرت'))});
  unC2=db.collection(`channels/${id}/posts`).orderBy('t','desc').limit(50).onSnapshot(s=>{const f=$('#chf');if(!f)return;
   f.innerHTML=s.docs.reverse().map(d=>{const p=d.data();return `<div class="cp">${p.im?`<img src="${esc(p.im)}">`:''}${p.tx?`<p>${esc(p.tx)}</p>`:''}<small>${p.t?fmt(p.t):'⏳'} · <a data-fp="${esc(p.tx||'')}">↪️</a>${own?` · <a data-dp="${d.id}">🗑</a>`:''}</small></div>`}).join('')||'<p class="mu" style="text-align:center">لسه مفيش منشورات</p>';f.scrollTop=1e9;info()},()=>toast('مقدرتش أحمّل المنشورات'));
- $('#chf').onclick=e=>{const d=e.target.dataset.dp;d&&confirm('تمسح المنشور؟')&&db.doc(`channels/${id}/posts/${d}`).delete().catch(()=>toast('مقدرتش أمسح'))};
+ $('#chf').onclick=e=>{const d=e.target.dataset.dp;d&&SquadDialog.confirm('تمسح المنشور؟').then(ok=>ok&&db.doc(`channels/${id}/posts/${d}`).delete().catch(()=>toast('مقدرتش أمسح')))};
  if(own){$('#chi').onclick=()=>$('#chfi').click();$('#chfi').onchange=e=>{const f=e.target.files[0];f&&shrink(f,900,d=>{chIm=d;$('#chi').textContent='✅'})};
   $('#chs').onclick=async()=>{const t=$('#chx').value.trim();if(!t&&!chIm)return;const o={t:FV.serverTimestamp()};t&&(o.tx=t);chIm&&(o.im=chIm);
    await db.collection(`channels/${id}/posts`).add(o).then(()=>{$('#chx').value='';chIm=null;$('#chi').textContent='🖼'}).catch(()=>toast('مقدرتش أنشر. اتأكد إن القواعد اتنشرت'))}}}

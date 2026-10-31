@@ -1,0 +1,15 @@
+The Squad v103 test report
+
+Static checks:
+- v103_chat_rules_static_test.js: checks for private block enforcement, media payload caps, reaction-key ownership, authenticated lookup, and preservation of critical files.
+- JavaScript syntax checks are run separately across all JS files.
+- ZIP integrity check is run after packaging.
+
+Not performed:
+- Firebase Rules Emulator compile/simulation (emulator dependencies are not installed in this environment).
+- Live Firebase Auth/Firestore tests.
+- Two-account block/unblock and chat delivery tests.
+- Media migration or Storage upload tests.
+
+Deployment warning:
+- Do not deploy firestore.rules until the project ID and Firebase Rules Emulator tests are confirmed. Existing users/{uid}.sid exposure and authenticated ID enumeration are explicitly documented as unresolved.

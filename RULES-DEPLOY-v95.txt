@@ -1,0 +1,46 @@
+Complete rules files in this package: `firestore.rules` and `storage.rules`. They contain the full v94 rules plus additive v95 blocks.
+
+IMPORTANT — project target check first:
+The unchanged v94 `firebase-config.js` and `.firebaserc` both point to projectId `chatapp-67eb6`. Confirm that this is the Firebase project you intend to use. Do not paste these rules into a different project until the app's intended project is confirmed; Firebase config was deliberately not changed.
+
+BACKUP FIRST:
+1. Open Firebase Console and select the confirmed project. Check the project ID in Project settings > General.
+2. Firestore Database > Rules. Select all current rules, copy them into a local text file named `firestore-v94-backup.rules`.
+3. Storage > Rules. Copy all current rules into `storage-v94-backup.rules`.
+
+PUBLISH FIRESTORE:
+1. Open Firestore Database > Rules.
+2. Replace the editor contents with the complete `firestore.rules` file from this package (not just the v95 section).
+3. Click Publish.
+
+PUBLISH STORAGE:
+1. Open Storage > Rules.
+2. Replace the editor contents with the complete `storage.rules` file from this package (not just the v95 section).
+3. Click Publish.
+
+ROLLBACK:
+- If Firestore errors occur, paste the exact saved `firestore-v94-backup.rules` contents into Firestore Database > Rules and click Publish.
+- If Storage errors occur, paste the exact saved `storage-v94-backup.rules` contents into Storage > Rules and click Publish.
+- If both are affected, restore both backups. Do not delete collections, documents, buckets, or files during rollback.
+
+RULES PLAYGROUND CASES (Firestore):
+A. PASS — authenticated user GETs an existing public published post.
+B. PASS — authenticated author GETs their own followers-only post.
+C. PASS — authenticated follower GETs a followers-only post when `users/{viewerUid}/following/{authorUid}` exists.
+D. FAIL — authenticated non-follower GETs that same followers-only post.
+E. FAIL — unauthenticated user GETs a post.
+F. FAIL — user creates a like whose document ID is not their own auth UID.
+G. FAIL — user creates a post with visibility `friends` or `private`, more than 4 image paths, or text longer than 2000 characters.
+H. FAIL — user updates or deletes another user's post.
+I. FAIL — user creates a comment longer than 1000 characters.
+J. PASS — user creates a report for a readable existing post using report ID `{postId}_{reporterUid}`.
+K. FAIL — duplicate report for the same post by the same reporter.
+
+RULES PLAYGROUND CASES (Storage):
+L. PASS — owner creates a listed image path for their own post, JPEG/PNG/WebP, no larger than 2 MiB.
+M. FAIL — wrong user uploads into another owner's path.
+N. FAIL — image/gif or a file larger than 2 MiB.
+O. PASS — signed-in user reads a public post image while its post is published.
+P. FAIL — non-follower reads a followers-only post image.
+
+LIMITATION OF PLAYGROUND: single-request simulations cannot fully prove transaction/batch `getAfter()` invariants for like counters, comment counters, and mirrored follow records. This environment has no Firebase Rules Emulator or npm/CLI workflow, so those atomic rules have NOT been executed here. Test those with two real accounts after publishing, starting with non-production test accounts.

@@ -1,0 +1,7 @@
+The Squad v113 — local checks
+
+Changes: offline-aware country server selection and navigation fallback.
+Checks performed:
+- JavaScript syntax checks are run against all root and nested .js files (see attached command output in report generated during packaging).
+- Static assertions verify 20 country entries remain, offline event handlers exist, join is disabled offline, cache key is v113, and protected Firebase files match the v112 baseline.
+Not performed: deployed browser test, actual airplane-mode test on Android, Firebase integration test, multiplayer load test.

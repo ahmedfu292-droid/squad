@@ -1,0 +1,26 @@
+THE SQUAD v101 TEST REPORT
+=========================
+
+Build: v101-security-stability-foundation (101)
+
+Passed:
+- JavaScript syntax: 84/84 files passed `node --check`.
+- v101 foundation test: passed.
+- v100 platform audit regression test: passed (65 precache assets; 9 protected files retained).
+- ZIP integrity: to be verified after packaging.
+
+Legacy test suite:
+- 26 test scripts passed.
+- 15 historical tests failed because they assert older fixed release labels/build numbers (v72-v96) after the project version was advanced to v101.
+- `fakefb.js` and `fakefb2.js` are browser test harnesses, not standalone Node tests; running them directly fails because `window` is not defined.
+- These historical tests have NOT been relabelled as passes. They need a maintained baseline / version-independent assertions.
+
+Not performed:
+- No browser/Chromium UI session.
+- No live Firebase Auth / Firestore / Storage test.
+- No Rules Emulator tests.
+- No two-account messaging/call test.
+- No App Check, TURN, Push Worker, OTP, or email verification activation.
+- No mobile device, Lighthouse, bandwidth, or load test.
+
+Do not interpret this report as production security certification.

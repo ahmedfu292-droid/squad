@@ -1,0 +1,15 @@
+The Squad v98 test report
+
+Passed:
+- Node syntax check across 82 JavaScript files: 0 syntax errors.
+- tests/ui2_harness.py: completed successfully (exit code 0).
+- ZIP integrity: verified after packaging.
+
+Not passed / not run:
+- tests/run.py: browser launch blocked because Playwright Chromium executable is not installed.
+- tests/ui2_test.py: same Chromium executable limitation.
+- Live Firebase operations for pin/mute/archive were not tested.
+- Two-account behavior, mobile browser rendering, offline cache and real assistant responses were not tested.
+- No speed benchmark or pixel comparison was performed.
+
+Important: successful syntax checks do not prove runtime integration. Pinning writes users/{uid}.pin, muting uses users/{uid}.mute, and archiving uses users/{uid}.arch via the existing Firestore user document. Confirm the active Firebase project before live use.

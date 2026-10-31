@@ -67,8 +67,8 @@ function sub(){unS=sDoc().onSnapshot(d=>{S=d.exists?d.data():null;render();sync(
 function playAll(m){writeState({ti:m.ti,url:m.url,pl:true,pos:0});mode='sync';solo=null;render()}
 function playMe(url,ti){mode='solo';solo={url,ti};load(url);hint='';render();sync(1)}
 function stopLocal(){mode='sync';solo=null;hint='';if(S&&S.url)load(S.url);else unload();render();sync(1)}
-$c('#wcl').addEventListener('click',e=>{const b=e.target.closest('button[data-a]');if(!b)return;const m=movies.find(x=>x.id==b.dataset.id);if(!m)return;err('');
- if(b.dataset.a=='all')playAll(m);else if(b.dataset.a=='me')playMe(m.url,m.ti);else if(b.dataset.a=='del'){if(!confirm('تحذف «'+m.ti+'» من المكتبة؟'))return;
+$c('#wcl').addEventListener('click',async e=>{const b=e.target.closest('button[data-a]');if(!b)return;const m=movies.find(x=>x.id==b.dataset.id);if(!m)return;err('');
+ if(b.dataset.a=='all')playAll(m);else if(b.dataset.a=='me')playMe(m.url,m.ti);else if(b.dataset.a=='del'){if(!await SquadDialog.confirm('تحذف «'+m.ti+'» من المكتبة؟'))return;
   db.doc(path('movies/'+m.id)).delete().then(()=>{if(m.sp&&window.firebase&&firebase.storage){try{firebase.storage().ref(m.sp).delete().catch(()=>{})}catch(_){}}}).catch(()=>err('مقدرتش أحذف الفيلم'))}});
 function openP(o){$c('#wcin').hidden=!o;if(o){render();err('')}}
 $c('#wcinb').onclick=()=>openP($c('#wcin').hidden);$c('#wcx').onclick=()=>openP(0);

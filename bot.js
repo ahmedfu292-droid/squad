@@ -75,6 +75,7 @@ function say(k,t,m){H[k].push([m,t]);H[k]=H[k].slice(-40);try{localStorage.bh=JS
 function hideBot(){B=null;$('#bot').hidden=true}
 function openBot(k){B=k;cid=null;$('#app').classList.add('in');$('#bot').hidden=false;$('#bn').textContent=BOTS[k].n;
  $('#bq').innerHTML=BOTS[k].q.map(q=>`<button data-q="${q[1]}">${q[0]}</button>`).join('');H[k].length?drw():say(k,BOTS[k].hi,0);renderHome()}
+window.SquadOpenAssistant=(k)=>openBot(k==='game'?'game':'gen');
 function bsend(t){t=(t||$('#bin').value).trim();if(!t||!B)return;const k=B;$('#bin').value='';say(k,t,1);setTimeout(()=>say(k,botReply(k,t),0),350)}
 $('#bbk').onclick=()=>{bclose();renderHome()};$('#bs').onclick=()=>bsend();$('#bin').onkeydown=e=>{if(e.key=='Enter')bsend()};$('#bq').onclick=e=>e.target.dataset.q&&bsend(e.target.dataset.q);
 const rh0=renderHome;renderHome=function(){rh0();if(flt=='p'||flt=='g'||$('#q').value)return;

@@ -1,0 +1,26 @@
+The Squad v96 — Performance Optimization
+
+Automated validation:
+- 39/39 Node test files passed (including v96 performance assertions).
+- 80/80 JavaScript files passed Node syntax checks.
+- tests/ui2_harness.py passed.
+- Audit confirms every locally loaded JS/CSS file is represented in the Service Worker precache list.
+- All original v95 project files retained; no files deleted.
+- Exact source changes: index.html, sw.js, version.json. Historical version assertions in existing test files were updated to v96; one v96 performance test and two v96 documents were added.
+- Firebase configuration, Firestore/Storage rules, and Firebase Functions files are byte-for-byte unchanged from v95.
+
+Changes:
+- Service worker cache namespace and app version bumped to v96.
+- HTML/navigation and version.json use network-first with offline index fallback.
+- Same-origin static assets use cache-first with background refresh.
+- Precache installation tolerates individual fetch failures.
+- login-preview.html and app-preview.html are excluded from precache only; both files remain in project.
+- Added preconnect hints for fonts.gstatic.com and www.gstatic.com.
+- Added the previously omitted premium-refinement-v89.css to precache.
+
+Not tested in this environment:
+- Real browser/mobile performance and Lighthouse metrics.
+- Live Firebase Auth/Firestore/Storage and production multiplayer.
+- Browser automation tests/ui2_test.py could not run because the Playwright Chromium executable is not installed.
+
+No measured percentage speed improvement is claimed; actual timing must be measured after deployment on the target browser/device.

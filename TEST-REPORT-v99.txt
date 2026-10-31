@@ -1,0 +1,19 @@
+The Squad v99 — Test Report
+
+Performed:
+- JavaScript syntax checks for all .js files using Node.js --check.
+- ZIP archive integrity test.
+- Static checks for required registration fields and external hub links.
+- File inventory comparison against v98 source archive: no pre-existing files removed; new files are additive.
+
+Not performed:
+- No live Firebase Auth signup/login or email collision test.
+- No email verification or SMS OTP test (not implemented).
+- No live Firestore/Storage rules emulator test; Firebase rules were not changed.
+- No two-account chat/messaging/call test.
+- No real browser, mobile-device, Lighthouse, or load/stress test in this environment.
+- Third-party links were not opened interactively in a browser; URLs are official service domains embedded in the page.
+
+Security note:
+- Passwords are submitted directly to Firebase Authentication via its SDK and are not written into Firestore by this change.
+- Phone number is stored using the existing `phones/{uid}` mechanism. Phone ownership is not verified.

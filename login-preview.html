@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#08090b"><title>The Squad — The Dark Room Preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* The Squad v26 — شاشة الدخول والتسجيل الجديدة: تقسيمة (واجهة تعريفية + كارت)، خطوات، قص صورة، حسابات محفوظة.
+   خفيفة: CSS بس، من غير مكتبات. بتحترم الوضع الفاتح/الغامق وتقليل الحركة. */
+#auth.v2{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);align-items:stretch;justify-items:stretch;gap:0;padding:0;overflow:auto;-webkit-overflow-scrolling:touch}
+#auth.v2 .ahero{position:relative;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:6px;padding:48px 8% 48px 6%;z-index:1}
+#auth.v2 .ahero .logo{width:84px;height:84px}
+#auth.v2 .ahero h1{font:800 clamp(34px,4.4vw,58px) 'Sora','Cairo';letter-spacing:.06em;margin:10px 0 0;background:linear-gradient(135deg,#f9e7a3,#d4af37 55%,#b8860b);-webkit-background-clip:text;background-clip:text;color:transparent}
+#auth.v2 .tag{margin:0;font-size:clamp(15px,1.5vw,20px);color:var(--mu)}
+#auth.v2 .feats{list-style:none;margin:26px 0 0;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:10px;width:min(440px,100%)}
+#auth.v2 .feats li{display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:16px;background:var(--glass2,rgba(16,14,10,.6));border:1px solid var(--ln);font-weight:700;font-size:13.5px}
+#auth.v2 .feats b{font-size:20px}
+#auth.v2 .card{align-self:center;justify-self:center;width:min(460px,calc(100% - 40px));max-width:none;margin:24px 0;padding:26px 24px 22px;border-radius:30px;text-align:start;display:flex;flex-direction:column;gap:0}
+#auth.v2 .card::before{border-radius:32px}
+#auth.v2 .ah2{font:800 22px 'Cairo','Sora';margin:4px 0 2px}
+#auth.v2 .sub{margin:0 0 16px;font-size:13.5px}
+#auth.v2 label{font-size:13px;color:var(--mu)}
+#auth.v2 label .mu{font-weight:400}
+#auth.v2 input,#auth.v2 select,#auth.v2 textarea{width:100%;box-sizing:border-box;padding:13px 14px;border-radius:14px;font-size:15px}
+#auth.v2 textarea{resize:none}
+#auth.v2 .row{display:flex;gap:8px;align-items:center}
+#auth.v2 .row.ltr{direction:ltr;border:1px solid var(--ln);border-radius:14px;background:rgba(4,4,3,.72);padding:0 0 0 12px}
+#auth.v2 .row.ltr input{border:0;background:none;margin:0}
+#auth.v2 .pre{color:var(--c1);font-weight:800;font-family:'Sora',sans-serif}
+#auth.v2 small{display:block;margin-top:6px;min-height:16px;font-size:12px;color:var(--mu)}
+#auth.v2 small.ok{color:var(--ok)}#auth.v2 small.bad{color:var(--bad)}
+#auth.v2 .hint{font-size:12px;margin:-4px 0 10px}
+#auth.v2 .note{font-size:12px;line-height:1.7;padding:10px 12px;border-radius:12px;background:rgba(230,195,92,.08);border:1px solid var(--ln);color:var(--mu);margin:4px 0 8px}
+#auth.v2 #aerr{min-height:20px;margin:10px 0 0;color:var(--bad);font-weight:700;font-size:13px;text-align:center}
+#auth.v2 .tb{margin-bottom:16px}
+#auth.v2 #go,#auth.v2 .nav2 .pri{width:100%;padding:14px;font-size:16px;margin-top:4px}
+#auth.v2 .gh{color:var(--mu);font-weight:700;padding:10px 14px;border-radius:12px}
+#auth.v2 .gh:hover{color:var(--tx);background:rgba(212,175,55,.1)}
+#auth.v2 #abk{align-self:flex-start;margin:-6px 0 8px}
+/* خطوات */
+.stp{display:flex;gap:6px;margin:2px 0 14px}
+.stp i{flex:1;height:5px;border-radius:5px;background:rgba(255,255,255,.1);transition:background .3s,flex .3s}
+.stp i.dn{background:var(--c2)}.stp i.cu{background:var(--c1);flex:1.6;box-shadow:0 0 12px rgba(230,195,92,.5)}
+html[data-theme=light] .stp i{background:rgba(0,0,0,.1)}
+.sth{position:relative;margin-bottom:6px}.sth .sn{position:absolute;inset-inline-end:0;top:6px;font:700 12px 'Sora';color:var(--mu)}
+.sbody{animation:aIn .28s var(--ease,ease-out)}
+@keyframes aIn{from{opacity:0;transform:translateX(14px)}to{opacity:1;transform:none}}
+html[dir=rtl] .sbody{animation-name:aInR}@keyframes aInR{from{opacity:0;transform:translateX(-14px)}to{opacity:1;transform:none}}
+.nav2{display:flex;align-items:center;gap:8px;margin-top:10px}.nav2 .pri{flex:1}.nav2 .gh{flex:0 0 auto}
+.trio{display:grid;grid-template-columns:.8fr 1.2fr 1fr;gap:8px}
+.agebox{margin:12px 0;padding:14px;border-radius:14px;text-align:center;background:rgba(230,195,92,.08);border:1px dashed var(--ln);font-size:15px}.agebox b{font:800 26px 'Sora';color:var(--c1);margin:0 4px}
+/* الصورة */
+.phs{display:flex;flex-direction:column;align-items:center;gap:10px}
+.phv{position:relative;width:220px;height:220px;border-radius:50%;overflow:hidden;border:3px solid var(--c1);box-shadow:0 0 0 6px rgba(230,195,92,.12),0 18px 40px -18px rgba(230,195,92,.6);background:#15130c;touch-action:none}
+.phv canvas{width:100%;height:100%;display:block;cursor:grab}.phv canvas:active{cursor:grabbing}
+.phe{position:absolute;inset:0;display:grid;place-items:center;font-size:58px;opacity:.5;pointer-events:none}
+.phs input[type=range]{width:220px;padding:0;accent-color:#d4af37}
+.btns{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.btns button{padding:10px 16px;border-radius:14px;background:var(--p3);border:1px solid var(--ln);font-weight:700}
+.btns button.pri{background:var(--g)}
+#camx{display:flex;flex-direction:column;align-items:center;gap:10px}
+#camx video{width:min(100%,320px);aspect-ratio:1;object-fit:cover;border-radius:50%;border:3px solid var(--c1);transform:scaleX(-1);background:#000}
+/* خصوصية */
+.pvb{display:flex;flex-direction:column;gap:8px;margin-top:4px}.pvb b{font-size:13px}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;padding:4px;border-radius:14px;background:rgba(4,4,3,.72);border:1px solid var(--ln)}
+.seg button{padding:9px 4px;border-radius:10px;font-size:13px;font-weight:700;color:var(--mu);transition:.2s}
+.seg button.on{background:var(--g);color:#16120a}
+html[data-theme=light] .seg,html[data-theme=light] #auth.v2 .row.ltr{background:#eef1f7}
+.pm{height:4px;border-radius:4px;background:rgba(255,255,255,.1);margin-top:8px;overflow:hidden}.pm i{display:block;height:100%;width:0;transition:width .25s,background .25s;background:var(--c1)}
+/* حسابات محفوظة */
+.dv{display:flex;align-items:center;gap:10px;margin:18px 0 10px;color:var(--mu);font-size:12px}.dv::before,.dv::after{content:"";flex:1;height:1px;background:var(--ln)}
+.sacc{display:flex;flex-direction:column;gap:8px}
+.sacc button{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:16px;background:var(--p2);border:1px solid var(--ln);text-align:start;transition:transform .12s,border-color .2s}
+.sacc button:hover{border-color:var(--c1)}.sacc button:active{transform:scale(.98)}
+.sacc .av{width:42px;height:42px;font-size:17px}.sacc span{flex:1;min-width:0}.sacc b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.sacc small{margin:0;min-height:0}.sacc i{font-style:normal;color:var(--mu);font-size:22px}
+@media(max-width:860px){
+ #auth.v2{grid-template-columns:1fr;grid-template-rows:minmax(150px,1fr) auto}
+ #auth.v2 .ahero{flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:2px;padding:22px 22px 14px}
+ #auth.v2 .ahero .logo{width:68px;height:68px}#auth.v2 .ahero h1{font-size:32px;margin:6px 0 0}
+ #auth.v2 .tag{font-size:13.5px}#auth.v2 .feats{display:none}
+ #auth.v2 .card{width:100%;margin:0;align-self:end;border-radius:30px 30px 0 0;padding:22px 18px calc(22px + env(safe-area-inset-bottom,0px))}
+ #auth.v2 .card::before{border-radius:32px 32px 0 0}
+ .phv{width:190px;height:190px}.phs input[type=range]{width:190px}
+}
+#auth.v2 #pws{display:none}
+@media(prefers-reduced-motion:reduce){.sbody{animation:none}.stp i{transition:none}}
+
+
+/* THE SQUAD — DARK ROOM LOGIN SYSTEM v91
+   Scoped to #auth; the rest of the app keeps its existing theme and styles. */
+#auth.dark-room{--room:#08090b;--room2:#101116;--desk:#211b16;--card:#15161a;--field:#202126;--gold:#b9975b;--gold-hi:#e2c58c;--beam:#fff0ce;--ink:#f4f0e8;--muted:#a7a19a;--line:rgba(255,255,255,.09);position:fixed;inset:0;z-index:200;display:block;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;background:var(--room)!important;color:var(--ink)!important;font-family:'IBM Plex Sans Arabic','Cairo',sans-serif;isolation:isolate;min-height:var(--vvh,100dvh);padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+#auth.dark-room[hidden]{display:none!important}
+#auth.dark-room *{box-sizing:border-box}
+#auth.dark-room .room-scene{position:fixed;inset:0;overflow:hidden;pointer-events:none;background:radial-gradient(ellipse at 78% 65%,rgba(113,83,48,.13),transparent 37%),linear-gradient(110deg,#08090b 0%,#101116 55%,#090a0c 100%)}
+#auth.dark-room .room-wall{position:absolute;inset:0;background:radial-gradient(ellipse at 76% 52%,rgba(75,61,45,.16),transparent 38%),linear-gradient(90deg,transparent 0 65%,rgba(0,0,0,.18) 65.2% 65.5%,transparent 66%)}
+#auth.dark-room .room-door-shadow{position:absolute;right:3.5%;top:8%;width:17%;height:55%;border:1px solid rgba(186,158,116,.07);border-bottom:0;border-radius:90px 90px 0 0;box-shadow:inset 0 0 35px rgba(0,0,0,.45),0 0 80px rgba(0,0,0,.25);opacity:.55}
+#auth.dark-room .room-desk{position:absolute;left:-8%;right:-8%;bottom:0;height:25%;background:linear-gradient(180deg,rgba(44,34,25,.94),#100e0d 48%,#09090a);border-top:1px solid rgba(185,151,91,.16);box-shadow:0 -24px 70px rgba(0,0,0,.55)}
+#auth.dark-room .room-desk:before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(176deg,transparent 0 19px,rgba(206,169,112,.025) 20px,transparent 21px 43px);opacity:.5}
+#auth.dark-room .room-scene:after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;opacity:0;clip-path:polygon(73% 25%,86% 25%,100% 100%,18% 100%);background:linear-gradient(180deg,rgba(255,225,173,.20),rgba(215,174,111,.08) 45%,transparent 92%);filter:blur(8px);transition:opacity .8s ease}
+#auth.dark-room.is-lit .room-scene:after{opacity:1}
+#auth.dark-room .lamp-halo{position:absolute;right:9%;top:13%;width:min(65vw,850px);height:min(70vh,650px);border-radius:50%;background:radial-gradient(ellipse,rgba(229,192,128,.12),rgba(187,143,82,.055) 36%,transparent 70%);opacity:0;filter:blur(12px);transition:opacity .8s ease}
+#auth.dark-room.is-lit .lamp-halo{opacity:1}
+#auth.dark-room .desk-lamp{position:absolute;right:8%;top:4%;width:clamp(190px,29vw,360px);height:auto;overflow:visible;filter:drop-shadow(0 20px 30px rgba(0,0,0,.65));transform-origin:78% 88%;transition:filter .5s ease}
+#auth.dark-room .lamp-bulb{transition:opacity .35s ease;filter:drop-shadow(0 0 16px rgba(255,220,160,.9))}
+#auth.dark-room.is-lit .lamp-bulb{opacity:1}
+#auth.dark-room .lamp-pull{position:absolute;z-index:5;pointer-events:auto;right:calc(8% + clamp(190px,29vw,360px)*.30);top:clamp(145px,21vh,235px);width:44px;height:132px;padding:0;border:0;background:transparent;touch-action:none;cursor:grab;transform-origin:top center;outline:none}
+#auth.dark-room .lamp-pull svg{width:100%;height:100%;overflow:visible;filter:drop-shadow(0 3px 5px rgba(0,0,0,.6))}
+#auth.dark-room .pull-cord{fill:none;stroke:#bca276;stroke-width:1.8;stroke-linecap:round;stroke-dasharray:2 1}
+#auth.dark-room .pull-bead{fill:#796344;stroke:#d5b77e;stroke-width:1.1}
+#auth.dark-room .lamp-pull:focus-visible{filter:drop-shadow(0 0 8px rgba(226,197,140,.9))}
+#auth.dark-room .lamp-pull:active{cursor:grabbing}
+#auth.dark-room .lamp-hint{position:fixed;right:calc(8% + clamp(190px,29vw,360px)*.28);top:clamp(275px,38vh,390px);margin:0;color:rgba(226,197,140,.76);font-size:13px;letter-spacing:.02em;opacity:0;transform:translateY(-4px);transition:opacity .45s,transform .45s;pointer-events:none}
+#auth.dark-room.hint-ready .lamp-hint{opacity:1;transform:none}
+#auth.dark-room.is-pulling .lamp-hint{opacity:.25}
+#auth.dark-room .room-brand{position:fixed;left:clamp(24px,6vw,88px);top:clamp(24px,6vh,64px);display:grid;grid-template-columns:34px auto;align-items:center;column-gap:11px;color:#e2c58c;font:600 15px Manrope,sans-serif;letter-spacing:.19em}
+#auth.dark-room .brand-mark{grid-row:span 2;width:34px;height:34px;border:1px solid rgba(226,197,140,.65);border-radius:10px;display:grid;place-items:center;font:600 19px Georgia,serif;letter-spacing:0;transform:none}
+#auth.dark-room .room-brand small{font:500 8px Manrope,sans-serif;letter-spacing:.22em;color:rgba(244,240,232,.4);margin-top:3px}
+#auth.dark-room .lamp-sound{position:fixed;left:clamp(22px,6vw,84px);bottom:calc(18px + env(safe-area-inset-bottom));display:flex;align-items:center;gap:8px;padding:9px 12px;min-height:40px;border:1px solid rgba(255,255,255,.09);border-radius:999px;background:rgba(15,16,19,.62);backdrop-filter:blur(12px);color:rgba(244,240,232,.62);font:500 11px 'IBM Plex Sans Arabic',sans-serif;cursor:pointer}
+#auth.dark-room .lamp-sound svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+#auth.dark-room .lamp-sound[aria-pressed=true]{color:var(--gold-hi);border-color:rgba(226,197,140,.3)}
+#auth.dark-room .card{position:relative;z-index:4;width:min(430px,calc(100% - 40px));max-width:430px;margin:0;top:50%;left:clamp(22px,8vw,150px);transform:translateY(calc(-50% + 18px));padding:27px 28px 20px;border:1px solid rgba(226,197,140,.16);border-radius:22px;background:linear-gradient(145deg,rgba(28,27,26,.94),rgba(15,16,19,.96) 65%)!important;box-shadow:0 35px 100px rgba(0,0,0,.58),0 0 55px rgba(190,148,86,.08),inset 0 1px rgba(255,255,255,.055);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);text-align:start;display:flex;flex-direction:column;gap:0;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .65s ease,transform .65s cubic-bezier(.2,.75,.2,1),visibility .65s}
+#auth.dark-room .card[hidden]{display:none!important}
+#auth.dark-room .card.is-visible{opacity:1;visibility:visible;pointer-events:auto;transform:translateY(-50%)}
+#auth.dark-room .card:before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:linear-gradient(130deg,rgba(255,255,255,.045),transparent 32%,transparent 70%,rgba(185,151,91,.045))!important;border:0!important}
+#auth.dark-room .auth-card-head{margin:0 0 19px;position:relative}
+#auth.dark-room .auth-kicker{font:600 9px Manrope,sans-serif;letter-spacing:.24em;color:var(--gold);display:block;margin-bottom:8px}
+#auth.dark-room .auth-card-head h1{font:600 23px 'IBM Plex Sans Arabic','Cairo',sans-serif;color:var(--ink);margin:0 0 5px;letter-spacing:0}
+#auth.dark-room .auth-card-head p{margin:0;color:var(--muted);font-size:13px}
+#auth.dark-room .tb{display:grid;grid-template-columns:1fr 1fr;gap:5px;padding:4px;margin:0 0 19px;border:1px solid rgba(255,255,255,.055);border-radius:13px;background:rgba(0,0,0,.22)}
+#auth.dark-room .tb button{min-height:42px;border-radius:10px;color:#a7a19a;font:600 13px 'IBM Plex Sans Arabic',sans-serif;transition:background .22s,color .22s,box-shadow .22s}
+#auth.dark-room .tb button.on{background:linear-gradient(135deg,#c5a46b,#9d7946);color:#17130e;box-shadow:0 5px 16px rgba(185,151,91,.17)}
+#auth.dark-room .ah2{font:600 17px 'IBM Plex Sans Arabic',sans-serif;color:var(--ink);margin:0 0 4px}
+#auth.dark-room .sub{margin:0 0 16px;color:var(--muted);font-size:12px}
+#auth.dark-room label{display:block;margin:0 0 13px;color:#c9c1b4;font-size:12px;font-weight:500}
+#auth.dark-room input,#auth.dark-room select,#auth.dark-room textarea{width:100%;min-height:50px;margin-top:7px;padding:12px 14px;border:1px solid rgba(255,255,255,.085)!important;border-radius:12px;background:rgba(5,6,8,.58)!important;color:#f4f0e8!important;font:400 16px 'IBM Plex Sans Arabic',sans-serif;outline:none;transition:border-color .2s,box-shadow .2s,background .2s}
+#auth.dark-room input::placeholder{color:#77736e;opacity:1}
+#auth.dark-room input:focus,#auth.dark-room select:focus,#auth.dark-room textarea:focus{border-color:rgba(226,197,140,.62)!important;box-shadow:0 0 0 3px rgba(185,151,91,.12);background:rgba(5,6,8,.82)!important}
+#auth.dark-room .row{display:flex;align-items:center;gap:7px;direction:rtl}
+#auth.dark-room .row input{flex:1;min-width:0}
+#auth.dark-room #eye{width:48px;min-width:48px;height:50px;margin-top:7px;border:1px solid rgba(255,255,255,.085);border-radius:12px;background:rgba(5,6,8,.58);color:#b9a17a;display:grid;place-items:center}
+#auth.dark-room #eye svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+#auth.dark-room #go{width:100%;min-height:50px;margin:6px 0 0;padding:12px 16px;display:flex;align-items:center;justify-content:center;gap:10px;border:1px solid rgba(255,232,190,.25);border-radius:12px;background:linear-gradient(120deg,#d4b47b,#aa854e)!important;color:#17130d!important;font:700 15px 'IBM Plex Sans Arabic',sans-serif;box-shadow:0 9px 24px rgba(158,119,61,.2);transition:transform .16s,filter .2s,box-shadow .2s}
+#auth.dark-room #go svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+#auth.dark-room #go:active{transform:scale(.985)}#auth.dark-room #go:disabled{opacity:.75;cursor:wait;filter:saturate(.65)}
+#auth.dark-room #go:disabled svg{display:none}#auth.dark-room #go:disabled:after{content:"";width:17px;height:17px;border:2px solid rgba(23,19,13,.25);border-top-color:#17130d;border-radius:50%;animation:lampSpin .75s linear infinite}
+#auth.dark-room #aerr{min-height:0;margin:10px 0 0;padding:0;color:#d88f83;font-size:12px;line-height:1.6;text-align:center}
+#auth.dark-room #aerr:not(:empty){padding:9px 11px;border:1px solid rgba(185,109,102,.2);border-radius:10px;background:rgba(185,109,102,.07)}
+#auth.dark-room .gh{min-height:42px;margin:-7px 0 12px;padding:8px 12px;border:1px solid var(--line);border-radius:10px;color:#d3c4a8;background:rgba(255,255,255,.025)}
+#auth.dark-room .auth-card-foot{display:flex;align-items:center;gap:10px;margin-top:19px;color:rgba(244,240,232,.28)}
+#auth.dark-room .auth-card-foot span{height:1px;flex:1;background:rgba(255,255,255,.07)}
+#auth.dark-room .auth-card-foot small{font:500 8px Manrope,sans-serif;letter-spacing:.2em}
+#auth.dark-room .card.is-error{animation:authCardError .34s ease}
+#auth.dark-room.is-error .desk-lamp{animation:lampErrorDim .45s ease}
+#auth.dark-room.is-lighting .desk-lamp{animation:lampWarmStart .72s ease}
+#auth.dark-room.is-loading .lamp-halo{animation:lampBreath 2.2s ease-in-out infinite}
+#auth.dark-room .room-dust{position:absolute;width:2px;height:2px;border-radius:50%;background:rgba(233,211,174,.45);box-shadow:0 0 7px rgba(233,211,174,.25);opacity:0;animation:dustDrift 9s ease-in-out infinite}
+#auth.dark-room .dust-a{top:28%;right:32%;animation-delay:-2s}.dust-b{top:45%;right:45%;animation-delay:-6s}.dust-c{top:19%;right:58%;animation-delay:-4s}.dust-d{top:55%;right:25%;animation-delay:-7s}.dust-e{top:34%;right:69%;animation-delay:-1s}.dust-f{top:63%;right:54%;animation-delay:-5s}
+#auth.dark-room.is-lit .room-dust{opacity:.42}
+#auth.dark-room.is-paused .room-dust{animation-play-state:paused}
+#auth.dark-room .lamp-pull.is-dragging .pull-cord{stroke:#e0c18b}
+#auth.dark-room.is-pulling .lamp-inner{opacity:.8;fill:#d7b274;filter:drop-shadow(0 0 9px rgba(231,195,133,.7))}
+#auth.dark-room.is-pulling .lamp-bulb{opacity:.8}
+#auth.dark-room.is-lit .lamp-inner{opacity:1;fill:#f1d9a5;filter:drop-shadow(0 0 16px rgba(255,220,160,.9))}
+#auth.dark-room.is-lit .lamp-halo{opacity:1}
+#auth.dark-room.is-success:after{content:"";position:fixed;inset:-20%;z-index:20;pointer-events:none;background:radial-gradient(ellipse at 78% 48%,rgba(255,232,185,.96),rgba(220,178,111,.56) 28%,rgba(8,9,11,.96) 72%);animation:sceneExit .7s ease forwards}
+@keyframes lampSpin{to{transform:rotate(360deg)}}
+@keyframes dustDrift{0%,100%{transform:translate3d(0,0,0);opacity:.12}50%{transform:translate3d(-9px,-14px,0);opacity:.48}}
+@keyframes lampWarmStart{0%,100%{filter:drop-shadow(0 20px 30px rgba(0,0,0,.65))}18%{filter:drop-shadow(0 0 15px rgba(255,218,158,.5))}34%{filter:drop-shadow(0 20px 30px rgba(0,0,0,.65))}58%{filter:drop-shadow(0 0 20px rgba(255,218,158,.62))}}
+@keyframes lampErrorDim{0%,100%{opacity:1}40%{opacity:.48}}
+@keyframes lampBreath{0%,100%{opacity:.8}50%{opacity:1}}
+@keyframes authCardError{0%,100%{transform:translateY(-50%) translateX(0)}25%{transform:translateY(-50%) translateX(3px)}55%{transform:translateY(-50%) translateX(-3px)}80%{transform:translateY(-50%) translateX(1px)}}
+@keyframes sceneExit{0%{opacity:0;transform:scale(.92)}45%{opacity:1}100%{opacity:0;transform:scale(1.16)}}
+@media(max-width:760px){
+ #auth.dark-room{overflow-y:auto}
+ #auth.dark-room .room-desk{height:27%}
+ #auth.dark-room .desk-lamp{right:3%;top:3%;width:clamp(165px,46vw,230px)}
+ #auth.dark-room .lamp-pull{right:calc(3% + clamp(165px,46vw,230px)*.30);top:clamp(126px,19vh,180px);height:112px}
+ #auth.dark-room .lamp-hint{right:calc(3% + clamp(165px,46vw,230px)*.27);top:clamp(235px,34vh,310px);font-size:12px}
+ #auth.dark-room .room-brand{left:18px;top:calc(16px + env(safe-area-inset-top));font-size:12px;grid-template-columns:29px auto;column-gap:9px}
+ #auth.dark-room .brand-mark{width:29px;height:29px}
+ #auth.dark-room .room-brand small{font-size:7px}
+ #auth.dark-room .lamp-sound{left:16px;bottom:calc(12px + env(safe-area-inset-bottom));font-size:10px}
+ #auth.dark-room .card{position:relative;top:auto;left:auto;width:calc(100% - 28px);max-width:460px;margin:clamp(280px,39vh,365px) auto 24px;padding:22px 19px 17px;transform:translateY(18px);border-radius:20px}
+ #auth.dark-room .card.is-visible{transform:none}
+ #auth.dark-room .auth-card-head{margin-bottom:15px}
+ #auth.dark-room .auth-card-head h1{font-size:21px}
+ #auth.dark-room .tb{margin-bottom:15px}
+ #auth.dark-room .room-door-shadow{right:-5%;top:8%;width:28%;height:36%}
+}
+@media(max-width:380px){
+ #auth.dark-room .card{width:calc(100% - 20px);padding:19px 15px 15px;margin-top:clamp(260px,37vh,330px)}
+ #auth.dark-room .desk-lamp{width:166px;right:0}
+ #auth.dark-room .lamp-pull{right:50px}
+ #auth.dark-room .lamp-hint{right:64px}
+}
+@media(orientation:landscape) and (max-height:520px){
+ #auth.dark-room .desk-lamp{width:160px;top:-12px;right:4%}
+ #auth.dark-room .lamp-pull{top:112px;right:calc(4% + 83px);height:90px}
+ #auth.dark-room .lamp-hint{top:205px;right:calc(4% + 60px)}
+ #auth.dark-room .card{top:50%;left:24px;width:min(390px,54vw);padding:15px 18px;max-height:calc(100dvh - 18px);overflow:auto}
+ #auth.dark-room .auth-card-head{margin-bottom:8px}#auth.dark-room .auth-card-head h1{font-size:18px}
+ #auth.dark-room .tb{margin-bottom:8px}#auth.dark-room label{margin-bottom:7px}
+ #auth.dark-room input,#auth.dark-room select{min-height:43px;padding:8px 11px}
+ #auth.dark-room #eye{height:43px}
+}
+@media(prefers-reduced-motion:reduce){
+ #auth.dark-room *,#auth.dark-room *:before,#auth.dark-room *:after{animation:none!important;scroll-behavior:auto!important;transition:opacity .2s ease!important}
+ #auth.dark-room .room-dust{display:none!important}
+ #auth.dark-room.is-lit .lamp-halo{filter:none}
+}
+
+html[data-theme=light] #splash{background:#08090b!important;color:#f4f0e8!important}
+html[data-theme=light] #splash h1{color:#e2c58c!important}
+
+.scene-exit-wash{position:fixed;inset:-15%;z-index:9999;pointer-events:none;background:radial-gradient(ellipse at 78% 48%,rgba(255,239,208,.96),rgba(226,197,140,.54) 27%,rgba(8,9,11,.96) 72%);animation:sceneExit .72s ease forwards}
+@media(prefers-reduced-motion:reduce){.scene-exit-wash{animation:none;opacity:0;transition:opacity .18s ease}}
+
+/* Signup sub-flow: replace legacy emoji glyphs with consistent line SVG controls without touching auth.js. */
+#auth.dark-room #vup .btns button{font-size:0!important;display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:10px 14px;color:#e7d8bd;background:rgba(255,255,255,.035);border:1px solid rgba(226,197,140,.16)}
+#auth.dark-room #vup .btns button:before{content:"";display:inline-block;width:17px;height:17px;flex:0 0 17px;background-repeat:no-repeat;background-position:center;background-size:contain;opacity:.88}
+#auth.dark-room #vup #pgal:before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23e2c58c' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='4' width='18' height='16' rx='2'/%3E%3Ccircle cx='8.5' cy='9' r='1.5'/%3E%3Cpath d='m21 15-5-5L5 20'/%3E%3C/svg%3E")}
+#auth.dark-room #vup #pcam:before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23e2c58c' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 7h3l2-3h6l2 3h3a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2Z'/%3E%3Ccircle cx='12' cy='13' r='3.5'/%3E%3C/svg%3E")}
+#auth.dark-room #vup #prm:before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23d9a19a' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 7h16M10 11v6m4-6v6M6 7l1 14h10l1-14M9 7V4h6v3'/%3E%3C/svg%3E")}
+#auth.dark-room #vup #srnd:before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23e2c58c' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 7v5h-5M4 17v-5h5'/%3E%3Cpath d='M5.6 9A7 7 0 0 1 18 7l2 5M4 12l2 5a7 7 0 0 0 12.4-2'/%3E%3C/svg%3E")}
+#auth.dark-room #vup #seye:before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23e2c58c' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2.5 12s3.4-6 9.5-6 9.5 6 9.5 6-3.4 6-9.5 6-9.5-6-9.5-6Z'/%3E%3Ccircle cx='12' cy='12' r='2.7'/%3E%3C/svg%3E")}
+#auth.dark-room #vup #cflip:before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23e2c58c' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 7h-5l2-2M4 17h5l-2 2M5 7a8 8 0 0 1 13-2M19 17a8 8 0 0 1-13 2'/%3E%3C/svg%3E")}
+#auth.dark-room #vup #csnap:before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2317130d' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='8'/%3E%3Ccircle cx='12' cy='12' r='3'/%3E%3C/svg%3E")}
+#auth.dark-room #vup #cx:before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23e2c58c' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 6 12 12M18 6 6 18'/%3E%3C/svg%3E")}
+#auth.dark-room #vup #pgal:after{content:"من الجهاز";font-size:13px}#auth.dark-room #vup #pcam:after{content:"كاميرا";font-size:13px}#auth.dark-room #vup #prm:after{content:"إزالة الصورة";font-size:13px}#auth.dark-room #vup #srnd:after{content:"اقتراح رقم";font-size:12px}#auth.dark-room #vup #seye:after{content:"إظهار";font-size:12px}#auth.dark-room #vup #cflip:after{content:"قلب الكاميرا";font-size:12px}#auth.dark-room #vup #csnap:after{content:"التقاط";font-size:13px}#auth.dark-room #vup #cx:after{content:"إلغاء";font-size:13px}
+#auth.dark-room #vup .phe{font-size:0!important}
+#auth.dark-room #vup .phe:after{content:"";display:block;width:54px;height:54px;border-radius:50%;background:rgba(226,197,140,.08);border:1px solid rgba(226,197,140,.18)}
+
+/* v93 Stage 1 — explicit visual states; no form/auth logic. */
+#auth.dark-room.is-threshold .lamp-pull{filter:drop-shadow(0 0 12px rgba(226,197,140,.75))}
+#auth.dark-room.is-threshold .lamp-hint{opacity:1;color:#f1d9a5}
+#auth.dark-room.is-loading .card{border-color:rgba(226,197,140,.38);box-shadow:0 35px 100px rgba(0,0,0,.58),0 0 42px rgba(190,148,86,.13)}
+#auth.dark-room.is-error .card{border-color:rgba(216,143,131,.42)}
+#auth.dark-room.is-new-account .card,#auth.dark-room.is-account-switch .card{max-height:min(86dvh,780px);overflow-y:auto;overscroll-behavior:contain}
+#auth.dark-room[data-login-state="success"] .room-scene{filter:brightness(1.12)}
+
+html,body{margin:0;min-height:100%;background:#08090b;color:#f4f0e8;font-family:'IBM Plex Sans Arabic','Cairo',sans-serif}#auth.dark-room{display:block!important}#auth.dark-room[hidden]{display:block!important}.preview-dock{position:fixed;z-index:10000;left:12px;right:12px;bottom:calc(10px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:7px;padding:10px;border:1px solid rgba(226,197,140,.24);border-radius:16px;background:rgba(10,11,13,.92);backdrop-filter:blur(18px);box-shadow:0 10px 40px #0009}.preview-title{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:#e2c58c}.preview-title b{font-size:13px}.preview-buttons{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px}.preview-buttons button{min-height:35px;padding:5px 2px;border:1px solid rgba(226,197,140,.18);border-radius:9px;background:#191a1e;color:#ddd1bb;font:600 10px 'IBM Plex Sans Arabic',sans-serif}.preview-buttons button.active{background:linear-gradient(130deg,#d4b47b,#a17d4c);color:#17130d;border-color:#e2c58c}.preview-note{font-size:10px;color:#aaa29a;text-align:center}.preview-badge{position:fixed;z-index:9999;top:12px;right:12px;padding:6px 10px;border:1px solid #b9975b55;border-radius:20px;background:#101116dd;color:#e2c58c;font-size:10px}@media(max-height:650px){.preview-dock{gap:4px;padding:6px}.preview-buttons button{min-height:29px}.preview-note{display:none}}
+</style></head><body>
+<div class="preview-badge">معاينة محلية — بدون Firebase</div>
+<main id="auth" class="v2 dark-room" dir="rtl" aria-label="تسجيل الدخول إلى The Squad">
+ <div class="room-scene">
+  <div class="room-wall" aria-hidden="true"></div><div class="room-door-shadow" aria-hidden="true"></div>
+  <div class="room-dust dust-a" aria-hidden="true"></div><div class="room-dust dust-b" aria-hidden="true"></div><div class="room-dust dust-c" aria-hidden="true"></div><div class="room-dust dust-d" aria-hidden="true"></div><div class="room-dust dust-e" aria-hidden="true"></div><div class="room-dust dust-f" aria-hidden="true"></div>
+  <div class="room-desk" aria-hidden="true"></div>
+  <div class="lamp-halo" aria-hidden="true"></div>
+  <svg class="desk-lamp" viewBox="0 0 300 340" role="presentation" aria-hidden="true" focusable="false">
+   <defs>
+    <linearGradient id="lampMetal" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#77664c"/><stop offset=".34" stop-color="#d1b47e"/><stop offset=".7" stop-color="#514332"/><stop offset="1" stop-color="#1d1b19"/></linearGradient>
+    <linearGradient id="lampShade" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5c5142"/><stop offset=".45" stop-color="#282521"/><stop offset="1" stop-color="#121315"/></linearGradient>
+    <radialGradient id="lampBulb"><stop offset="0" stop-color="#fff3d5"/><stop offset=".55" stop-color="#e9c987"/><stop offset="1" stop-color="#b58b4f"/></radialGradient>
+   </defs>
+   <ellipse cx="154" cy="317" rx="90" ry="12" fill="#000" opacity=".48"/>
+   <path d="M150 288 Q155 251 170 222 L190 171" fill="none" stroke="#090a0c" stroke-width="17" stroke-linecap="round"/>
+   <path d="M150 288 Q155 251 170 222 L190 171" fill="none" stroke="url(#lampMetal)" stroke-width="11" stroke-linecap="round"/>
+   <path d="M187 176 L205 159" stroke="url(#lampMetal)" stroke-width="13" stroke-linecap="round"/>
+   <path d="M143 289 Q151 278 161 289 L176 308 Q178 316 166 319 L111 319 Q99 316 104 307 L122 289Z" fill="url(#lampMetal)" stroke="#8e7958" stroke-opacity=".5"/>
+   <path d="M122 294 Q145 300 165 294" fill="none" stroke="#ead4a7" stroke-opacity=".28" stroke-width="2"/>
+   <path d="M165 105 Q206 91 248 111 L276 174 Q211 199 145 174Z" fill="url(#lampShade)" stroke="#9d8762" stroke-opacity=".55" stroke-width="2"/>
+   <path d="M165 105 Q208 127 248 111" fill="none" stroke="#c1a576" stroke-opacity=".25" stroke-width="2"/>
+   <path class="lamp-inner" d="M151 172 Q211 190 270 172 L264 184 Q210 205 156 184Z" fill="#c69c5d" opacity=".16"/>
+   <ellipse class="lamp-bulb" cx="210" cy="181" rx="18" ry="5" fill="url(#lampBulb)" opacity=".08"/>
+  </svg>
+  <button id="lampPull" class="lamp-pull" type="button" aria-label="اسحب الخيط لإظهار تسجيل الدخول" aria-describedby="lampHint">
+   <svg viewBox="0 0 42 126" aria-hidden="true" focusable="false"><path class="pull-cord" d="M21 2 C18 30 25 47 21 73"/><path class="pull-bead" d="M21 72 C14 72 11 79 13 88 L16 104 Q21 113 26 104 L29 88 C31 79 28 72 21 72Z"/></svg>
+  </button>
+ </div>
+ <div class="room-brand" aria-hidden="true"><span class="brand-mark">S</span><span>THE SQUAD</span><small>YOUR WORLD. YOUR PEOPLE.</small></div>
+ <p id="lampHint" class="lamp-hint" role="status">اسحب الخيط</p>
+ <button id="lampSound" class="lamp-sound" type="button" aria-pressed="false" aria-label="تشغيل صوت نقرة الأباجورة"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10v4h4l5 4V6l-5 4H4Z"/><path d="M16 9a4 4 0 0 1 0 6"/><path d="M18.5 6.5a8 8 0 0 1 0 11"/></svg><span>الصوت مغلق</span></button>
+ <div class="card" hidden>
+  <button id="abk" class="gh" type="button" hidden>رجوع للحساب الحالي</button>
+  <div class="auth-card-head"><span class="auth-kicker">WELCOME BACK</span><h1>أهلاً بيك في عالمك</h1><p>كل حكاياتك وأصحابك في مكان واحد.</p></div>
+  <div class="tb"><button data-m="in" class="on" type="button">دخول</button><button data-m="up" type="button">حساب جديد</button></div>
+  <section id="vin">
+   <h2 class="ah2">نورت The Squad</h2><p class="mu sub">ادخل برقم حسابك أو باسم المستخدم</p>
+   <label for="lid">رقم الحساب أو اسم المستخدم<input id="lid" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="رقم الحساب أو اسم المستخدم" dir="auto"></label>
+   <label for="pw">كلمة السر<div class="row"><input id="pw" type="password" autocomplete="current-password" placeholder="اكتب كلمة السر"><button id="eye" class="ic" type="button" title="إظهار كلمة السر" aria-label="إظهار كلمة السر"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12s3.4-6 9.5-6 9.5 6 9.5 6-3.4 6-9.5 6-9.5-6-9.5-6Z"/><circle cx="12" cy="12" r="2.7"/></svg></button></div></label>
+   <button id="go" class="pri" type="button"><span>دخول</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg></button>
+  </section>
+  <section id="vup" hidden></section>
+  <p id="aerr" role="alert" aria-live="polite"></p>
+  <section id="vacc" hidden></section>
+  <div class="auth-card-foot"><span></span><small>PRIVATE BY DESIGN</small><span></span></div>
+ </div>
+</main>
+<nav class="preview-dock" aria-label="حالات معاينة شاشة الدخول">
+ <div class="preview-title"><b id="previewState">1 — قبل الشد</b><span>THE DARK ROOM · STAGE 1</span></div>
+ <div class="preview-buttons" id="previewButtons">
+  <button type="button" data-state="before">قبل الشد</button><button type="button" data-state="pull">أثناء الشد</button><button type="button" data-state="threshold">العتبة</button><button type="button" data-state="flash">الوميض</button><button type="button" data-state="card">الكارت</button>
+  <button type="button" data-state="error">الخطأ</button><button type="button" data-state="loading">التحميل</button><button type="button" data-state="success">النجاح</button><button type="button" data-state="signup">حساب جديد</button><button type="button" data-state="switch">تبديل الحسابات</button>
+ </div><div class="preview-note">الأزرار للعرض البصري فقط؛ لا يتم تسجيل دخول أو إنشاء حساب حقيقي.</div>
+</nav>
+<script>
+(()=>{const root=document.getElementById('auth'),card=root.querySelector('.card'),hint=document.getElementById('lampHint'),pull=document.getElementById('lampPull'),title=document.getElementById('previewState'),buttons=[...document.querySelectorAll('[data-state]')],vin=document.getElementById('vin'),vup=document.getElementById('vup'),vacc=document.getElementById('vacc'),err=document.getElementById('aerr'),go=document.getElementById('go');const labels={before:'1 — قبل الشد',pull:'2 — أثناء الشد',threshold:'3 — العتبة',flash:'4 — التشغيل بالوميض',card:'5 — ظهور الكارت',error:'6 — حالة الخطأ',loading:'7 — حالة التحميل',success:'8 — نجاح الدخول',signup:'9 — إنشاء حساب جديد',switch:'10 — تبديل الحسابات'};function sampleSignup(){vup.innerHTML='<div class="stp"><i class="cu"></i><i></i><i></i><i></i><i></i><i></i></div><div class="sth"><span class="sn">1/6</span><h2 class="ah2">اسمك واسم المستخدم</h2><p class="mu sub">ده اللي هيظهر لأصحابك</p></div><label>اسمك<input value="أحمد" readonly></label><label>اسم المستخدم<div class="row ltr"><span class="pre">@</span><input value="ahmed.squad" readonly></div></label><p class="mu hint">حروف إنجليزي صغيرة وأرقام و _ و .</p><div class="nav2"><span></span><button class="pri" type="button">التالي</button></div>';vup.hidden=false;vin.hidden=true;vacc.hidden=true;}function sampleSwitch(){vacc.innerHTML='<div class="sth"><h2 class="ah2">اختار الحساب</h2><p class="mu sub">بدّل بين الحسابات المحفوظة على الجهاز</p></div><div class="sacc"><button type="button"><b class="av">A</b><span><b>Ahmed</b><small>1000000000 · الحساب الحالي</small></span><i>✓</i></button><button type="button"><b class="av">S</b><span><b>Squad Guest</b><small>1000000024</small></span><i>›</i></button></div><div class="dv">أو</div><button class="pri" type="button" style="width:100%">إضافة حساب آخر</button>';vacc.hidden=false;vin.hidden=true;vup.hidden=true;}function reset(){root.hidden=false;root.classList.remove('is-pulling','is-threshold','is-lighting','is-lit','card-revealed','is-error','is-loading','is-success','is-new-account','is-account-switch');root.dataset.loginState='before-pull';root.querySelector('.lamp-bulb').removeAttribute('style');root.querySelector('.lamp-inner').removeAttribute('style');card.hidden=true;card.classList.remove('is-visible','is-error');pull.disabled=false;pull.style.transform='';pull.classList.remove('is-dragging');hint.hidden=false;hint.textContent='اسحب الخيط';err.textContent='';go.disabled=false;go.querySelector('span').textContent='دخول';vin.hidden=false;vup.hidden=true;vacc.hidden=true;root.style.removeProperty('--pull-progress');}function show(s){reset();if(s==='before'){root.classList.add('hint-ready');}if(s==='pull'){root.classList.add('is-pulling');root.style.setProperty('--pull-progress','.52');pull.style.transform='translateY(42px) scaleY(1.2)';root.querySelector('.lamp-bulb').style.opacity='.55';hint.textContent='كمّل سحب الخيط';root.classList.add('hint-ready');}if(s==='threshold'){root.classList.add('is-pulling','is-threshold');root.style.setProperty('--pull-progress','.94');pull.style.transform='translateY(80px) scaleY(1.4)';root.querySelector('.lamp-bulb').style.opacity='.82';hint.textContent='قربت!';root.classList.add('hint-ready');}if(s==='flash'){root.classList.add('is-lit','is-lighting');root.querySelector('.lamp-bulb').style.opacity='1';root.querySelector('.lamp-inner').style.opacity='1';hint.hidden=true;card.hidden=false;card.classList.add('is-visible');root.classList.add('card-revealed');}if(s==='card'||s==='error'||s==='loading'||s==='signup'||s==='switch'){root.classList.add('is-lit','card-revealed');root.querySelector('.lamp-bulb').style.opacity='1';root.querySelector('.lamp-inner').style.opacity='1';hint.hidden=true;card.hidden=false;card.classList.add('is-visible');}if(s==='error'){root.classList.add('is-error');card.classList.add('is-error');err.textContent='بيانات الدخول مش صحيحة. راجع الرقم أو كلمة السر وحاول تاني.';}if(s==='loading'){root.classList.add('is-loading');go.disabled=true;go.querySelector('span').textContent='جاري الدخول';}if(s==='success'){root.classList.add('is-lit','is-success');root.dataset.loginState='success';hint.hidden=true;card.hidden=true;root.classList.add('card-revealed');}if(s==='signup'){root.classList.add('is-lit','card-revealed','is-new-account');root.querySelector('.lamp-bulb').style.opacity='1';hint.hidden=true;card.hidden=false;card.classList.add('is-visible');sampleSignup();}if(s==='switch'){root.classList.add('is-lit','card-revealed','is-account-switch');root.querySelector('.lamp-bulb').style.opacity='1';hint.hidden=true;card.hidden=false;card.classList.add('is-visible');sampleSwitch();}title.textContent=labels[s];buttons.forEach(b=>b.classList.toggle('active',b.dataset.state===s));}buttons.forEach(b=>b.addEventListener('click',()=>show(b.dataset.state)));show('before');})();
+</script></body></html>

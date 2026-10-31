@@ -1,0 +1,22 @@
+THE SQUAD v106 — TEST REPORT
+
+Static checks performed:
+- JavaScript syntax: 89/89 files passed `node --check`.
+- Existing project regression tests: 46/46 `tests/*_test.js` passed after updating historical version assertions to the current v106 build and updating obsolete expectations to the new server-authoritative architecture.
+- New security finalization assertions: 15/15 passed.
+- Cloud Functions source lint: passed (`node --check firebase-functions/index.js`).
+- ZIP integrity: verified after packaging.
+- Source comparison: no pre-existing project files were removed from v105.
+
+Not run / not claimed:
+- Firestore Rules Emulator tests: Firebase CLI and dependencies are not installed in this environment.
+- Storage Rules Emulator tests: not run.
+- Browser/Chromium tests: not run.
+- Live Firebase Authentication, custom-token, username/ID login tests: not run.
+- Live chat tests with two accounts, block tests, unread-trigger tests: not run.
+- Actual Storage upload/download and CORS test: not run.
+- Historical base64 message migration: not run; old messages remain supported in their current format.
+- App Check activation, TURN configuration, Push Worker deployment, budget alerts: not activated.
+- Load, Lighthouse, mobile device and multiplayer concurrency tests: not run.
+
+Important: 46/46 are repository static/regression scripts, not live service tests. v106 is NOT approved for public release until the deployment gate is completed.

@@ -1,0 +1,25 @@
+THE SQUAD v104 — TEST REPORT
+===========================
+
+Static JavaScript syntax:
+- 87 JavaScript files checked with `node --check`: PASS (0 syntax errors).
+
+JavaScript test scripts:
+- 44 test scripts executed: PASS.
+- 0 test script failures.
+- 2 helper modules (tests/fakefb.js and tests/fakefb2.js) were not counted as tests; they are browser harness helpers and reference window/localStorage.
+- Added v104 checks for private user-document reads, public-profile projection, per-user chat metadata, sender-bound message preview, group admin update restrictions, and message media payload shape.
+- Updated historical tests whose only failure was pinning the app/cache marker to an older release version.
+
+Static HTML local-reference scan:
+- 0 missing local src/href references in root HTML files.
+
+Not executed / not claimed as passing:
+- Firebase Rules compiler or Firebase Emulator tests (firebase-tools / rules-unit-testing not installed).
+- Browser tests: Playwright Chromium executable is not present in the environment.
+- Live Firebase Auth signup/login/password reset/email verification.
+- Two-account chat, blocking, receipt, unread-counter and media integration tests.
+- Storage upload/download permission tests, TURN/WebRTC calls, push notifications.
+- Lighthouse, mobile device testing, load/stress tests.
+
+Release ZIP integrity is checked separately after packaging.

@@ -1,0 +1,4 @@
+The Squad v112 local verification
+- Files changed: world.js, firestore.rules, index.html, sw.js, version.json; added CHANGES-v112.md and TEST-REPORT-v112.txt.
+- Firebase config and .firebaserc intentionally untouched.
+- No Firebase deployment, emulator, browser PWA install, offline-device test, or live multiplayer test performed.

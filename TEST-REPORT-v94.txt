@@ -1,0 +1,195 @@
+# v94 Stage 2 Test Report
+
+- JavaScript syntax: 38 files checked; errors: 0.
+- app-preview.html inline JavaScript: PASS.
+- Node test files: 37; PASS.
+- ui2_harness.py: PASS.
+- Protected files unchanged: 10/10.
+- ZIP integrity checked after packaging.
+- Browser visual/device test: NOT RUN.
+- Firebase live sign-in / Firestore / Storage / Functions: NOT TESTED.
+
+## Node test output (tail)
+y_flying_spur
+PASS: server price entry exists for mercedes_maybach_s_class
+PASS: server price entry exists for mercedes_benz_s_class
+PASS: server price entry exists for bmw_7_series
+PASS: server price entry exists for audi_a8_l
+PASS: server price entry exists for lexus_ls
+PASS: server price entry exists for porsche_panamera
+PASS: server price entry exists for rolls_royce_cullinan
+PASS: server price entry exists for bentley_bentayga
+PASS: server price entry exists for range_rover_sv
+PASS: server price entry exists for mercedes_maybach_gls
+PASS: server price entry exists for cadillac_escalade_v
+PASS: server price entry exists for lexus_lx
+PASS: server price entry exists for genesis_gv80
+PASS: server price entry exists for bmw_x7
+PASS: server price entry exists for audi_q8
+PASS: server price entry exists for land_rover_defender_130
+PASS: server price entry exists for rolls_royce_spectre
+PASS: server price entry exists for bentley_continental_gt
+PASS: server price entry exists for bmw_8_series
+PASS: server price entry exists for lexus_lc_500
+PASS: server price entry exists for mercedes_benz_cle_coupe
+PASS: server price entry exists for maserati_quattroporte
+PASS: server price entry exists for aston_martin_rapide
+PASS: server price entry exists for alfa_romeo_giulia_quadrifoglio
+PASS: server price entry exists for genesis_g90
+PASS: server price entry exists for cadillac_celestiq
+PASS: server price entry exists for lucid_air
+PASS: server price entry exists for mercedes_benz_eqs
+PASS: server price entry exists for bmw_i7
+PASS: server price entry exists for porsche_taycan
+PASS: server price entry exists for audi_e_tron_gt
+PASS: server price entry exists for tesla_model_s_plaid
+PASS: server price entry exists for cadillac_lyriq
+PASS: server price entry exists for rivian_r1s
+PASS: server price entry exists for genesis_electrified_g80
+PASS: server price entry exists for lotus_eletre
+PASS: server price entry exists for aston_martin_dbx707
+PASS: server price entry exists for lamborghini_urus
+PASS: server price entry exists for ferrari_purosangue
+PASS: server price entry exists for mercedes_amg_g_63
+PASS: server price entry exists for range_rover_sport_sv
+PASS: server price entry exists for cadillac_ct5_v_blackwing
+PASS: server price entry exists for maserati_ghibli
+PASS: server price entry exists for lexus_gx
+PASS: server price entry exists for lincoln_navigator
+PASS: server price entry exists for infiniti_qx80
+PASS: server price entry exists for ferrari_sf90_stradale
+PASS: server price entry exists for ferrari_812_superfast
+PASS: server price entry exists for lamborghini_revuelto
+PASS: server price entry exists for lamborghini_huracan
+PASS: server price entry exists for mclaren_750s
+PASS: server price entry exists for mclaren_p1
+PASS: server price entry exists for bugatti_chiron
+PASS: server price entry exists for bugatti_tourbillon
+PASS: server price entry exists for koenigsegg_jesko
+PASS: server price entry exists for pagani_huayra
+PASS: server price entry exists for porsche_911_gt3_rs
+PASS: server price entry exists for porsche_718_cayman_gt4
+PASS: server price entry exists for chevrolet_corvette_c8_z06
+PASS: server price entry exists for aston_martin_vantage
+PASS: server price entry exists for aston_martin_dbs
+PASS: server price entry exists for nissan_gt_r_nismo
+PASS: server price entry exists for audi_r8_v10
+PASS: server price entry exists for mercedes_amg_gt_black_series
+PASS: server price entry exists for maserati_mc20
+PASS: server price entry exists for ford_gt
+PASS: server price entry exists for ford_mustang_dark_horse
+PASS: server price entry exists for chevrolet_camaro_zl1
+PASS: server price entry exists for dodge_challenger_hellcat
+PASS: server price entry exists for bmw_m4_competition
+PASS: server price entry exists for bmw_m2
+PASS: server price entry exists for mercedes_amg_c63_s
+PASS: server price entry exists for audi_rs6_avant
+PASS: server price entry exists for toyota_gr_supra
+PASS: server price entry exists for nissan_z
+PASS: server price entry exists for alfa_romeo_4c
+PASS: server price entry exists for honda_civic_type_r
+PASS: server price entry exists for toyota_gr_yaris
+PASS: server price entry exists for volkswagen_golf_r
+PASS: server price entry exists for mercedes_amg_a45_s
+PASS: server price entry exists for audi_rs3
+PASS: server price entry exists for bmw_m3
+PASS: server price entry exists for subaru_wrx_sti
+PASS: server price entry exists for hyundai_elantra_n
+PASS: server price entry exists for lexus_is_500_f_sport
+PASS: server price entry exists for cadillac_ct4_v_blackwing
+PASS: server price entry exists for mazda_mx_5_miata
+PASS: server price entry exists for toyota_gr86
+PASS: server price entry exists for subaru_brz
+PASS: server price entry exists for lotus_emira
+PASS: server price entry exists for lotus_evora
+PASS: server price entry exists for alpine_a110
+PASS: server price entry exists for caterham_seven
+PASS: server price entry exists for ariel_atom
+PASS: server price entry exists for ktm_x_bow
+PASS: server price entry exists for ginetta_g56
+PASS: server price entry exists for toyota_corolla
+PASS: server price entry exists for toyota_camry
+PASS: server price entry exists for honda_civic
+PASS: server price entry exists for honda_accord
+PASS: server price entry exists for nissan_sunny_versa
+PASS: server price entry exists for nissan_altima
+PASS: server price entry exists for hyundai_elantra
+PASS: server price entry exists for hyundai_accent
+PASS: server price entry exists for kia_cerato_forte_k4
+PASS: server price entry exists for mazda_3
+PASS: server price entry exists for toyota_rav4
+PASS: server price entry exists for honda_cr_v
+PASS: server price entry exists for hyundai_tucson
+PASS: server price entry exists for kia_sportage
+PASS: server price entry exists for mazda_cx_5
+PASS: server price entry exists for nissan_qashqai
+PASS: server price entry exists for volkswagen_tiguan
+PASS: server price entry exists for ford_edge
+PASS: server price entry exists for geely_coolray
+PASS: server price entry exists for mg_6
+PASS: legacy catalog IDs normalized for asset transfers
+PASS: transfer removes duplicate legacy ownership alias
+PASS: transfer preserves compatibility alias for recipient
+Economy compatibility checks passed.
+PASS: district renderer has lower pixel-ratio caps
+PASS: district multiplayer sends are throttled to ~6.7/s
+PASS: district coin checks are throttled
+PASS: low-memory devices default to lightweight quality
+PASS: room quality modes use bounded pixel ratios
+v69 performance checks passed.
+v70 Living Palace foundation checks passed: 6/6
+v71 Living Palace engine: 23 assertions passed
+PASS v72 engine static assertions: 17
+PASS v73 premium design assertions: 11
+PASS v74 city expansion assertions
+PASS v80 city-life expansion assertions: 8
+PASS v81 neighborhood realism assertions: 11
+PASS v82 living city assertions: 10
+PASS v83 photoreal city assertions: 11
+PASS v84 vehicle, asphalt and fountain water assertions
+PASS v85 road markings, wet tire spray, brake/steering response, fountain optimization and drive physics
+PASS v86 camera/stair stability checks: 8 (stair flights inspected: 20)
+✓ city map exposes the generated coin pickup array
+✓ coin pickups are wired to the visible city pickup renderer
+✓ server coin claim range matches actual generated map count
+✓ arbitrary out-of-map coin IDs are rejected
+✓ economy actions have a transaction-backed minimum spacing guard
+✓ economy actions have a rolling per-minute cap
+✓ wallet reward credits reject safe-integer overflow
+✓ bank deposits and withdrawals reject overflow
+✓ bank transfers reject recipient balance overflow
+✓ client continues to call authoritative economy endpoints
+✓ Firestore economy records remain inaccessible to clients
+✓ Firebase rules file remains versioned without client-side changes
+✓ service worker cache bumped for v87
+✓ project version reports v87
+
+14/14 v87 economy guardrail checks passed.
+✓ v90 build marker and service-worker cache are updated
+✓ Firestore rules are not changed by the multiplayer hardening
+✓ network status starts as connecting
+✓ valid remote player snapshots are accepted and names sanitized
+✓ out-of-bounds remote player snapshots are rejected
+✓ stale remote player snapshots are rejected
+✓ unknown or malformed remote car state is rejected with its player record
+✓ valid chat messages are accepted and sorted by timestamp
+✓ empty and stale chat messages are ignored
+✓ invalid local player coordinates are never sent
+✓ valid player position is sent with bounded display name
+✓ unknown local car model is not sent
+✓ valid known car state is sent for synchronization
+✓ chat text strips control characters and caps at 200 characters
+✓ network UI includes a visible connection indicator and browser reconnect hooks
+✓ client documents that Firestore rules remain an explicit external boundary
+
+16/16 v90 multiplayer synchronization checks passed.
+v90 world performance and responsive UI: 11/11 passed
+PASS v94 social stage 2 static assertions
+
+
+## UI harness
+
+
+
+## Syntax errors
+[]

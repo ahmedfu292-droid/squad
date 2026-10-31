@@ -14,8 +14,8 @@ const PVL=[['none','محدش'],['contacts','جهات الاتصال'],['all','ا
 Object.assign(AE,{'x-rules':'مقدرتش أحفظ بيانات الحساب. غالباً لازم تنشر ملف firestore.rules الجديد في Firebase الأول','x-un':'اسم المستخدم محجوز، اختار اسم تاني','x-nouser':'مفيش حساب بالاسم ده','x-net':'مفيش نت، حاول تاني'});
 
 /* ---------- حالة الخطوات ---------- */
-const W={step:0,name:'',un:'',ph:null,cc:'20',phone:'',d:'',m:'',y:'',bio:'',city:'',pvPhone:'none',pvBday:'none',sid:'',pw:'',pw2:''};
-const STEPS=[['اسمك واسم المستخدم','ده اللي هيظهر لأصحابك'],['صورتك الشخصية','اختارها من جهازك أو صوّر دلوقتي (اختياري)'],['رقم الهاتف','مع مفتاح الدولة'],['تاريخ ميلادك','وعمرك بيتحسب لوحده'],['نبذة عنك','وبيانات اختيارية'],['وسيلة الدخول','رقمك الخاص وكلمة السر']];
+const W={step:0,name:'',un:'',email:'',ph:null,cc:'20',phone:'',d:'',m:'',y:'',bio:'',city:'',pvPhone:'none',pvBday:'none',sid:'',pw:'',pw2:''};
+const STEPS=[['اسمك واسم المستخدم','ده اللي هيظهر لأصحابك'],['صورتك الشخصية','اختياري'],['الدولة ورقم الهاتف','اختار بلدك ورقمك المحلي'],['تاريخ ميلادك','وعمرك بيتحسب لوحده'],['نبذة عنك','وبيانات اختيارية'],['بيانات تسجيل الدخول','بريدك الإلكتروني وكلمة مروره ورقمك الرسمي']];
 let unState='',unTimer=0;
 
 const ageOf=(y,m,d)=>{if(!y||!m||!d)return null;const D=new Date(+y,+m-1,+d);if(D.getFullYear()!=+y||D.getMonth()!=+m-1||D.getDate()!=+d)return null;
@@ -24,7 +24,8 @@ const ctry=cc=>CTR.find(c=>c[2]==cc)||CTR[0];
 const natPhone=(cc,raw)=>{let s=String(raw||'').replace(/[^\d]/g,'');s=s.replace(/^0+/,'');return s};
 const strength=p=>Math.min(4,(p.length>=6)+(p.length>=10)+(/[A-Za-z]/.test(p)&&/\d/.test(p))+(/[^A-Za-z0-9]/.test(p)));
 const rndSid=()=>{const a=new Uint32Array(1);crypto.getRandomValues(a);return String(1e9+Math.floor(a[0]/4294967296*9e9))};
-const freeId=n=>db.doc('ids/'+n).get().then(s=>!s.exists).catch(()=>true);
+// Fail closed: network/rules errors must never make a reserved ID appear available.
+const freeId=async n=>{try{const r=await callables.httpsCallable('checkAccountIdAvailability')({id:n});return !!r.data.available}catch(e){return false}};
 
 /* ---------- التبديل بين دخول / حساب جديد ---------- */
 function setM(m){mode=m;CARD.classList.toggle('signup',m=='up');
@@ -40,36 +41,57 @@ async function doLogin(){err('');const raw=$('#lid').value.trim().replace(/^@/,'
  if(!pw)return err('اكتب كلمة السر');
  const go=$('#go');go.disabled=true;
  try{
-  let sid=raw;
-  if(/^\d+$/.test(raw)){if(!OK(raw))throw{code:'x-fmt',m:'الرقم الخاص 10 أرقام وأول رقم مش صفر'}}
-  else{if(!UNRE.test(raw))throw{code:'x-fmt',m:'اسم المستخدم حروف إنجليزي وأرقام (3 إلى 20) وبيبدأ بحرف'};
-   const s=await db.doc('usernames/'+raw).get().catch(e=>{throw{code:e.code=='permission-denied'?'x-rules':'x-net'}});
-   if(!s.exists)throw{code:'x-nouser'};sid=s.data().sid}
-  await auth.signInWithEmailAndPassword(MAIL(sid),pw)}
+  if(/^\d+$/.test(raw)){
+   if(!OK(raw))throw{code:'x-fmt',m:'الرقم الخاص 10 أرقام وأول رقم مش صفر'};
+   const r=await callables.httpsCallable('accountIdLogin')({id:raw,password:pw});
+   await auth.signInWithCustomToken(r.data.token);
+  }else if(raw.includes('@')){
+   await auth.signInWithEmailAndPassword(raw,pw);
+  }else{
+   if(!UNRE.test(raw))throw{code:'x-fmt',m:'اسم المستخدم حروف إنجليزي وأرقام (3 إلى 20) وبيبدأ بحرف'};
+   const r=await callables.httpsCallable('usernameLogin')({username:raw,password:pw});
+   await auth.signInWithCustomToken(r.data.token);
+  }}
  catch(e){err(e.m||AE[e.code]||'حصلت مشكلة، حاول تاني')}
  go.disabled=false}
 $('#go').onclick=doLogin;
+// Password recovery is available only for real email accounts; legacy synthetic IDs need manual recovery.
+const resetBtn=document.getElementById('resetPassword');
+if(resetBtn)resetBtn.onclick=async()=>{
+ const email=String(document.getElementById('lid')?.value||'').trim().toLowerCase();
+ if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))return err('اكتب البريد الإلكتروني الحقيقي المرتبط بالحساب لاستلام رابط الاسترجاع. الحسابات القديمة التي تستخدم @squad.id تحتاج مسار استرجاع منفصل.');
+ resetBtn.disabled=true;
+ try{await auth.sendPasswordResetEmail(email);err('لو البريد مسجل، هيوصلك رابط استرجاع كلمة السر. راجع صندوق الوارد والرسائل غير المرغوب فيها.');}
+ catch(e){err('تعذر إرسال الرابط حاليًا. لو البريد مرتبط بحساب، راجع إعدادات البريد وحاول تاني بعد شوية.');}
+ finally{resetBtn.disabled=false;}
+};
 $('#pw').onkeydown=$('#lid').onkeydown=e=>{if(e.key=='Enter')doLogin()};
 
 /* ---------- إنشاء الحساب (الكتابة الفعلية في قاعدة البيانات) ---------- */
 window.signup=async function signup(n,pw,name,x){x=x||{};
- const cr=await auth.createUserWithEmailAndPassword(MAIL(n),pw),u=cr.user,b=db.batch();
+ const loginEmail=String(x.email||'').trim().toLowerCase();
+ const cr=await auth.createUserWithEmailAndPassword(loginEmail||MAIL(n),pw),u=cr.user,b=db.batch();
  const doc={sid:n,name,bio:x.bio||'',pins:[],created:FV.serverTimestamp(),pv:{phone:x.pvPhone||'none',bday:x.pvBday||'none'}};
  if(x.un)doc.un=x.un;if(x.city)doc.city=x.city;
- b.set(db.doc('users/'+u.uid),doc);b.set(db.doc('ids/'+n),{u:u.uid});
- if(x.un)b.set(db.doc('usernames/'+x.un),{u:u.uid,sid:n});
+ b.set(db.doc('users/'+u.uid),doc);
+ b.set(db.doc('publicProfiles/'+u.uid),{name,bio:x.bio||'',...(x.un?{un:x.un}:{}),...(x.city?{city:x.city}:{})});
+ b.set(db.doc('ids/'+n),{u:u.uid});
+ if(x.un)b.set(db.doc('usernames/'+x.un),{u:u.uid});
  if(x.ph)b.set(db.doc('photos/'+u.uid),{ph:x.ph});
  if(x.phone)b.set(db.doc('phones/'+u.uid),{v:x.phone});
  if(x.bday)b.set(db.doc('bdays/'+u.uid),{v:x.bday});
  try{await b.commit()}catch(e){await u.delete().catch(()=>{});throw{code:e&&e.code=='permission-denied'?'x-rules':'x-taken'}}
  try{await u.updateProfile({displayName:name})}catch(e){}
+ // Send verification for new real-email accounts. Signup remains usable while the user verifies;
+ // enforcement is deferred until legacy-account migration and recovery are designed.
+ if(loginEmail){try{await u.sendEmailVerification()}catch(e){console.warn('Email verification could not be sent',e)}}
  if(x.ph)PH[u.uid]=x.ph};
 
 /* ---------- واجهة الخطوات ---------- */
 const E=s=>document.getElementById(s);
 function grab(){const g=id=>{const e=E(id);return e?e.value:undefined};
  const set=(k,v)=>{if(v!==undefined)W[k]=v};
- set('name',g('sn'));set('un',g('su')!==undefined?g('su').trim().replace(/^@/,'').toLowerCase():undefined);set('cc',g('scc'));set('phone',g('sph'));
+ set('name',g('sn'));set('email',g('semail'));set('un',g('su')!==undefined?g('su').trim().replace(/^@/,'').toLowerCase():undefined);set('cc',g('scc'));set('phone',g('sph'));
  set('d',g('sd'));set('m',g('sm'));set('y',g('sy'));set('bio',g('sbio'));set('city',g('scity'));set('sid',g('ssid'));set('pw',g('sp1'));set('pw2',g('sp2'))}
 const seg=(k,v)=>`<div class="seg" data-k="${k}">${PVL.map(([a,t])=>`<button type="button" class="${v==a?'on':''}" data-v="${a}">${t}</button>`).join('')}</div>`;
 function body(i){
@@ -97,10 +119,11 @@ function body(i){
   <label>المدينة أو البلد <small class="mu">(اختياري)</small><input id="scity" maxlength="40" placeholder="مثال: القاهرة" value="${esc(W.city)}"></label>
   <div class="pvb"><b>مين يشوف رقم هاتفك؟</b>${seg('pvPhone',W.pvPhone)}<b>مين يشوف تاريخ ميلادك؟</b>${seg('pvBday',W.pvBday)}<small class="mu">تقدر تغيّرهم بعدين من الإعدادات.</small></div>`;
  const s=strength(W.pw);
- return `<label>رقمك الخاص (10 أرقام)<div class="row"><input id="ssid" inputmode="numeric" maxlength="10" autocomplete="off" placeholder="5043817296" value="${esc(W.sid)}"><button id="srnd" class="ic" type="button" title="اقترح رقم متاح">🎲</button></div><small id="ssst"></small></label>
+ return `<label>البريد الإلكتروني<input id="semail" type="email" inputmode="email" autocomplete="email" placeholder="name@example.com" value="${esc(W.email)}"></label>
+  <label>رقمك الرسمي (10 أرقام)<div class="row"><input id="ssid" inputmode="numeric" maxlength="10" autocomplete="off" placeholder="5043817296" value="${esc(W.sid)}"><button id="srnd" class="ic" type="button" title="اقترح رقم متاح">🎲</button></div><small id="ssst"></small></label>
   <label>كلمة السر<div class="row"><input id="sp1" type="password" autocomplete="new-password" placeholder="6 حروف على الأقل" value="${esc(W.pw)}"><button id="seye" class="ic" type="button">👁</button></div><div class="pm"><i id="spm" style="width:${s*25}%"></i></div></label>
   <label>تأكيد كلمة السر<input id="sp2" type="password" autocomplete="new-password" placeholder="اكتبها تاني" value="${esc(W.pw2)}"></label>
-  <p class="note">مفيش إيميل ولا تليفون بيستعيد الحساب. احفظ رقمك وكلمة السر. كلمة السر بتتخزّن مشفّرة عند Firebase ومش بنقدر نشوفها.</p>`}
+  <p class="note">استخدم بريدًا تملكه. كلمة المرور تُدار بواسطة Firebase Authentication ولا نخزنها كنص داخل قاعدة بيانات المنصة. رقمك الرسمي معرّف للحساب وليس كلمة مرور.</p>`}
 function drawStep(){const i=W.step,[t,s]=STEPS[i],V=E('vup');
  V.innerHTML=`<div class="stp">${STEPS.map((_,k)=>`<i class="${k<i?'dn':k==i?'cu':''}"></i>`).join('')}</div>
  <div class="sth"><span class="sn">${i+1}/${STEPS.length}</span><h2 class="ah2">${t}</h2><p class="mu sub">${s}</p></div>
@@ -121,7 +144,7 @@ function vStep(i){grab();
  if(i==3){if(!W.d||!W.m||!W.y)return 'اختار اليوم والشهر والسنة';const a=ageOf(W.y,W.m,W.d);
   if(a===null)return 'التاريخ ده مش موجود في التقويم';if(a<0)return 'تاريخ الميلاد في المستقبل';
   if(a<MINAGE)return 'لازم تكون '+MINAGE+' سنة على الأقل عشان تعمل حساب';if(a>110)return 'راجع سنة الميلاد'}
- if(i==5){if(!OK(W.sid))return 'الرقم الخاص لازم 10 أرقام وأول رقم مش صفر';if(W.pw.length<6)return 'كلمة السر 6 حروف على الأقل';
+ if(i==5){if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(W.email))return 'اكتب بريد إلكتروني صحيح';if(!OK(W.sid))return 'الرقم الخاص لازم 10 أرقام وأول رقم مش صفر';if(W.pw.length<6)return 'كلمة السر 6 حروف على الأقل';
   if(W.pw!=W.pw2)return 'تأكيد كلمة السر مش زي الأولى'}
  return ''}
 async function nextStep(){const i=W.step,m=vStep(i);if(m){err(m);return}
@@ -134,10 +157,9 @@ async function finish(){
  const b=E('snx');b.disabled=true;err('');
  try{
   if(!(await freeId(W.sid)))throw{code:'x-taken'};
-  const un=await db.doc('usernames/'+W.un).get().catch(()=>null);if(un&&un.exists)throw{code:'x-un'};
   const mm=String(W.m).padStart(2,'0'),dd=String(W.d).padStart(2,'0');
-  await signup(W.sid,W.pw,W.name.trim(),{un:W.un,bio:W.bio.trim(),city:W.city.trim(),ph:W.ph,phone:'+'+W.cc+natPhone(W.cc,W.phone),bday:`${W.y}-${mm}-${dd}`,pvPhone:W.pvPhone,pvBday:W.pvBday});
-  Object.assign(W,{step:0,name:'',un:'',ph:null,phone:'',d:'',m:'',y:'',bio:'',city:'',sid:'',pw:'',pw2:''});CV.img=null}
+  await signup(W.sid,W.pw,W.name.trim(),{email:W.email,un:W.un,bio:W.bio.trim(),city:W.city.trim(),ph:W.ph,phone:'+'+W.cc+natPhone(W.cc,W.phone),bday:`${W.y}-${mm}-${dd}`,pvPhone:W.pvPhone,pvBday:W.pvBday});
+  Object.assign(W,{step:0,name:'',un:'',email:'',ph:null,phone:'',d:'',m:'',y:'',bio:'',city:'',sid:'',pw:'',pw2:''});CV.img=null}
  catch(e){const code=e&&e.code;if(code=='x-un'){W.step=0;drawStep();unState='bad';E('sust')&&(E('sust').textContent='❌ محجوز');}
   err(AE[code]||'حصلت مشكلة، حاول تاني');E('snx')&&(E('snx').disabled=false);return}}
 E('vup').addEventListener('click',e=>{const t=e.target.closest('button');if(!t)return;
@@ -166,10 +188,7 @@ async function checkUn(){const el=E('sust'),u=(E('su')?E('su').value:W.un).trim(
  if(!u){el.textContent='';el.className='';unState='';return}
  if(!UNRE.test(u)){el.textContent='الاسم لازم 3 لـ 20 حرف/رقم وبيبدأ بحرف';el.className='';unState='';return}
  if(RESERVED.includes(u)){el.textContent='❌ محجوز للنظام';el.className='bad';return unState='bad'}
- el.textContent='بنتأكد...';el.className='';
- let st;try{const s=await db.doc('usernames/'+u).get();st=s.exists?'bad':'ok'}catch(e){st='x'}
- const cur=E('su');if(!cur||cur.value.trim().toLowerCase()!=u)return st;
- unState=st=='x'?'':st;el.textContent=st=='ok'?'✅ متاح':st=='bad'?'❌ محجوز':'مقدرتش أتأكد (انشر قواعد Firestore الجديدة)';el.className=st=='x'?'':st;return st}
+ unState='ok';el.textContent='سيتم تأكيد توفر الاسم عند إنشاء الحساب';el.className='ok';return 'ok'}
 async function checkSid(){const el=E('ssst'),n=E('ssid')?E('ssid').value:'';if(!el)return;el.className='';el.textContent='';if(!n)return;
  if(!OK(n))return el.textContent='10 أرقام وأول رقم مش صفر';
  const f=await freeId(n);if(!E('ssid')||E('ssid').value!=n)return;el.textContent=f?'✅ الرقم متاح':'❌ الرقم محجوز';el.className=f?'ok':'bad'}

@@ -6,6 +6,14 @@ service cloud.firestore {
     function isMember(c) {
       return signed() && request.auth.uid in get(/databases/$(database)/documents/chats/$(c)).data.members;
     }
+    // Private conversations are unavailable for messaging once either participant blocks the other.
+    // Group chats retain their existing membership behavior; block controls private direct messages.
+    function privateChatUnblocked(c) {
+      let chat = get(/databases/$(database)/documents/chats/$(c)).data;
+      return chat.type != 'p' || (chat.members is list && chat.members.size() == 2
+        && !exists(/databases/$(database)/documents/users/$(chat.members[0])/blocked/$(chat.members[1]))
+        && !exists(/databases/$(database)/documents/users/$(chat.members[1])/blocked/$(chat.members[0])));
+    }
 
     // ---------- الخصوصية (الصورة وآخر ظهور) ----------
     // pv = إعدادات خصوصية المستخدم داخل مستنده: photo / ls = all | contacts | none ، st = c | p ، rr = true | false
@@ -35,32 +43,52 @@ service cloud.firestore {
 
     // ملف كل مستخدم: أي حد مسجّل يقرأ (عشان الأسماء)، وصاحبه بس يكتب. الرقم (sid) ما يتغيّرش أبداً.
     match /users/{u} {
-      allow read: if signed();
+      // Private account document (includes sid): owner only.
+      allow read: if signed() && request.auth.uid == u;
       allow create: if signed() && request.auth.uid == u
         && request.resource.data.sid.matches('^[1-9][0-9]{9}$')
-        && request.resource.data.keys().hasOnly(['sid','name','bio','pins','follow','created','ph','arch','mute','pv','un','city'])
+        && request.resource.data.keys().hasOnly(['sid','name','bio','pins','follow','created','ph','arch','mute','pv','un','city','hiddenChats'])
         && request.resource.data.name is string && request.resource.data.name.size() <= 40
+        && (!('hiddenChats' in request.resource.data) || (request.resource.data.hiddenChats is list && request.resource.data.hiddenChats.size() <= 500 && request.resource.data.hiddenChats.toSet().size() == request.resource.data.hiddenChats.size()))
         && (!('pv' in request.resource.data) || pvOk(request.resource.data.pv));
       allow update: if signed() && request.auth.uid == u
         && request.resource.data.sid == resource.data.sid
-        && request.resource.data.keys().hasOnly(['sid','name','bio','pins','follow','created','ph','arch','mute','pv','un','city'])
+        && request.resource.data.keys().hasOnly(['sid','name','bio','pins','follow','created','ph','arch','mute','pv','un','city','hiddenChats'])
         && request.resource.data.name.size() <= 40
+        && (!('hiddenChats' in request.resource.data) || (request.resource.data.hiddenChats is list && request.resource.data.hiddenChats.size() <= 500 && request.resource.data.hiddenChats.toSet().size() == request.resource.data.hiddenChats.size()))
         && (!('pv' in request.resource.data) || pvOk(request.resource.data.pv))
         && (!('un' in request.resource.data) || request.resource.data.un.matches('^[a-z][a-z0-9_.]{2,19}$'))
-        && (!('un' in resource.data) || request.resource.data.get('un', '') == resource.data.un)
+        && request.resource.data.get('un', '') == resource.data.get('un', '')
         && (!('city' in request.resource.data) || (request.resource.data.city is string && request.resource.data.city.size() <= 40));
+    }
+
+    // Public profile projection: never contains sid, email, phone, birth date or private settings.
+    match /publicProfiles/{u} {
+      allow read: if signed();
+      allow create: if signed() && request.auth.uid == u
+        && request.resource.data.keys().hasOnly(['name','bio','un','city'])
+        && request.resource.data.name is string && request.resource.data.name.size() <= 40
+        && (!('bio' in request.resource.data) || (request.resource.data.bio is string && request.resource.data.bio.size() <= 160))
+        && (!('un' in request.resource.data) || request.resource.data.un.matches('^[a-z][a-z0-9_.]{2,19}$'))
+        && (!('city' in request.resource.data) || (request.resource.data.city is string && request.resource.data.city.size() <= 40));
+      allow update: if signed() && request.auth.uid == u
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['name','bio','city'])
+        && request.resource.data.name is string && request.resource.data.name.size() <= 40
+        && (!('bio' in request.resource.data) || (request.resource.data.bio is string && request.resource.data.bio.size() <= 160))
+        && (!('city' in request.resource.data) || (request.resource.data.city is string && request.resource.data.city.size() <= 40));
+      allow delete: if signed() && request.auth.uid == u;
     }
 
     // v26: اسم المستخدم (مرتبط برقم الحساب). الإنشاء بس، ومربوط بمستند المستخدم نفسه، فمستحيل يتكرر ولا يتغيّر.
     // get بس (من غير list) عشان الدخول باسم المستخدم والتأكد إنه متاح قبل التسجيل.
     match /usernames/{n} {
-      allow get: if true;
+      // Server-only lookup: the mapping may contain legacy SID data.
+      allow get: if false;
       allow list: if false;
       allow create: if signed() && n.matches('^[a-z][a-z0-9_.]{2,19}$')
-        && request.resource.data.keys().hasOnly(['u','sid'])
+        && request.resource.data.keys().hasOnly(['u'])
         && request.resource.data.u == request.auth.uid
-        && getAfter(/databases/$(database)/documents/users/$(request.auth.uid)).data.get('un', '') == n
-        && getAfter(/databases/$(database)/documents/users/$(request.auth.uid)).data.sid == request.resource.data.sid;
+        && getAfter(/databases/$(database)/documents/publicProfiles/$(request.auth.uid)).data.get('un', '') == n;
       allow update, delete: if false;
     }
 
@@ -94,7 +122,7 @@ service cloud.firestore {
     // v28c/d: الغرفة 3D. الرومات الخاصة (p_xxxxxx) محتاجة عضوية في rooms/{id}/members، والعضوية بتتعمل بس بباسورد صح (hash).
     // الهاش المخزّن في roomkeys مقفول قراءة على الكل، والقواعد بس هي اللي بتقارن بيه (get داخل القواعد).
     function roomOk(room) {
-      return room == 'main' || (room.matches('p_[a-z0-9]{6}')
+      return room == 'main' || room.matches('srv_(eg|sa|ae|kw|qa|bh|om|jo|lb|ma|dz|tn|us|gb|de|fr|tr|in|jp|br)') || (room.matches('p_[a-z0-9]{6}')
         && exists(/databases/$(database)/documents/rooms/$(room)/members/$(request.auth.uid)));
     }
     match /world/{room}/players/{u} {
@@ -229,13 +257,54 @@ service cloud.firestore {
     // دفتر الأرقام: كل رقم مستند واحد. الإنشاء بس (مفيش تعديل ولا مسح) يعني مستحيل رقمين يتكرروا.
     // القراءة get بس (من غير list) عشان نعرف الرقم متاح ولا لأ قبل التسجيل.
     match /ids/{n} {
-      allow get: if true;
+      // Username mappings are server-only: clients must never receive the private SID.
+      allow get: if false;
       allow list: if false;
       allow create: if signed() && n.matches('^[1-9][0-9]{9}$')
         && request.resource.data.keys().hasOnly(['u'])
         && request.resource.data.u == request.auth.uid
         && getAfter(/databases/$(database)/documents/users/$(request.auth.uid)).data.sid == n;
       allow update, delete: if false;
+    }
+
+    // Validate per-user chat metadata: a member may only write their own
+    // read receipt / typing marker. Message preview is bound to the sender.
+    function ownMapChange(oldMap, newMap) {
+      return oldMap is map && newMap is map
+        && newMap.diff(oldMap).affectedKeys().hasOnly([request.auth.uid]);
+    }
+    function validPrivateUnreadUpdate(oldUn, newUn) {
+      let members = resource.data.members;
+      let other = members[0] == request.auth.uid ? members[1] : members[0];
+      let changed = newUn.diff(oldUn).affectedKeys();
+      return changed.hasOnly(members)
+        && (!changed.hasAny([request.auth.uid]) || newUn.get(request.auth.uid, 0) == 0)
+        && (!changed.hasAny([other]) || newUn.get(other, 0) == oldUn.get(other, 0) + 1);
+    }
+    function validChatMetaUpdate() {
+      let changed = request.resource.data.diff(resource.data).affectedKeys();
+      let oldUn = resource.data.get('un', {});
+      let newUn = request.resource.data.get('un', {});
+      return changed.hasOnly(['last','lt','seen','un','ty'])
+        // Preview and timestamp are always written together by the sender.
+        && ( !changed.hasAny(['last','lt']) || (changed.hasAll(['last','lt'])
+          && request.resource.data.last is map
+          && request.resource.data.last.keys().hasOnly(['tx','u','n'])
+          && request.resource.data.last.u == request.auth.uid
+          && request.resource.data.last.tx is string
+          && request.resource.data.last.tx.size() <= 80
+          && request.resource.data.last.n is string
+          && request.resource.data.last.n.size() <= 40
+          && request.resource.data.lt == request.time) )
+        // Read receipts and typing state are self-only.
+        && (!changed.hasAny(['seen']) || ownMapChange(resource.data.get('seen', {}), request.resource.data.get('seen', {})))
+        && (!changed.hasAny(['ty']) || ownMapChange(resource.data.get('ty', {}), request.resource.data.get('ty', {})))
+        // Clients may clear only their own unread counter. Increments are performed
+        // by the trusted onChatMessageCreated server trigger after message creation.
+        && (!changed.hasAny(['un']) || (oldUn is map && newUn is map
+          && newUn.keys().hasOnly(resource.data.members)
+          && newUn.diff(oldUn).affectedKeys().hasOnly([request.auth.uid])
+          && newUn.get(request.auth.uid, 0) == 0));
     }
 
     // المحادثات (خاصة type=p، جروب type=g)
@@ -252,8 +321,7 @@ service cloud.firestore {
 
       allow update: if signed() && (
         // عضو: آخر رسالة / القراءة / غير المقروء / بيكتب
-        (request.auth.uid in resource.data.members
-          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['last','lt','seen','un','ty']))
+        (request.auth.uid in resource.data.members && validChatMetaUpdate())
         // عضو: تغيير اسمه هو بس
         || (request.auth.uid in resource.data.members
           && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['names'])
@@ -264,7 +332,11 @@ service cloud.firestore {
           && request.resource.data.get('pm', {}).keys().hasOnly(['id','tx','n']))
         // أدمن الجروب: أي تعديل ما عدا نقل الإدارة
         || (resource.data.type == 'g' && resource.data.ad == request.auth.uid
-          && request.resource.data.ad == resource.data.ad && request.resource.data.type == 'g')
+          && request.resource.data.ad == resource.data.ad && request.resource.data.type == 'g'
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['members','names'])
+          && request.resource.data.members is list
+          && (request.resource.data.members.size() == resource.data.members.size() + 1
+            || request.resource.data.members.size() == resource.data.members.size() - 1))
         // عضو بيخرج من الجروب
         || (resource.data.type == 'g' && request.auth.uid in resource.data.members
           && !(request.auth.uid in request.resource.data.members)
@@ -280,18 +352,32 @@ service cloud.firestore {
     }
 
     match /chats/{c}/messages/{m} {
-      allow read: if isMember(c);
-      allow create: if isMember(c)
+      allow read: if isMember(c) && privateChatUnblocked(c);
+      allow create: if isMember(c) && privateChatUnblocked(c)
         && request.resource.data.u == request.auth.uid
         && request.resource.data.t == request.time
-        && request.resource.data.keys().hasOnly(['u','n','t','tx','rp','r','im','au','fw'])
-        && (!('tx' in request.resource.data) || request.resource.data.tx.size() <= 2000);
-      allow update: if isMember(c) && request.resource.data.u == resource.data.u && (
+        && request.resource.data.keys().hasOnly(['u','n','t','tx','rp','r','im','au','imPath','auPath','fw'])
+        && request.resource.data.n is string && request.resource.data.n.size() <= 40
+        && (!('tx' in request.resource.data) || (request.resource.data.tx is string && request.resource.data.tx.size() <= 2000))
+        && (!('im' in request.resource.data) || (request.resource.data.im is string && request.resource.data.im.size() <= 200000 && request.resource.data.im.matches('data:image/(jpeg|png|webp);base64,.*')))
+        && (!('au' in request.resource.data) || (request.resource.data.au is string && request.resource.data.au.size() <= 200000 && request.resource.data.au.matches('data:audio/.*;base64,.*')))
+        && (!('imPath' in request.resource.data) || (request.resource.data.imPath is string && request.resource.data.imPath.matches('chat-media/' + c + '/' + request.auth.uid + '/.*')))
+        && (!('auPath' in request.resource.data) || (request.resource.data.auPath is string && request.resource.data.auPath.matches('chat-media/' + c + '/' + request.auth.uid + '/.*')))
+        && (!('fw' in request.resource.data) || request.resource.data.fw is bool)
+        && (!('rp' in request.resource.data) || (request.resource.data.rp is map && request.resource.data.rp.keys().hasOnly(['n','tx']) && request.resource.data.rp.get('n','') is string && request.resource.data.rp.get('n','').size() <= 40 && request.resource.data.rp.get('tx','') is string && request.resource.data.rp.get('tx','').size() <= 80))
+        && (('tx' in request.resource.data) || ('im' in request.resource.data) || ('au' in request.resource.data) || ('imPath' in request.resource.data) || ('auPath' in request.resource.data));
+      allow update: if isMember(c) && privateChatUnblocked(c) && request.resource.data.u == resource.data.u && (
         (resource.data.u == request.auth.uid
-          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['tx','im','au','ed','del','r']))
-        || request.resource.data.diff(resource.data).affectedKeys().hasOnly(['r'])
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['tx','im','au','imPath','auPath','ed','del'])
+          && (!('tx' in request.resource.data) || (request.resource.data.tx is string && request.resource.data.tx.size() <= 2000))
+          && (!('im' in request.resource.data) || (request.resource.data.im is string && request.resource.data.im.size() <= 200000 && request.resource.data.im.matches('data:image/(jpeg|png|webp);base64,.*')))
+          && (!('au' in request.resource.data) || (request.resource.data.au is string && request.resource.data.au.size() <= 200000 && request.resource.data.au.matches('data:audio/.*;base64,.*')))
+          && (!('imPath' in request.resource.data) || (request.resource.data.imPath is string && request.resource.data.imPath.matches('chat-media/' + c + '/' + request.auth.uid + '/.*')))
+          && (!('auPath' in request.resource.data) || (request.resource.data.auPath is string && request.resource.data.auPath.matches('chat-media/' + c + '/' + request.auth.uid + '/.*'))))
+        || (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['r'])
+          && request.resource.data.get('r', {}).diff(resource.data.get('r', {})).affectedKeys().hasOnly([request.auth.uid]))
       );
-      allow delete: if isMember(c) && (resource.data.u == request.auth.uid
+      allow delete: if isMember(c) && privateChatUnblocked(c) && (resource.data.u == request.auth.uid
         || get(/databases/$(database)/documents/chats/$(c)).data.ad == request.auth.uid);
     }
 
@@ -427,5 +513,155 @@ service cloud.firestore {
           && (request.resource.data.mc - resource.data.mc == 1 || request.resource.data.mc - resource.data.mc == -1)));
       allow delete: if signed() && resource.data.ad == request.auth.uid;
     }
+
+    // ===== v95 SOCIAL ADDITION: المنشورات العامة ومنشورات المتابعين =====
+    function socialSigned() { return request.auth != null; }
+    function socialFollowing(owner) {
+      return socialSigned() && exists(/databases/$(database)/documents/users/$(request.auth.uid)/following/$(owner));
+    }
+    function socialNotBlocked(owner) {
+      return socialSigned()
+        && !exists(/databases/$(database)/documents/users/$(owner)/blocked/$(request.auth.uid))
+        && !exists(/databases/$(database)/documents/users/$(request.auth.uid)/blocked/$(owner));
+    }
+    function validPost(p) {
+      return p.keys().hasOnly(['authorUid','authorName','authorPhoto','text','visibility','imagePaths','imageUrls','likeCount','commentCount','lastCommentId','status','createdAt','updatedAt'])
+        && p.authorUid == request.auth.uid
+        && p.authorName is string && p.authorName.size() <= 40
+        && p.authorPhoto is string && p.authorPhoto.size() <= 2000
+        && p.text is string && p.text.size() <= 2000
+        && p.visibility in ['public','followers']
+        && p.imagePaths is list && p.imagePaths.size() <= 4
+        && p.imageUrls is list && p.imageUrls.size() <= 4
+        && p.likeCount == 0 && p.commentCount == 0 && p.lastCommentId == null
+        && p.status == 'published'
+        && p.createdAt == request.time && p.updatedAt == request.time;
+    }
+    function canReadPost(p) {
+      return socialSigned() && p.status == 'published' && socialNotBlocked(p.authorUid)
+        && (p.visibility == 'public' || p.authorUid == request.auth.uid || socialFollowing(p.authorUid));
+    }
+    // v95: posts — list is intentionally public-only so Firestore can prove query authorization.
+    // Followers-only posts can be fetched by document get when the viewer follows the author.
+    match /posts/{postId} {
+      allow get: if canReadPost(resource.data);
+      allow list: if socialSigned() && resource.data.status == 'published' && (resource.data.visibility == 'public' || resource.data.authorUid == request.auth.uid);
+      allow create: if socialSigned() && validPost(request.resource.data);
+      allow update: if socialSigned() && (
+        (resource.data.authorUid == request.auth.uid
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['text','visibility','updatedAt','status'])
+          && request.resource.data.text is string && request.resource.data.text.size() <= 2000
+          && request.resource.data.visibility in ['public','followers']
+          && request.resource.data.updatedAt == request.time
+          && request.resource.data.authorUid == resource.data.authorUid
+          && request.resource.data.likeCount == resource.data.likeCount
+          && request.resource.data.commentCount == resource.data.commentCount)
+        || (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['likeCount'])
+          && ((request.resource.data.likeCount == resource.data.likeCount + 1
+                && !exists(/databases/$(database)/documents/posts/$(postId)/likes/$(request.auth.uid))
+                && existsAfter(/databases/$(database)/documents/posts/$(postId)/likes/$(request.auth.uid)))
+            || (request.resource.data.likeCount == resource.data.likeCount - 1
+                && exists(/databases/$(database)/documents/posts/$(postId)/likes/$(request.auth.uid))
+                && !existsAfter(/databases/$(database)/documents/posts/$(postId)/likes/$(request.auth.uid)))))
+        || (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['commentCount','lastCommentId'])
+          && request.resource.data.commentCount == resource.data.commentCount + 1
+          && request.resource.data.lastCommentId is string
+          && existsAfter(/databases/$(database)/documents/posts/$(postId)/comments/$(request.resource.data.lastCommentId))
+          && getAfter(/databases/$(database)/documents/posts/$(postId)/comments/$(request.resource.data.lastCommentId)).data.authorUid == request.auth.uid)
+      );
+      allow delete: if socialSigned() && resource.data.authorUid == request.auth.uid;
+
+      // v95: likes — one document per user, coupled atomically to the post counter.
+      match /likes/{likeUid} {
+        allow read: if socialSigned() && likeUid == request.auth.uid;
+        allow create: if socialSigned() && likeUid == request.auth.uid
+          && request.resource.data.keys().hasOnly(['uid','createdAt'])
+          && request.resource.data.uid == request.auth.uid && request.resource.data.createdAt == request.time
+          && canReadPost(get(/databases/$(database)/documents/posts/$(postId)).data)
+          && getAfter(/databases/$(database)/documents/posts/$(postId)).data.likeCount
+             == get(/databases/$(database)/documents/posts/$(postId)).data.likeCount + 1;
+        allow delete: if socialSigned() && likeUid == request.auth.uid
+          && getAfter(/databases/$(database)/documents/posts/$(postId)).data.likeCount
+             == get(/databases/$(database)/documents/posts/$(postId)).data.likeCount - 1;
+        allow update: if false;
+      }
+
+      // v95: comments and replies — parentId is null for a root comment, otherwise the parent comment ID.
+      match /comments/{commentId} {
+        allow read: if canReadPost(get(/databases/$(database)/documents/posts/$(postId)).data);
+        allow create: if socialSigned() && canReadPost(get(/databases/$(database)/documents/posts/$(postId)).data)
+          && request.resource.data.keys().hasOnly(['authorUid','authorName','text','parentId','likeCount','createdAt','status'])
+          && request.resource.data.authorUid == request.auth.uid
+          && request.resource.data.authorName is string && request.resource.data.authorName.size() <= 40
+          && request.resource.data.text is string && request.resource.data.text.size() >= 1 && request.resource.data.text.size() <= 1000
+          && (request.resource.data.parentId == null || (request.resource.data.parentId is string && exists(/databases/$(database)/documents/posts/$(postId)/comments/$(request.resource.data.parentId))))
+          && request.resource.data.likeCount == 0 && request.resource.data.createdAt == request.time && request.resource.data.status == 'published'
+          && getAfter(/databases/$(database)/documents/posts/$(postId)).data.commentCount
+             == get(/databases/$(database)/documents/posts/$(postId)).data.commentCount + 1
+          && getAfter(/databases/$(database)/documents/posts/$(postId)).data.lastCommentId == commentId;
+        allow update: if socialSigned() && resource.data.authorUid == request.auth.uid
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['text'])
+          && request.resource.data.text is string && request.resource.data.text.size() <= 1000;
+        allow delete: if socialSigned() && resource.data.authorUid == request.auth.uid;
+      }
+    }
+
+    // v95: following/followers mirrors — both sides must be created/deleted in the same atomic batch.
+    match /users/{ownerUid}/following/{targetUid} {
+      allow read: if socialSigned() && request.auth.uid == ownerUid;
+      allow create: if socialSigned() && request.auth.uid == ownerUid && ownerUid != targetUid
+        && request.resource.data.keys().hasOnly(['targetUid','createdAt'])
+        && request.resource.data.targetUid == targetUid && request.resource.data.createdAt == request.time
+        && existsAfter(/databases/$(database)/documents/users/$(targetUid)/followers/$(ownerUid));
+      allow delete: if socialSigned() && request.auth.uid == ownerUid
+        && !existsAfter(/databases/$(database)/documents/users/$(targetUid)/followers/$(ownerUid));
+      allow update: if false;
+    }
+    match /users/{ownerUid}/followers/{followerUid} {
+      allow read: if socialSigned() && request.auth.uid == ownerUid;
+      allow create: if socialSigned() && request.auth.uid == followerUid && ownerUid != followerUid
+        && request.resource.data.keys().hasOnly(['followerUid','createdAt'])
+        && request.resource.data.followerUid == followerUid && request.resource.data.createdAt == request.time
+        && existsAfter(/databases/$(database)/documents/users/$(followerUid)/following/$(ownerUid));
+      allow delete: if socialSigned() && request.auth.uid == followerUid
+        && !existsAfter(/databases/$(database)/documents/users/$(followerUid)/following/$(ownerUid));
+      allow update: if false;
+    }
+
+    // v95: saved posts and hidden posts are private to their owner.
+    match /users/{ownerUid}/savedPosts/{postId} {
+      allow read: if socialSigned() && request.auth.uid == ownerUid;
+      allow create: if socialSigned() && request.auth.uid == ownerUid
+        && request.resource.data.keys().hasOnly(['postId','savedAt'])
+        && request.resource.data.postId == postId && request.resource.data.savedAt == request.time;
+      allow delete: if socialSigned() && request.auth.uid == ownerUid;
+      allow update: if false;
+    }
+    match /users/{ownerUid}/hiddenPosts/{postId} {
+      allow read: if socialSigned() && request.auth.uid == ownerUid;
+      allow create: if socialSigned() && request.auth.uid == ownerUid
+        && request.resource.data.keys().hasOnly(['postId','createdAt'])
+        && request.resource.data.postId == postId && request.resource.data.createdAt == request.time;
+      allow delete: if socialSigned() && request.auth.uid == ownerUid;
+      allow update: if false;
+    }
+
+    // v95: post reports — create-only for the reporter; no client reads or edits.
+    match /postReports/{reportId} {
+      allow create: if socialSigned()
+        && request.resource.data.keys().hasOnly(['reporterUid','postId','postOwnerUid','reason','details','createdAt','status'])
+        && request.resource.data.reporterUid == request.auth.uid
+        && request.resource.data.postId is string && request.resource.data.postId.size() <= 128
+        && reportId == request.resource.data.postId + '_' + request.auth.uid
+        && exists(/databases/$(database)/documents/posts/$(request.resource.data.postId))
+        && canReadPost(get(/databases/$(database)/documents/posts/$(request.resource.data.postId)).data)
+        && request.resource.data.postOwnerUid == get(/databases/$(database)/documents/posts/$(request.resource.data.postId)).data.authorUid
+        && request.resource.data.postOwnerUid is string
+        && request.resource.data.reason is string && request.resource.data.reason.size() >= 3 && request.resource.data.reason.size() <= 300
+        && request.resource.data.details is string && request.resource.data.details.size() <= 500
+        && request.resource.data.createdAt == request.time && request.resource.data.status == 'open';
+      allow read, update, delete: if false;
+    }
+
   }
 }

@@ -1,0 +1,18 @@
+The Squad v97 — mobile manual test checklist
+
+1. Sign in using an existing test account. Confirm home feed loads.
+2. Tap the top messages icon. Confirm unread badge count appears and the conversation list opens.
+3. Search by a private chat name and verify filtering.
+4. Switch All / Private / Groups / Pinned. Confirm the list changes. Pinned depends on existing U.pin/U.pins data; no new pin-management action was added.
+5. Open a private chat. Send a text message and verify it appears on the other account.
+6. Reply to a message, add a reaction, edit your own message, and delete your own message using the existing designed dialogs.
+7. Send an image. Test voice recording only after granting microphone permission.
+8. Tap audio/video call controls and verify the existing calls flow opens. Do not assume call quality is tested by this checklist.
+9. From a post's ⋯ menu choose “إرسال في رسالة”; select an existing conversation and verify the post link is sent.
+10. Open your profile and tap “رسالة”; confirm the message center opens.
+11. Open Create Post. Confirm the only privacy choice is “الكل”; publish a text-only post and an image post.
+12. Check narrow mobile width, landscape, keyboard open/closed, and scroll behavior.
+13. Disconnect network and revisit the list; record the actual loading/error behavior.
+14. Open app-preview.html separately to test sample All/Private/Groups/Pinned, search, loading/empty/error previews and local sample send. Preview data is not live Firebase data.
+
+Record any visual mismatch against the approved two-panel mockup with a screenshot and device/browser details.

@@ -1,0 +1,15 @@
+The Squad v71 — automated validation report
+
+PASS — JavaScript syntax: 62/62 project JavaScript files pass `node --check`.
+PASS — v71 Living Palace engine static assertions: 23/23.
+PASS — Existing Node regression suites: all 23 `*_test.js` scripts completed successfully.
+PASS — Palace / city navigation regression: 87/87 (previously 86/87; Gold Crest stair approach corrected).
+PASS — Vehicle catalog: 120 stable catalog entries retained.
+PASS — Vehicle model assets: all four GLB files byte-identical to v69.
+PASS — `assets/vehicles/` directory: no differences from v69.
+PASS — Firebase rules/config: Firestore rules, Storage rules, .firebaserc and firebase.json byte-identical to v69 in both project and Firebase-Rules folders.
+PASS — Python test sources: all bundled Python test files compile with `py_compile`.
+NOT RUN — Browser/WebGL2 visual testing: Playwright Python package exists, but Chromium executable is not installed in the build environment.
+NOT RUN — Live Firebase multiplayer/economy testing: no live credentials or deployed environment were used.
+
+Important: v71 adds a renderer-level atmospheric FX approximation and adaptive quality manager. It does not claim full physical volumetric ray marching, SSAO, selective bloom masks, baked lightmap atlases, compressed KTX2/Draco production assets, or automatic portal-based room streaming. See LIVING-PALACE-v71.md.

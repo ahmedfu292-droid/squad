@@ -120,7 +120,7 @@
       for (let f = 0; f < n; f++) { rect((u0 - .3 + u1) / 2, v1 + .15, (u1 - u0 + .3) / 2, .15, f * fh + 2.7, (f + 1) * fh); const p = b.W((u0 - .3 + u1) / 2, v1 + .15), bl = { cx: p[0], cz: p[1], hw: (u1 - u0 + .3) / 2, hd: .15, bot: f * fh, top: f * fh + 2.7, fy: f * fh, blk: 1, rb: f * fh, rt: f * fh + 2.7 }; dyn.push(bl); L.doors.push(bl) }
       const pc = b.W((u0 + u1) / 2, (v0 + v1) / 2); L.cab = { cx: pc[0], cz: pc[1], hw: 1.25, hd: 1.25, bot: -.25, top: 0 }; dyn.push(L.cab); L.x = pc[0]; L.z = pc[1]; L.b = b;
       for (let k = 1; k < n; k++) H(k).push({ u0, u1, v0, v1 }) }
-    if (n >= 2) for (let k = 0; k < n - 1; k++) { const side = k % 2, uc = side ? hw - T - 1.2 : -hw + T + 1.2, vS = hd - 3.5, sh = Math.max(SH, Math.ceil(fh / .36)), vE = vS - sh * SR;
+    if (n >= 2) for (let k = 0; k < n - 1; k++) { const side = (o.id === 'palace' && o.bx > 0 && o.bx < 90 && k === 0) ? 1 : k % 2, uc = side ? hw - T - 1.2 : -hw + T + 1.2, vS = hd - 3.5, sh = Math.max(SH, Math.ceil(fh / .36)), vE = vS - sh * SR;
       for (let j = 1; j <= sh; j++) rect(uc, vS - (j - .5) * SR, 1.1, SR / 2, k * fh, k * fh + j * fh / sh); H(k + 1).push({ u0: uc - 1.1, u1: uc + 1.1, v0: vE, v1: vS }); b.stairs.push({ k, uc, vS, vE, side, sh }) }
     for (let k = 1; k <= n; k++) { let rs = [{ u0: -hw, u1: hw, v0: -hd, v1: hd }]; (holes[k] || []).forEach(h => rs = minus(rs, h)); b.slabs[k] = rs;
       rs.forEach(r => rect((r.u0 + r.u1) / 2, (r.v0 + r.v1) / 2, (r.u1 - r.u0) / 2, (r.v1 - r.v0) / 2, k * fh - .3, k * fh)) }
@@ -148,23 +148,148 @@
   /* كتالوج موسع لموديلات حقيقية بالاسم. الأبعاد/الشكل الحاليان مبنيان على فئة هيكل عامة؛
      يجب استبدال كل archetype بملف GLB مرخّص للحصول على تطابق بصري أصلي مع الموديل. */
   const CAR_CATALOG = [
-    ['Mercedes-Benz S-Class','sedan',320000],['Mercedes-Benz E-Class','sedan',180000],['Mercedes-Benz C-Class','sedan',125000],['Mercedes-AMG GT','sport',520000],['Mercedes-AMG GT 63 S','sport',440000],
-    ['BMW 7 Series','sedan',300000],['BMW 5 Series','sedan',175000],['BMW 3 Series','sedan',115000],['BMW M3 Competition','sport',210000],['BMW M4 Competition','sport',225000],['BMW M5 CS','sport',310000],['BMW X5 M','suv',260000],['BMW XM','suv',290000],
-    ['Audi A8 L','sedan',260000],['Audi RS7 Sportback','sport',245000],['Audi R8 V10','super',480000],['Audi RS Q8','suv',220000],['Lamborghini Urus','suv',380000],['Lamborghini Revuelto','super',900000],['Lamborghini Huracan STO','super',650000],
-    ['Ferrari 296 GTB','super',620000],['Ferrari 812 Competizione','super',850000],['Ferrari Roma','sport',360000],['Ferrari Purosangue','suv',700000],['McLaren 720S','super',600000],['McLaren Artura','super',390000],['McLaren P1','super',1100000],
-    ['Porsche 911 Turbo S','sport',320000],['Porsche Taycan Turbo S','sedan',240000],['Porsche Cayenne Turbo GT','suv',260000],['Porsche 918 Spyder','super',1250000],['Aston Martin DBX707','suv',330000],['Aston Martin DBS','sport',420000],['Aston Martin Valkyrie','super',1800000],
-    ['Bentley Bentayga','suv',350000],['Bentley Continental GT Speed','sport',390000],['Rolls-Royce Cullinan','suv',650000],['Rolls-Royce Spectre','sedan',480000],['Maserati MC20','super',330000],['Maserati Grecale Trofeo','suv',155000],['Lotus Emira','sport',125000],['Lotus Evija','super',2100000],
-    ['Toyota Supra GR','sport',65000],['Nissan GT-R Nismo','sport',210000],['Nissan Z Nismo','sport',70000],['Chevrolet Corvette Z06','super',145000],['Chevrolet Camaro ZL1','sport',85000],['Ford Mustang Dark Horse','sport',72000],['Ford GT','super',900000],['Dodge Challenger SRT Hellcat','sport',88000],['Tesla Model S Plaid','sedan',110000],['Lucid Air Sapphire','sedan',250000]
+    ['Rolls-Royce Phantom', 'sedan', 2000000],
+    ['Rolls-Royce Ghost', 'sedan', 1500000],
+    ['Bentley Mulsanne', 'sedan', 900000],
+    ['Bentley Flying Spur', 'sedan', 750000],
+    ['Mercedes-Maybach S-Class', 'sedan', 800000],
+    ['Mercedes-Benz S-Class', 'sedan', 550000],
+    ['BMW 7 Series', 'sedan', 420000],
+    ['Audi A8 L', 'sedan', 360000],
+    ['Lexus LS', 'sedan', 320000],
+    ['Porsche Panamera', 'sport', 350000],
+    ['Rolls-Royce Cullinan', 'suv', 1800000],
+    ['Bentley Bentayga', 'suv', 900000],
+    ['Range Rover SV 2026', 'suv', 720000],
+    ['Mercedes-Maybach GLS', 'suv', 750000],
+    ['Cadillac Escalade-V 2026', 'suv', 480000],
+    ['Lexus LX', 'suv', 280000],
+    ['Genesis GV80', 'suv', 220000],
+    ['BMW X7', 'suv', 360000],
+    ['BMW X6 M Competition 2026', 'suv', 520000],
+    ['Mercedes-AMG G 63 2026', 'suv', 560000],
+    ['Audi Q8', 'suv', 290000],
+    ['Land Rover Defender 130', 'suv', 260000],
+    ['Rolls-Royce Spectre', 'sedan', 850000],
+    ['Bentley Continental GT', 'sport', 780000],
+    ['BMW 8 Series', 'sport', 310000],
+    ['Lexus LC 500', 'sport', 240000],
+    ['Mercedes-Benz CLE Coupe', 'sport', 180000],
+    ['Maserati Quattroporte', 'sedan', 260000],
+    ['Aston Martin Rapide', 'sport', 300000],
+    ['Alfa Romeo Giulia Quadrifoglio', 'sport', 190000],
+    ['Genesis G90', 'sedan', 270000],
+    ['Cadillac Celestiq', 'sedan', 600000],
+    ['Lucid Air', 'sedan', 280000],
+    ['Mercedes-Benz EQS', 'sedan', 320000],
+    ['BMW i7', 'sedan', 360000],
+    ['Porsche Taycan', 'sport', 290000],
+    ['Audi e-tron GT', 'sport', 260000],
+    ['Tesla Model S Plaid', 'sedan', 160000],
+    ['Cadillac Lyriq', 'suv', 140000],
+    ['Rivian R1S', 'suv', 130000],
+    ['Genesis Electrified G80', 'sedan', 180000],
+    ['Lotus Eletre', 'suv', 240000],
+    ['Aston Martin DBX707', 'suv', 450000],
+    ['Lamborghini Urus', 'suv', 480000],
+    ['Ferrari Purosangue', 'suv', 700000],
+    ['Mercedes-AMG G 63', 'suv', 320000],
+    ['Range Rover Sport SV', 'suv', 360000],
+    ['Cadillac CT5-V Blackwing', 'sport', 160000],
+    ['Maserati Ghibli', 'sport', 150000],
+    ['Lexus GX', 'suv', 150000],
+    ['Lincoln Navigator', 'suv', 180000],
+    ['Infiniti QX80', 'suv', 170000],
+    ['Ferrari SF90 Stradale', 'super', 950000],
+    ['Ferrari 812 Superfast', 'super', 850000],
+    ['Lamborghini Revuelto', 'super', 1200000],
+    ['Lamborghini Huracan', 'super', 600000],
+    ['McLaren 750S', 'super', 850000],
+    ['McLaren P1', 'super', 1500000],
+    ['Bugatti Chiron', 'super', 3000000],
+    ['Bugatti Tourbillon', 'super', 4000000],
+    ['Koenigsegg Jesko', 'super', 3500000],
+    ['Pagani Huayra', 'super', 2800000],
+    ['Porsche 911 GT3 RS', 'sport', 420000],
+    ['Porsche 718 Cayman GT4', 'sport', 180000],
+    ['Chevrolet Corvette C8 Z06', 'super', 180000],
+    ['Aston Martin Vantage', 'sport', 280000],
+    ['Aston Martin DBS', 'sport', 420000],
+    ['Nissan GT-R Nismo', 'sport', 220000],
+    ['Audi R8 V10', 'super', 400000],
+    ['Mercedes-AMG GT Black Series', 'super', 500000],
+    ['Maserati MC20', 'super', 380000],
+    ['Ford GT', 'super', 1000000],
+    ['Ford Mustang Dark Horse', 'sport', 85000],
+    ['Chevrolet Camaro ZL1', 'sport', 90000],
+    ['Dodge Challenger Hellcat', 'sport', 95000],
+    ['BMW M4 Competition', 'sport', 150000],
+    ['BMW M2', 'sport', 95000],
+    ['Mercedes-AMG C63 S', 'sport', 135000],
+    ['Audi RS6 Avant', 'sport', 180000],
+    ['Toyota GR Supra', 'sport', 65000],
+    ['Nissan Z', 'sport', 50000],
+    ['Alfa Romeo 4C', 'sport', 80000],
+    ['Honda Civic Type R', 'sport', 52000],
+    ['Toyota GR Yaris', 'sport', 42000],
+    ['Volkswagen Golf R', 'sport', 48000],
+    ['Mercedes-AMG A45 S', 'sport', 75000],
+    ['Audi RS3', 'sport', 70000],
+    ['BMW M3', 'sport', 110000],
+    ['Subaru WRX STI', 'sport', 42000],
+    ['Hyundai Elantra N', 'sport', 38000],
+    ['Lexus IS 500 F Sport', 'sport', 65000],
+    ['Cadillac CT4-V Blackwing', 'sport', 90000],
+    ['Mazda MX-5 Miata', 'sport', 32000],
+    ['Toyota GR86', 'sport', 30000],
+    ['Subaru BRZ', 'sport', 30000],
+    ['Lotus Emira', 'sport', 100000],
+    ['Lotus Evora', 'sport', 85000],
+    ['Alpine A110', 'sport', 75000],
+    ['Caterham Seven', 'sport', 50000],
+    ['Ariel Atom', 'sport', 65000],
+    ['KTM X-Bow', 'sport', 100000],
+    ['Ginetta G56', 'sport', 90000],
+    ['Toyota Corolla', 'sedan', 26000],
+    ['Toyota Camry', 'sedan', 32000],
+    ['Honda Civic', 'sedan', 27000],
+    ['Honda Accord', 'sedan', 30000],
+    ['Nissan Sunny / Versa', 'sedan', 19000],
+    ['Nissan Altima', 'sedan', 28000],
+    ['Hyundai Elantra', 'sedan', 24000],
+    ['Hyundai Accent', 'sedan', 18000],
+    ['Kia Cerato / Forte / K4', 'sedan', 23000],
+    ['Mazda 3', 'sedan', 25000],
+    ['Toyota RAV4', 'suv', 32000],
+    ['Honda CR-V', 'suv', 33000],
+    ['Hyundai Tucson', 'suv', 30000],
+    ['Kia Sportage', 'suv', 30000],
+    ['Mazda CX-5', 'suv', 31000],
+    ['Nissan Qashqai', 'suv', 28000],
+    ['Volkswagen Tiguan', 'suv', 32000],
+    ['Ford Edge', 'suv', 35000],
+    ['Geely Coolray', 'suv', 22000],
+    ['MG 6', 'sedan', 21000]
   ];
   const ARCH = { sedan:'rr', sport:'bmw', super:'ferrari', suv:'cad' };
-  CAR_CATALOG.forEach((row, i) => { const [name, type, price] = row, base = CS[ARCH[type]], key = 'catalog_' + (i + 1);
+  CAR_CATALOG.forEach((row, i) => { const [name, type, price] = row, base = CS[ARCH[type]], key = name.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '');
     /* Deterministic proportion variants keep the 52 catalog vehicles visually distinct while exact OEM meshes are unavailable. */
     const Ls=(type==='suv'?1.00:type==='sedan'?.98:type==='sport'?.91:.94)+((i%5)-2)*.018;
     const Ws=(type==='suv'?1.02:type==='sedan'?.96:1.00)+((i%3)-1)*.018;
     const Hs=(type==='suv'?1.20:type==='sedan'?1.04:type==='sport'?.94:.88)+((i%4)-1.5)*.025;
     const sc={L:base.L*Ls,W:base.W*Ws,H:base.H*Hs,gc:base.gc*Hs,r:base.r*Math.min(Ls,Ws),hbR:base.hbR*Hs,hbF:base.hbF*Hs,bl:base.bl*Hs,xrr:base.xrr*Ls,xrt:base.xrt*Ls,xft:base.xft*Ls,xfw:base.xfw*Ls,wf:base.wf*Ls,wr:base.wr*Ls};
     CS[key] = Object.assign({}, base, sc, { n:name, p:price, nc:[0xd9a441,0x3fe0ff,0x7d8da8,0x1e7a4b,0xb62030][i%5], c:[0x151821,0xe6e8f0,0x1b3e78,0x8a8c92,0x8c1826][i%5], vmax:type==='super'?50:type==='sport'?40:type==='suv'?31:34, acc:type==='super'?23:type==='sport'?17:type==='suv'?11:12, catalog:1, archetype:type });
+    /* v117 brand-specific proportions: four separately tuned silhouettes, not one shared SUV shell. */
+    const BRAND={
+      cadillac_escalade_v_2026:{L:5.38,W:2.06,H:1.94,gc:.25,r:.49,hbR:1.58,hbF:1.34,bl:1.39,xrr:-2.53,xrt:-2.32,xft:.96,xfw:1.48,wf:1.72,wr:-1.68,c:0x101116,vmax:34,acc:13,brandSpecific:1,brandStyle:'cadillac'},
+      range_rover_sv_2026:{L:5.05,W:2.05,H:1.88,gc:.23,r:.46,hbR:1.51,hbF:1.29,bl:1.31,xrr:-2.36,xrt:-1.96,xft:.76,xfw:1.34,wf:1.55,wr:-1.55,c:0x20242a,vmax:32,acc:12,brandSpecific:1,brandStyle:'range-rover'},
+      bmw_x6_m_competition_2026:{L:4.96,W:2.02,H:1.70,gc:.20,r:.44,hbR:1.28,hbF:1.13,bl:1.16,xrr:-2.30,xrt:-.92,xft:.60,xfw:1.18,wf:1.52,wr:-1.50,c:0x111722,vmax:42,acc:18,brandSpecific:1,brandStyle:'bmw-x6m'},
+      mercedes_amg_g_63_2026:{L:4.88,W:1.99,H:1.98,gc:.25,r:.46,hbR:1.72,hbF:1.55,bl:1.55,xrr:-2.12,xrt:-2.12,xft:.88,xfw:1.27,wf:1.48,wr:-1.48,c:0x15171b,vmax:33,acc:14,brandSpecific:1,brandStyle:'g63'}
+    };
+    if(BRAND[key])Object.assign(CS[key],BRAND[key]);
   });
+  // Legacy spawn aliases remain available for older scene scripts; ownership uses stable IDs.
+  CAR_CATALOG.forEach((row, i) => { CS['catalog_' + (i + 1)] = CS[row[0].toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '')]; });
 
   /* سبلاين Catmull-Rom */
   function crs(P, n) { const o = []; for (let i = 0; i < P.length - 1; i++) { const p0 = P[Math.max(0, i - 1)], p1 = P[i], p2 = P[i + 1], p3 = P[Math.min(P.length - 1, i + 2)]; for (let k = 0; k < n; k++) { const t = k / n, t2 = t * t, t3 = t2 * t; o.push([.5 * ((2 * p1[0]) + (-p0[0] + p2[0]) * t + (2 * p0[0] - 5 * p1[0] + 4 * p2[0] - p3[0]) * t2 + (-p0[0] + 3 * p1[0] - 3 * p2[0] + p3[0]) * t3), .5 * ((2 * p1[1]) + (-p0[1] + p2[1]) * t + (2 * p0[1] - 5 * p1[1] + 4 * p2[1] - p3[1]) * t2 + (-p0[1] + 3 * p1[1] - 3 * p2[1] + p3[1]) * t3)]) } } o.push(P[P.length - 1]); return o }
@@ -181,18 +306,19 @@
   function parkDyn(c) { const s = CS[c.key], sw = Math.abs(Math.sin(c.yaw)) > .7071, hw = (sw ? s.L : s.W) / 2 + .05, hd = (sw ? s.W : s.L) / 2 + .05; Object.assign(c.dyn, { cx: c.x, cz: c.z, hw, hd, bot: c.y + .1, top: c.y + s.H * .9 }) }
   function regCar(key, x, z, yaw, y, wr, sale) { const s = CS[key], c = { id: CARS.length, key, x, z, y: y || 0, yaw: yaw || 0, wr: wr || 0, sale: sale == null ? -1 : sale, v: 0, dyn: { blk: 1 } }; dyn.push(c.dyn); parkDyn(c); CARS.push(c); return c }
   function carPts(c, x, z, yaw) { const s = CS[c.key], fx = -Math.sin(yaw), fz = -Math.cos(yaw), rx = Math.cos(yaw), rz = -Math.sin(yaw), L = s.L * .46, W = s.W * .4; return [[0, 0], [L, 0], [-L, 0], [L, W], [L, -W], [-L, W], [-L, -W]].map(([a, b]) => [x + fx * a + rx * b, z + fz * a + rz * b]) }
-  function drive(c, inp, dt) { const s = CS[c.key], f = inp.f || 0, st = inp.s || 0, tg = f > 0 ? s.vmax * f : f < 0 ? s.vmax * .3 * f : 0;
+  function drive(c, inp, dt) { const s = CS[c.key], f = inp.f || 0, st = inp.s || 0, prevV = c.v, tg = f > 0 ? s.vmax * f : f < 0 ? s.vmax * .3 * f : 0;
     const dec = f == 0 ? 5 : (f * c.v < 0 ? 22 : 9); c.v += Math.max(-dec * dt, Math.min(s.acc * dt, tg - c.v));
+    c.steer = Math.max(-1, Math.min(1, st)); c.braking = f < 0 || (Math.abs(prevV) > 2 && Math.abs(c.v) < Math.abs(prevV) - .35);
     c.yaw += -st * 1.9 * Math.min(1, Math.abs(c.v) / 5) / (1 + Math.abs(c.v) / 45) * (c.v >= 0 ? 1 : -1) * dt;
     const n = Math.max(1, Math.ceil(Math.abs(c.v) * dt / .4)), sd = dt / n;
     for (let i = 0; i < n; i++) { const nx = c.x - Math.sin(c.yaw) * c.v * sd, nz = c.z - Math.cos(c.yaw) * c.v * sd;
       if (carPts(c, nx, nz, c.yaw).some(p => blocked(p[0], p[1], c.y))) { c.v *= -.25; break } c.x = Math.max(-BOUND, Math.min(BOUND, nx)); c.z = Math.max(-BOUND, Math.min(BOUND, nz)); c.y = groundAt(c.x, c.z, c.y) } return c }
   const carHold = (c, on) => { if (on) { c.dyn.top = -1000; c.dyn.bot = -1000 } else parkDyn(c) };
-  FURN.showroom = function (F, NP, SG, SP, b) { const hw = b.hw, hd = b.hd, order = ['ferrari', 'bugatti', 'rolls', 'bmw', 'rr'], pos = [[-18, -8], [-9, -8], [0, -8], [9, -8], [18, -8], [-12, 3], [12, 3]], keys = order.concat(['cad', 'limo']);
+  FURN.showroom = function (F, NP, SG, SP, b) { const hw = b.hw, hd = b.hd, order = ['cadillac_escalade_v_2026','range_rover_sv_2026','bmw_x6_m_competition_2026','mercedes_amg_g_63_2026','ferrari','bugatti','rolls'], pos = [[-18, -8], [-9, -8], [0, -8], [9, -8], [18, -8], [-12, 3], [12, 3]], keys = order;
     for (let i = -hw + 2; i < hw - 1; i += 6) F(0, i, 0, .3, hd * 2 - 4, .03, 0x3fe0ff, 'e', .02);
-    F(0, 0, -hd + .6, hw * 2 - 2, .5, 5.6, 0x0a0f22, 'e', .3); F(0, 0, -hd + .9, hw * 2 - 3, .1, 5, 0x3fe0ff, 'e', .6);
+    F(0, 0, -hd + .6, hw * 2 - 2, .5, 5.6, 0x0a0f22, 'e', .3); F(0, 0, -hd + .9, hw * 2 - 3, .1, 5, 0x3fe0ff, 'e', .6); [-1,1].forEach(side=>{F(0,side*(hw-1.1),0,.16,hd*2-1,.12,0xd9b66b,'e',4.9);F(0,side*(hw-1.1),0,.07,hd*2-1,.07,0x3fe0ff,'e',5.08)});
     keys.forEach((key, i) => { const [u, v] = pos[i], s = CS[key], idx = SALE.length; SALE.push({ key, n: s.n, p: s.p });
-      F(0, u, v, s.W + 1.4, s.L + 1.8, .1, 0x3fe0ff, 'e', 0); F(0, u, v, s.W + .8, s.L + 1.2, .16, 0x181c30, '', .1); { const w = b.W(u, v); regCar(key, w[0], w[1], 0, .26, 0, idx) }
+      F(0, u, v, s.W + 1.4, s.L + 1.8, .1, 0x3fe0ff, 'e', 0); F(0, u, v, s.W + 1.12, s.L + 1.52, .045, 0xd9b66b, 'e', .12); F(0, u, v, s.W + .92, s.L + 1.32, .16, 0x101827, '', .16); F(0, u, v + s.L * .38, s.W * .72, .045, .055, 0x3fe0ff, 'e', .24); F(0, u, v - s.L * .38, s.W * .72, .045, .055, 0xd9b66b, 'e', .24); { const w = b.W(u, v); regCar(key, w[0], w[1], 0, .26, 0, idx) }
       SG(0, u, v + s.L / 2 + .7, s.n + ' · ' + s.p.toLocaleString('en-US') + ' 🪙', '#' + s.nc.toString(16).padStart(6, '0'), 5.4, .8, 2.7, Math.PI); SP(0, u, v, 4.6, 'car' + idx) });
     F(0, 0, 11, 9, 1.4, 1.1, 0x2a2f4a, 's'); F(0, 0, 11, 9.1, 1.5, .08, 0x3fe0ff, 'e', 1.1);
     [-14, 14].forEach((u, i) => NP(0, u, 10, 'مندوب مبيعات ' + (i + 1), 0x3fe0ff, Math.PI)); NP(0, 0, 9.6, 'مدير المعرض', 0xffd75a, Math.PI);
@@ -299,12 +425,20 @@
   /* بوابة القصر: بتتفتح للمدير بس */
   const gate = { cx: 0, cz: GZ, hw: 6.4, hd: .5, bot: 0, top: 99 }; dyn.push(gate);
   const gateOpen = o => { gate.top = o ? -1000 : 99; gate.bot = o ? -1000 : 0 };
-  const MAP = { buildings, estate: EST, sale: SALE, cars: CARS, fillers, parks, roads, blocks, trees, coins: [], plats, solids, lamps, fountain, spawn: { x: 0, z: 13 }, portal: { x: 0, z: 26 }, XS, ZS };
+  const MAP = { buildings, estate: EST, sale: SALE, cars: CARS, fillers, parks, roads, blocks, trees, coins, plats, solids, lamps, fountain, spawn: { x: 0, z: 13 }, portal: { x: 0, z: 26 }, XS, ZS };
 
   /* ---------- الفيزياء (متعددة الأدوار) ---------- */
   const hit = (s, x, z, r) => Math.abs(x - s.cx) < s.hw + r && Math.abs(z - s.cz) < s.hd + r;
   const cell = (x, z) => grid.get(Math.floor(x / CELL) + ',' + Math.floor(z / CELL)) || EMPTY;
   const inside = (x, z, r) => { const a = cell(x, z); for (let i = 0; i < a.length; i++) if (a[i].top >= 99 && hit(a[i], x, z, r)) return true; return false };
+  /* Sweep the full player-to-camera segment so the follow camera cannot jump through a wall. */
+  function cameraDistance(P, sx, sz, wanted, min = 1.6, stride = .35) {
+    const max = Math.max(min, Number.isFinite(wanted) ? wanted : min), step = Math.max(.12, Math.min(.75, Number.isFinite(stride) ? stride : .35));
+    for (let d = min; d <= max + 1e-6; d += step) {
+      if (inside(P.x + sx * d, P.z + sz * d, .38)) return Math.max(min, d - step * 1.15);
+    }
+    return max;
+  }
   function groundAt(x, z, y) { let g = 0; const a = cell(x, z);
     for (let i = 0; i < a.length; i++) { const s = a[i]; if (s.top < 99 && s.top <= y + STEP && s.top > g && hit(s, x, z, R * .8)) g = s.top }
     for (let i = 0; i < dyn.length; i++) { const s = dyn[i]; if (s.top < 99 && s.top <= y + STEP && s.top > g && hit(s, x, z, R * .8)) g = s.top } return g }
@@ -340,41 +474,81 @@
   tick(0);
   const near = (x, z, r) => buildings.find(b => Math.abs(x - b.cx) < b.hw + r && Math.abs(z - b.cz) < b.hd + r);
 
-  /* الشبكة: district/{room}/players/{uid} + district/{room}/msgs */
+  /* الشبكة: تحقق دفاعي من بيانات العملاء + حالة الاتصال. هذا لا يستبدل تحقق السيرفر أو قواعد Firestore. */
   const r2 = n => Math.round(n * 100) / 100;
-  function Net(o) { this.o = o; this.last = null; this.lw = 0; this.lm = 0; this.un = [] }
+  const finite = (n, lo, hi) => typeof n === 'number' && Number.isFinite(n) && n >= lo && n <= hi;
+  const cleanText = (v, max) => String(v == null ? '' : v).replace(/[\u0000-\u001f\u007f]/g, '').trim().slice(0, max);
+  function validRemote(v, now) {
+    if (!v || !finite(v.x, -BOUND, BOUND) || !finite(v.z, -BOUND, BOUND) || !finite(v.y, -5, 65) || !finite(v.r, -1000, 1000)) return false;
+    if (!v.t || typeof v.t.toMillis !== 'function') return false;
+    const tm = v.t.toMillis(); if (!Number.isFinite(tm) || tm > now + 120000 || now - tm > 60000) return false;
+    if (v.car != null) {
+      const c = v.car;
+      if (!c || typeof c !== 'object' || !CS[c.key] || !finite(c.x, -BOUND, BOUND) || !finite(c.z, -BOUND, BOUND) || !finite(c.y, -5, 65) || !finite(c.yaw, -1000, 1000) || !finite(c.v, -100, 100)) return false;
+    }
+    return true;
+  }
+  function Net(o) { this.o = o; this.last = null; this.lw = 0; this.lm = 0; this.un = []; this.playerUn = null; this.playerCell = ''; this.playerCenter = { x: 0, z: 0 }; this.rawPlayers = {}; this.playerQuerySeq = 0; this.active = false; this.stopped = false }
+  Net.prototype.status = function (state, detail) { if (this.o.onStatus) this.o.onStatus(state, detail || null) };
+  Net.prototype.publishNearby = function () {
+    const now = Date.now(), m = {}, c = this.playerCenter, radius = 160;
+    Object.keys(this.rawPlayers).forEach(id => { if (id == this.o.uid) return; const v = this.rawPlayers[id];
+      if (Math.abs(v.x - c.x) > radius || Math.abs(v.z - c.z) > radius || !validRemote(v, now)) return;
+      const clean = Object.assign({}, v); clean.n = cleanText(clean.n, 40) || 'عضو'; clean.k = cleanText(clean.k, 30); clean.e = cleanText(clean.e, 12); m[id] = clean;
+    });
+    this.o.onPlayers && this.o.onPlayers(m);
+  };
+  Net.prototype.refreshPlayers = function (P) {
+    if (this.stopped || !P || !finite(P.x, -BOUND, BOUND) || !finite(P.z, -BOUND, BOUND)) return;
+    this.playerCenter = { x: P.x, z: P.z };
+    const cx = Math.floor(P.x / 80), cz = Math.floor(P.z / 80), cell = cx + ',' + cz;
+    if (cell !== this.playerCell) {
+      this.playerCell = cell; this.playerQuerySeq++;
+      const seq = this.playerQuerySeq, self = this, base = 'district/' + this.o.room;
+      if (this.playerUn) { try { this.playerUn() } catch (_) {} this.playerUn = null; }
+      this.rawPlayers = {};
+      // استعلام X محدود به نطاق قريب؛ التصفية الدقيقة على X وZ تتم محليًا.
+      // هامش 80م يمنع فجوات الرؤية أثناء حركة اللاعب داخل خلية الاشتراك.
+      const minX = Math.max(-BOUND, P.x - 240), maxX = Math.min(BOUND, P.x + 240);
+      const q = this.o.db.collection(base + '/players').where('x', '>=', minX).where('x', '<=', maxX);
+      this.playerUn = q.onSnapshot(s => {
+        if (self.stopped || seq !== self.playerQuerySeq) return;
+        const raw = {}; s.forEach(d => { if (d.id !== self.o.uid) raw[d.id] = d.data() });
+        self.rawPlayers = raw; self.active = true; self.status('online'); self.publishNearby();
+      }, e => { if (seq !== self.playerQuerySeq) return; self.status('error', 'players'); self.o.onError && self.o.onError('players', e) });
+    } else this.publishNearby();
+  };
   Net.prototype.start = function () {
-    const o = this.o, base = 'district/' + o.room, self = this;
-    const er = w => e => o.onError && o.onError(w, e);
-    this.un.push(o.db.collection(base + '/players').onSnapshot(s => {
-      const m = {}, now = Date.now();
-      s.forEach(d => { if (d.id == o.uid) return; const v = d.data(); if (!v || typeof v.x != 'number' || typeof v.z != 'number' || !v.t || !v.t.toMillis || now - v.t.toMillis() > 60000) return; m[d.id] = v });
-      o.onPlayers && o.onPlayers(m);
-    }, er('players')));
+    const o = this.o, base = 'district/' + o.room, self = this; this.stopped = false; this.status('connecting');
+    const er = w => e => { self.status('error', w); o.onError && o.onError(w, e) };
+    if (o.getPosition) this.refreshPlayers(o.getPosition());
     this.un.push(o.db.collection(base + '/msgs').orderBy('t', 'desc').limit(40).onSnapshot(s => {
-      const a = []; s.forEach(d => a.push(Object.assign({ id: d.id }, d.data())));
-      a.sort((p, q) => ((p.t && p.t.toMillis && p.t.toMillis()) || 0) - ((q.t && q.t.toMillis && q.t.toMillis()) || 0));
-      o.onMsgs && o.onMsgs(a);
+      if (self.stopped) return;
+      const a = [], now = Date.now(); s.forEach(d => { const v = d.data(); if (!v || typeof v.u !== 'string' || !v.u || typeof v.t !== 'object' || !v.t || typeof v.t.toMillis !== 'function') return; const tm = v.t.toMillis(); if (!Number.isFinite(tm) || tm > now + 120000 || now - tm > 86400000) return; const tx = cleanText(v.tx, 200); if (!tx) return; a.push({ id: d.id, u: v.u.slice(0,128), n: cleanText(v.n,40) || 'عضو', tx, t: v.t }); });
+      a.sort((p, q) => p.t.toMillis() - q.t.toMillis()); self.active = true; self.status('online'); o.onMsgs && o.onMsgs(a);
     }, er('msgs')));
   };
   Net.prototype.send = function (P, emote, force, vehicle) {
-    const o = this.o, now = Date.now(), e = emote || '', L = this.last;
+    const o = this.o, now = Date.now(), e = cleanText(emote, 12), L = this.last;
+    if (!P || !finite(P.x, -BOUND, BOUND) || !finite(P.z, -BOUND, BOUND) || !finite(P.y, -5, 65) || !finite(P.yaw, -1000, 1000)) return false;
+    this.refreshPlayers(P);
     const cur = { x: r2(P.x), y: r2(P.y), z: r2(P.z), r: r2(P.yaw), e };
     const chg = !L || L.x != cur.x || L.y != cur.y || L.z != cur.z || L.r != cur.r || L.e != cur.e;
-    if (!force && now - this.lw < 550) return false;
+    if (!force && now - this.lw < 1000) return false; // v108: حد أقصى تحديث حركة عادي واحد كل ثانية
     if (!force && !chg && now - this.lw < 15000) return false;
-    this.lw = now; this.last = cur;
-    const d = { n: String(o.name()).slice(0, 40), x: cur.x, y: cur.y, z: cur.z, r: cur.r, c: o.hue, k: String(o.look ? o.look() : '').slice(0, 30), e: e.slice(0, 12), t: o.FV.serverTimestamp() };
-    if (vehicle && typeof vehicle.key === 'string' && CS[vehicle.key]) d.car = { key: vehicle.key, x: r2(vehicle.x), y: r2(vehicle.y), z: r2(vehicle.z), yaw: r2(vehicle.yaw), v: r2(vehicle.v || 0) };
+    const d = { n: cleanText(o.name(), 40) || 'عضو', x: cur.x, y: cur.y, z: cur.z, r: cur.r, c: o.hue, k: cleanText(o.look ? o.look() : '', 30), e, t: o.FV.serverTimestamp() };
+    if (vehicle && typeof vehicle.key === 'string' && CS[vehicle.key] && finite(vehicle.x, -BOUND, BOUND) && finite(vehicle.z, -BOUND, BOUND) && finite(vehicle.y, -5, 65) && finite(vehicle.yaw, -1000, 1000) && finite(vehicle.v || 0, -100, 100)) d.car = { key: vehicle.key, x: r2(vehicle.x), y: r2(vehicle.y), z: r2(vehicle.z), yaw: r2(vehicle.yaw), v: r2(vehicle.v || 0) };
     else if (vehicle === null) d.car = null;
-    o.db.doc('district/' + o.room + '/players/' + o.uid).set(d).catch(x => o.onError && o.onError('send', x)); return true;
+    else if (vehicle) return false;
+    this.lw = now; this.last = cur;
+    o.db.doc('district/' + o.room + '/players/' + o.uid).set(d).then(() => this.status('online')).catch(x => { this.status('error', 'send'); o.onError && o.onError('send', x) }); return true;
   };
   Net.prototype.say = function (tx) {
-    const o = this.o, now = Date.now(); tx = String(tx || '').trim().slice(0, 200);
-    if (!tx || now - this.lm < 700) return false; this.lm = now;
-    o.db.collection('district/' + o.room + '/msgs').add({ u: o.uid, n: String(o.name()).slice(0, 40), tx, t: o.FV.serverTimestamp() }).catch(x => o.onError && o.onError('say', x)); return true;
+    const o = this.o, now = Date.now(); tx = cleanText(tx, 200);
+    if (!tx || !o.uid || now - this.lm < 700) return false; this.lm = now;
+    o.db.collection('district/' + o.room + '/msgs').add({ u: o.uid, n: cleanText(o.name(), 40) || 'عضو', tx, t: o.FV.serverTimestamp() }).then(() => this.status('online')).catch(x => { this.status('error', 'say'); o.onError && o.onError('say', x) }); return true;
   };
-  Net.prototype.stop = function () { this.un.forEach(u => { try { u() } catch (e) {} }); this.un = []; this.o.db.doc('district/' + this.o.room + '/players/' + this.o.uid).delete().catch(() => {}) };
+  Net.prototype.stop = function () { this.stopped = true; this.active = false; this.status('offline'); this.un.forEach(u => { try { u() } catch (e) {} }); this.un = []; if (this.playerUn) { try { this.playerUn() } catch (e) {} this.playerUn = null; } this.playerQuerySeq++; this.rawPlayers = {}; this.o.db.doc('district/' + this.o.room + '/players/' + this.o.uid).delete().catch(() => {}) };
   function spawnCar(key, x, z, yaw) { if (!CS[key] || !Number.isFinite(x) || !Number.isFinite(z) || Math.abs(x)>BOUND || Math.abs(z)>BOUND) return null; return regCar(key, x, z, yaw||0, 0, 0, -1) }
-  return { MAP, BOUND, inside, groundAt, blocked, newP, step, nearCoins, tick, near, gateOpen, CITY, carShape, CS, CAR_CATALOG, spawnCar, drive, carHold, parkDyn, Net, PH, STEP, DW, DH, T, SH, SR, LD, LT };
+  return { MAP, BOUND, inside, cameraDistance, groundAt, blocked, newP, step, nearCoins, tick, near, gateOpen, CITY, carShape, CS, CAR_CATALOG, spawnCar, drive, carHold, parkDyn, Net, PH, STEP, DW, DH, T, SH, SR, LD, LT };
 });

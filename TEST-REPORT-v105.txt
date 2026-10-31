@@ -1,0 +1,12 @@
+The Squad v105 — Test Report
+
+JavaScript syntax: PASS (88 files checked with node --check).
+Static regression tests: PASS (v105 final validation, v103 chat/rules, v104 chat metadata).
+Python test-runner syntax: PASS (py_compile).
+ZIP integrity: checked after packaging.
+
+Browser harness: NOT RUN. Chromium navigation to localhost and file:// is blocked by this execution environment (ERR_BLOCKED_BY_ADMINISTRATOR). The runner path defect was corrected; run it on a normal local Windows environment with Playwright + Chromium.
+Firebase Emulator: NOT RUN; Firebase CLI/Emulator is not installed in this environment.
+Live Firebase / two-account / Storage / TURN / Push: NOT RUN.
+
+Release status: NOT APPROVED. See SECURITY-FINAL-GATE-v105.md for the remaining release blockers, especially authenticated exposure of sid in usernames documents and group unread metadata.

@@ -1,0 +1,33 @@
+Stage 3 Firebase Rules — manual test and rollback guide
+
+IMPORTANT: The current code points to Firebase project chatapp-67eb6. Confirm in Firebase Console that this is the intended live project before touching rules. No rules are changed in v97.
+
+A) Firestore Rules Playground test cases (signed-in user A unless noted)
+1. Create a public post with required fields and authorUid=A: expect ALLOW.
+2. Create a post with visibility=followers: expect DENY for new composer flow; existing rules may still permit valid followers documents.
+3. Create a post with authorUid=B while signed in as A: expect DENY.
+4. Read a public published post: expect ALLOW.
+5. Read a followers-only post as unrelated user C: expect DENY.
+6. Read a followers-only post as its author A: expect ALLOW.
+7. Create a like under posts/{postId}/likes/A with uid=A: expect ALLOW if the parent post is published and the rule conditions match.
+8. Attempt to like as user B while writing document ID A: expect DENY.
+9. Create a comment as A on a published post: expect ALLOW if the rule schema matches; create on deleted/missing post: expect DENY.
+10. Update another user's post or change authorUid: expect DENY.
+11. Storage: upload an image to posts/A/{postId}/... as A with image/jpeg or image/png and <=2 MiB: expect ALLOW when metadata/path constraints match.
+12. Storage: upload >2 MiB, unsupported MIME, or under another user's path: expect DENY.
+
+B) Before pasting any rules
+1. Confirm project ID in Firebase Console top project selector is exactly chatapp-67eb6 (or stop if it differs).
+2. Open Firestore Database > Rules.
+3. Copy the entire currently published rules text into a local backup file named firestore.rules.before-v97.txt.
+4. Compare the console rules with this package's firestore.rules; do not paste if they differ unexpectedly.
+5. Open Storage > Rules and similarly back up the entire current text as storage.rules.before-v97.txt.
+6. Only if explicitly intended, paste the complete package rules (not partial fragments) into the matching Rules editor and click Publish.
+
+C) Rollback
+1. Open the same Firebase project and Rules editor.
+2. Replace the entire Firestore rules editor with the saved firestore.rules.before-v97.txt and Publish.
+3. Repeat for Storage using storage.rules.before-v97.txt.
+4. Verify the published timestamp and run the Rules Playground tests again.
+
+No rules emulator or live Playground test was run by the assistant in this stage. Playground cases above are a manual test plan, not test results. Budget alerts are notifications, not spending caps.

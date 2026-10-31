@@ -1,0 +1,23 @@
+The Squad v109 — Stage 1B validation report
+
+Targeted tests:
+- tests/v109_nearby_player_query_test.js: PASS (5/5)
+- tests/v88_multiplayer_sync_test.js: PASS (17/17)
+- JavaScript syntax: PASS (91/91 files checked with node --check)
+
+Full standalone JS test sweep:
+- 50 files were attempted.
+- 29 passed.
+- 21 did not pass as standalone Node tests. Several are historical tests that assert older fixed build/cache numbers (v101, v105-v107, v72-v87, v94-v96); fakefb.js and fakefb2.js require a browser-like window and are harness files, not standalone Node tests. v69_performance_test.js still asserts the previous 550ms throttle and must be updated to the new 1000ms behavior.
+- These failures are not represented as successful tests and were not silently ignored.
+
+Integrity checks:
+- All 278 files from the v108 archive remain present; 2 new files were added (CHANGES-v109.md and tests/v109_nearby_player_query_test.js). Existing v88 test was updated for the new query API and v109 build marker.
+- firebase-config.js, .firebaserc, and firestore.rules are byte-for-byte unchanged.
+
+Not run:
+- No live Firebase project, Firestore Emulator, deployed browser build, or real multi-user session was tested.
+- No Cloud Functions or paid services were enabled.
+
+Known limitation:
+- Nearby reads are scoped by an X range query and then filtered locally on X/Z. This is not a server-enforced 20-player room cap. A secure cap and full 2D cell partition require a trusted room allocator and coordinated data-path/rules migration.

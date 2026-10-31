@@ -1,0 +1,51 @@
+THE SQUAD v117 — LOCAL VALIDATION REPORT
+=======================================
+
+Release: v117-luxury-fleet-city
+Base archive: The-Squad-v116-Servers-Final.zip
+
+New feature validation:
+- Four dedicated 2026 SUV catalog entries: PASS
+- Separate model dimensions / body silhouettes: PASS
+- Brand-specific front/rear visual signatures: PASS
+- Both showroom instances use curated luxury fleet: PASS
+- Layered showroom display plinths and architectural light rails: PASS
+- Brand-specific shells are not overwritten by generic GLB archetypes: PASS
+- Driving, ownership and multiplayer sync code paths retained: PASS
+
+Automated suites:
+- v117_luxury_fleet_test.js: PASS
+- v74 city expansion: PASS
+- v81 neighborhood realism: PASS
+- v82 living city: PASS
+- v83 photoreal city: PASS
+- v84 vehicles / roads / water: PASS
+- v85 drive / water effects: PASS
+- v86 camera / collision stability: PASS
+- v90 world performance: PASS
+- v96 performance / offline navigation: PASS
+- v102 security recovery: PASS
+- v103 chat rules: PASS
+- v104 chat metadata: PASS
+- v109 nearby player query: PASS
+- v110 lazy loading: PASS
+- v111 platform quality gate (updated for v117): PASS
+- v88 multiplayer sync: PASS
+
+Combined release quality gate: 7/7 suites passed.
+Additional focused suites listed above passed individually.
+JavaScript syntax scan: PASS.
+ZIP integrity: PASS (checked after packaging).
+
+Preservation:
+- No original archive files removed.
+- Firestore rules, Storage rules, Firebase config/project alias, Firebase Functions,
+  chat/community/calls/channel modules, and the four existing GLB files retained.
+- Firebase rules were not deployed or modified.
+
+Limitations / release gate:
+- The four new vehicles are detailed in-engine procedural 3D models with custom silhouettes
+  and brand-inspired signatures, not licensed OEM CAD scans or manufacturer-supplied meshes.
+- No live browser/WebGL session, physical Android device FPS benchmark, multiplayer load test,
+  or production Firebase deployment test was performed in this environment.
+- Real-device visual review and frame-rate testing remain required before public release.

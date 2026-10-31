@@ -40,7 +40,7 @@ function cbUpdate(){const el=$('#cb');if(!el)return;const c=Object.values(CM).fi
 /* ---------- الدخول للمكالمة والإشارات ---------- */
 async function enter(id,mic,call){
  const AC=new (window.AudioContext||window.webkitAudioContext)();AC.resume();
- CALL={id,call,mic,out:new MediaStream(mic.getTracks()),pcs:{},mine:[],AC,an:{},cam:null,t0:Date.now(),P:{}};
+ CALL={id,call,mic,out:new MediaStream(mic.getTracks()),pcs:{},mine:[],AC,an:{},cam:null,t0:Date.now(),P:{}};window.SQUAD_CALL_ACTIVE=true;
  const a=AC.createAnalyser();a.fftSize=256;AC.createMediaStreamSource(mic).connect(a);CALL.an[me.uid]=a;
  $('#call').hidden=false;$('#cnm').textContent=call.g?call.gn:(call.from==me.uid?(C[call.cid]?cname(C[call.cid]):'مكالمة'):call.fn);
  $('#cmic').className='ic';$('#ccam').className='ic';
@@ -84,7 +84,7 @@ function camOff(){if(!CALL||!CALL.cam)return;CALL.cam.getTracks().forEach(t=>{t.
 $('#ccam').onclick=()=>CALL&&(CALL.cam?camOff():camOn());
 $('#cmic').onclick=()=>{if(!CALL)return;const t=CALL.mic.getAudioTracks()[0];t.enabled=!t.enabled;$('#cmic').classList.toggle('off',!t.enabled);$('#cmic').textContent=t.enabled?'🎙':'🔇'};
 $('#cend').onclick=()=>leave();
-function leave(quiet){if(!CALL)return;const c=CALL;CALL=null;clearInterval(c.ti);c.u&&c.u();c.cu&&c.cu();
+function leave(quiet){if(!CALL)return;const c=CALL;CALL=null;window.SQUAD_CALL_ACTIVE=false;clearInterval(c.ti);c.u&&c.u();c.cu&&c.cu();
  Object.values(c.pcs).forEach(p=>p.close());c.mic.getTracks().forEach(t=>t.stop());c.cam&&c.cam.getTracks().forEach(t=>t.stop());c.AC.close().catch(()=>{});
  const alone=Object.keys(c.P).filter(u=>u!=me.uid).length==0||!c.call.g;
  Promise.all(c.mine.map(i=>db.doc(`calls/${c.id}/sig/${i}`).delete().catch(()=>{}))).then(()=>alone&&!quiet&&db.doc('calls/'+c.id).delete().catch(()=>{}));

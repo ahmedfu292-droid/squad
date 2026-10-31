@@ -1,0 +1,11 @@
+The Squad v115 local verification
+
+- Quality gate: 7/7 suites passed (run with Node.js 22.16.0).
+- JavaScript syntax check: all JavaScript files passed `node --check`.
+- Snapshot integration: selected country server player snapshot updates the displayed live count.
+- Count display scope: only the currently joined country room; other servers explicitly show count unavailable until entered. No 20 additional listeners are opened.
+- Stale count is cleared when leaving the selected country room.
+- Archive preservation: all v114 archive entries retained; two documentation files added.
+- firebase-config.js, .firebaserc, firestore.rules, storage.rules unchanged.
+
+Not tested: deployed Firebase, real multi-device presence/count accuracy, simultaneous sessions, browser PWA behavior.

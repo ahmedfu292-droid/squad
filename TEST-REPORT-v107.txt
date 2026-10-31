@@ -1,0 +1,12 @@
+THE SQUAD v107 — TEST REPORT
+
+JavaScript syntax: PASS — 90/90 files
+Node regression test files: PASS — 47/47 (mock libraries fakefb.js and fakefb2.js excluded as standalone test files)
+New v107 chat deletion checks: PASS — 8/8
+Python/Playwright browser tests: BLOCKED — Chromium executable unavailable in environment
+Local emulator UI test: BLOCKED — expected 127.0.0.1:8765 endpoint unavailable/blocked
+Firebase Emulator security tests: NOT RUN
+Live Firebase login/chat tests: NOT RUN
+Cloud Functions deployment/media cleanup: NOT VERIFIED
+
+No Firebase rules, Functions, Hosting, or Storage deployment was performed.
