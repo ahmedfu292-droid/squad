@@ -1,0 +1,9 @@
+GitHub instructions — The Squad v94 Stage 2
+
+1. Open your GitHub repository and enter its root (the level containing index.html).
+2. Extract this ZIP on your computer. Upload the CONTENTS of `The-Squad-v94-Social-Stage2/` into the repository root, not the containing folder and not the ZIP as a nested asset. Choose Replace when GitHub asks about same-name files.
+3. Add the new files: `tokens.css`, `app-preview.html`, `CHANGES-v94-STAGE2.md`, `TEST-REPORT-v94.txt`, `FILE-AUDIT-v94.txt`, `DIALOG-AUDIT-v94.txt`, `JS-CHANGE-DETAIL-v94.txt`, `ACCOUNTS-EXACT-CHANGES-v94.txt`, `GITHUB-UPLOAD-v94.txt`, and `tests/v94_social_stage2_test.js`.
+4. Replace every same-name file from the ZIP, including `index.html`, `squad.css`, `ui2.js`, `app.js`, `stories.js`, `district.js`, `channel.js`, `community.js`, `cinema.js`, `welcome.js`, `settings.js`, `world.js`, `accounts.js`, `sw.js`, `version.json`, and the 13 test files listed in FILE-AUDIT.
+5. Remove ONLY these v92-only additions if they exist: `platform-hub.js`, `platform-hub.css`, `CHANGES-v92.md`, `FILE-CHANGE-AUDIT-v92.txt`, `README-START-HERE-v92.txt`, `TEST-REPORT-v92.txt`, `tests/v92_platform_hub_test.js`.
+6. Do NOT delete `ui2.css`, `gold.css`, `v27.css`, `luxe.css`, `premium-refinement-v89.css`, `living-palace.css`, `living-palace-premium.css`, or any existing game, asset, model, environment, Firebase or rules file. They remain for existing modules.
+7. No Firebase rules/config uploads are required for this UI-only stage.

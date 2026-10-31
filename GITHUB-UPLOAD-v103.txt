@@ -1,0 +1,8 @@
+The Squad v103 upload notes
+
+1. Make a backup of the current repository before replacing anything.
+2. Upload the complete contents of this ZIP to the repository root and overwrite matching files.
+3. Keep all existing files; this release adds tests and reports and updates firestore.rules, sw.js, version.json.
+4. Do not upload/deploy firestore.rules yet. First confirm the active Firebase project and run Firebase Emulator rules tests. No Firebase project was changed by this package.
+5. Do not delete old preview/docs/tests during this security stage; cleanup is deferred until a separate deployment folder is prepared and verified.
+6. Cloudflare Pages static upload should receive the site's static root, not Firebase Functions source. Preserve the full source repository separately.

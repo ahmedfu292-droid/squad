@@ -1,0 +1,20 @@
+GitHub upload instructions — v93 Stage 1
+
+1) افتح مستودع The Squad على GitHub.
+2) ارفع محتويات مجلد المشروع `The-Squad-v93-Dark-Room-Stage1` إلى جذر المستودع (المكان الذي يوجد فيه index.html حالياً)، وليس مجلد ZIP نفسه.
+3) اختر Replace للملفات الموجودة عند الطلب. أضف `login-preview.html` والملفات التوثيقية الجديدة.
+4) لا تمسح أي ملفات من المستودع. لا تحذف auth.js أو acct.js أو accounts.js أو firebase-config.js أو firebase.json أو .firebaserc أو firestore.rules أو storage.rules أو مجلد firebase-functions أو أي مجلد assets/vehicles.
+5) إذا كان المستودع يحتوي ملفات v92 الإضافية `platform-hub.js` و`platform-hub.css`، لا ترفعها مع هذه الحزمة؛ هذه الحزمة مبنية من v91 ولا تتضمنها. إذا كانت ملفات v92 قد استبدلت index.html في GitHub، ارفع index.html من هذه الحزمة لاستعادة واجهة v91 قبل المرحلة 1، مع استبدال auth.css وauth-scene.js وsw.js وversion.json.
+6) لا تحذف ملفات الاختبارات ولا تعدلها.
+7) لم يتم نشر أي شيء إلى GitHub من هنا.
+
+If v92 was already uploaded to GitHub, remove ONLY these v92-added Stage 2 artifacts if present:
+- `platform-hub.js`
+- `platform-hub.css`
+- `CHANGES-v92.md`
+- `FILE-CHANGE-AUDIT-v92.txt`
+- `README-START-HERE-v92.txt`
+- `TEST-REPORT-v92.txt`
+- `tests/v92_platform_hub_test.js`
+
+Also replace `index.html`, `sw.js`, and `version.json` with the copies in this v93 package. Replace the `tests/` directory with the packaged v91-original tests so no v92 test edits remain. Do not delete any other project files or directories.

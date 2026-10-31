@@ -1,0 +1,8 @@
+The Squad v105 upload notes
+
+This is a source handoff, NOT a deployment instruction.
+- Preserve the entire existing repository and all existing files.
+- Do not upload firestore.rules or storage.rules to the live Firebase project yet.
+- Do not delete old docs, previews, assets, or tests during this validation stage.
+- New/changed: version.json, sw.js, tests/run.py, tests/v105_final_validation_test.js, SECURITY-FINAL-GATE-v105.md, TEST-REPORT-v105.txt, GITHUB-UPLOAD-v105.txt.
+- Release remains blocked pending server-side username login migration, group unread redesign, media migration, App Check/TURN/Push activation, Emulator tests and real two-account tests.

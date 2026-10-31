@@ -1,0 +1,12 @@
+The Squad v97 — GitHub upload checklist
+
+UPLOAD / REPLACE:
+- Upload the complete contents of this ZIP into the same repository root.
+- Replace matching files when GitHub asks, including: index.html, ui2.js, social-feed.js, sw.js, version.json, app-preview.html.
+- Add new files: stage4-chat-ui.js, stage4-chat-ui.css, STAGE4-REPORT-v97.md, GITHUB-UPLOAD-v97.txt, MOBILE-TEST-v97.txt, RULES-PLAYGROUND-v97.txt.
+- Keep every existing file and folder. This package contains the complete v96 base plus Stage 4 additions.
+
+DELETE:
+- NOTHING. Do not delete any file or folder from the repository.
+
+Do not upload/paste Firestore or Storage rules as part of this stage. Do not edit Firebase settings. Use the browser upload flow and inspect GitHub's changed-file list before committing.

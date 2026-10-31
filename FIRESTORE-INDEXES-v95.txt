@@ -1,0 +1,10 @@
+Firestore composite indexes expected by v95 (create from the Firebase Console if a query returns a create-index link):
+
+1) Collection: posts
+   authorUid (Ascending), visibility (Ascending), status (Ascending), createdAt (Descending)
+2) Collection: posts
+   visibility (Ascending), status (Ascending), likeCount (Descending), createdAt (Descending)
+3) Collection: posts/{postId}/comments (collection scope: comments)
+   status (Ascending), createdAt (Ascending)
+
+Do not edit firebase.json or run CLI. The Console may create these indexes directly from the error link.

@@ -1,0 +1,59 @@
+Compared v94 to v93 Stage 1.
+
+Changed existing files (27):
+world.js
+stories.js
+welcome.js
+cinema.js
+settings.js
+community.js
+sw.js
+accounts.js
+ui2.js
+version.json
+channel.js
+index.html
+app.js
+district.js
+squad.css
+tests/v88_multiplayer_sync_test.js
+tests/v72_living_palace_engine_test.js
+tests/v82_living_city_test.js
+tests/v80_city_life_test.js
+tests/v86_camera_collision_stability_test.js
+tests/v83_photoreal_city_test.js
+tests/v85_realism_drive_water_test.js
+tests/v87_economy_guardrails_test.js
+tests/v84_vehicles_roads_water_test.js
+tests/v74_city_expansion_test.js
+tests/v73_premium_design_test.js
+tests/v81_neighborhood_realism_test.js
+
+Added files (10):
+ACCOUNTS-EXACT-CHANGES-v94.txt
+app-preview.html
+tokens.css
+FILE-AUDIT-v94.txt
+DIALOG-AUDIT-v94.txt
+GITHUB-UPLOAD-v94.txt
+JS-CHANGE-DETAIL-v94.txt
+TEST-REPORT-v94.txt
+CHANGES-v94-STAGE2.md
+tests/v94_social_stage2_test.js
+
+Removed files (0):
+None
+
+Protected files unchanged:
+{
+  "auth.js": true,
+  "acct.js": true,
+  "calls.js": true,
+  "firebase-config.js": true,
+  ".firebaserc": true,
+  "firebase.json": true,
+  "firestore.rules": true,
+  "storage.rules": true,
+  "firebase-functions/index.js": true,
+  "firebase-functions/package.json": true
+}

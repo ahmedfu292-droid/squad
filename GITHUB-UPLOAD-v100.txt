@@ -1,0 +1,19 @@
+The Squad v100 upload instructions
+
+1. Download and extract The-Squad-v100-Platform-Audit.zip.
+2. Upload the FULL contents of the extracted project folder to the existing GitHub repository root.
+3. Replace files with matching paths; add the five new files.
+4. Do not delete old files. The archive comparison found zero removed files.
+5. Do not separately upload/paste Firebase rules or change Firebase project settings for this audit build.
+6. Deploy to staging first and verify Service Worker build 100 before production.
+
+New files:
+- PLATFORM-AUDIT-v100.md
+- TEST-REPORT-v100.txt
+- GITHUB-UPLOAD-v100.txt
+- MOBILE-TEST-v100.txt
+- tests/v100_platform_audit_test.js
+
+Runtime files updated:
+- sw.js (cache namespace)
+- version.json (build/version)

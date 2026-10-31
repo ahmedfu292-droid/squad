@@ -1,0 +1,3 @@
+Remaining native browser dialogs in scoped files:
+None found.
+Note: welcome.js still calls the browser BeforeInstallPromptEvent.prompt() API to request PWA installation; this is not window.prompt().

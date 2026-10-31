@@ -1,0 +1,38 @@
+The Squad v95 file audit against v94
+
+Existing files changed: 21
+- app-preview.html
+- firestore.rules
+- index.html
+- squad.css
+- storage.rules
+- sw.js
+- tests/v72_living_palace_engine_test.js
+- tests/v73_premium_design_test.js
+- tests/v74_city_expansion_test.js
+- tests/v80_city_life_test.js
+- tests/v81_neighborhood_realism_test.js
+- tests/v82_living_city_test.js
+- tests/v83_photoreal_city_test.js
+- tests/v84_vehicles_roads_water_test.js
+- tests/v85_realism_drive_water_test.js
+- tests/v86_camera_collision_stability_test.js
+- tests/v87_economy_guardrails_test.js
+- tests/v88_multiplayer_sync_test.js
+- tests/v94_social_stage2_test.js
+- ui2.js
+- version.json
+
+New files added: 9
+- BLAZE-BUDGET-ALERT-v95.txt
+- CHANGES-v95-STAGE3.md
+- FILE-AUDIT-v95.txt
+- FIRESTORE-INDEXES-v95.txt
+- GITHUB-UPLOAD-v95.txt
+- RULES-DEPLOY-v95.txt
+- TEST-REPORT-v95.txt
+- social-feed.js
+- tests/v95_social_firebase_test.js
+
+Files removed: 0
+None

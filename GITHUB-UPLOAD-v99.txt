@@ -1,0 +1,16 @@
+GITHUB UPDATE — v99
+
+Upload the FULL contents of this ZIP to the existing repository root and overwrite matching files.
+New file:
+- services-hub.html
+
+Modified files:
+- auth.js
+- index.html
+- version.json
+- CHANGES-v99-CORE-PLATFORM.md
+- TEST-REPORT-v99.txt
+- GITHUB-UPLOAD-v99.txt
+
+Do not delete any existing repository files.
+Do not upload or replace Firebase rules/config from this package; they were intentionally left unchanged.

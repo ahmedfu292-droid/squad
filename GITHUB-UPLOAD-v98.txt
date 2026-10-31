@@ -1,0 +1,24 @@
+GITHUB UPLOAD — v98
+
+Upload the FULL contents of this ZIP to the existing repository root and replace matching files.
+Do not delete any existing files or folders.
+
+Modified existing files:
+- stage4-chat-ui.js
+- ui2.js
+- bot.js
+- index.html
+- sw.js
+- version.json
+- app-preview.html
+
+New files:
+- stage4-extras.js
+- stage4-extras.css
+- CHANGES-v98-CHAT-TOOLS-ASSISTANTS.md
+- TEST-REPORT-v98.txt
+- GITHUB-UPLOAD-v98.txt
+- MOBILE-TEST-v98.txt
+
+Delete list: NONE.
+Firebase rules/config upload: NONE.

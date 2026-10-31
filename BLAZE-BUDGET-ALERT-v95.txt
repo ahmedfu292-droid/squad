@@ -1,0 +1,10 @@
+Firebase / Google Cloud budget alert steps:
+1. In Firebase Console, open the confirmed project. Go to Project settings > Usage and billing > Details & settings.
+2. In Budget alerts, choose Create first budget (or open the existing budget).
+3. In Google Cloud Billing > Budgets & alerts, create a monthly budget scoped to this one project. Select All services initially.
+4. Set a monthly amount you can afford. For a cautious test, you could choose US$5 (or another amount appropriate to your payment method and currency).
+5. Add Actual spend alerts at 50%, 80%, and 100%. Optionally add a Forecasted alert at 100%.
+6. Enable email notifications to billing admins/users or project owners where available, then Save/Finish.
+7. Check Billing reports and Firebase Storage usage during the first week.
+
+IMPORTANT: alerts-only budgets do NOT pause Storage or stop charges. They are notifications, and usage reporting can be delayed. Do not treat a $5 budget as a hard spending cap. If you need a hard stop, use a supported spend-cap feature where available or manually disable billing/service after receiving an alert.

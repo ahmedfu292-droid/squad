@@ -1,0 +1,10 @@
+GitHub upload v95:
+- Extract the ZIP. Upload all files/folders inside `The-Squad-v95-Social-Firebase-Stage3/` into the repository root (same level as `index.html`), replacing same-name files.
+- New application file: `social-feed.js`.
+- Replace existing files: `index.html`, `ui2.js`, `squad.css`, `sw.js`, `version.json`, `app-preview.html`, `firestore.rules`, `storage.rules`.
+- Add documentation: `FILE-AUDIT-v95.txt`, `CHANGES-v95-STAGE3.md`, `RULES-DEPLOY-v95.txt`, `BLAZE-BUDGET-ALERT-v95.txt`, `FIRESTORE-INDEXES-v95.txt`, `TEST-REPORT-v95.txt`, `GITHUB-UPLOAD-v95.txt`.
+- Add test: `tests/v95_social_firebase_test.js`.
+- Existing test files changed only to update their expected app/cache version from v94 to v95.
+- Delete: NOTHING from v94. There are 0 removals.
+- Do not upload/replace `auth.js`, `acct.js`, `calls.js`, `firebase-config.js`, `.firebaserc`, `firebase.json`, Firebase Functions, economy, chat, district, or vehicle files.
+- Publish rules manually in Firebase Console; GitHub upload does not publish rules. Confirm the Firebase project ID before pasting rules.

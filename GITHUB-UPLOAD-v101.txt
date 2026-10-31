@@ -1,0 +1,8 @@
+The Squad v101 upload instructions
+
+1. Download and extract The-Squad-v101-Security-Stability.zip.
+2. Upload the extracted project contents to the EXISTING GitHub repository root.
+3. Overwrite matching files. Do not delete existing files or folders.
+4. Keep `.firebaserc`, `firebase-config.js`, `firestore.rules`, and `storage.rules` unchanged for this build.
+5. Do not upload `firestore.rules` or `storage.rules` to Firebase yet; no production rules change is included.
+6. Cloudflare Pages static upload does not support a Pages `functions` folder. Do not delete backend source to bypass that warning; use the existing compatible deployment route for the project.

@@ -1,0 +1,19 @@
+Only lines 80, 82, and 83 changed: each native confirm() call now awaits SquadDialog.confirm(). No account-management logic, PIN checks, or ACCT calls changed.
+
+--- v93/accounts.js
+
++++ v94/accounts.js
+
+@@ -78,8 +78,8 @@
+
+ async function onClick(e){const b=e.target.closest('[data-ax]');if(!b)return;const k=b.dataset.ax,sl=b.dataset.sl;
+  if(k=='sw'){if(await askPin('تبديل الحساب'))ACCT.switchTo(sl)}
+- else if(k=='rm'){if(!(await askPin('إزالة حساب')))return;const a=ACCT.list().find(x=>x.slot==sl);if(!confirm('تشيل «'+(a?nameOf(a):'الحساب')+'» من الجهاز ده؟ الحساب نفسه مش هيتمسح.'))return;await ACCT.remove(sl);toast('اتشال من القايمة');rerender()}
++ else if(k=='rm'){if(!(await askPin('إزالة حساب')))return;const a=ACCT.list().find(x=>x.slot==sl);if(!await SquadDialog.confirm('تشيل «'+(a?nameOf(a):'الحساب')+'» من الجهاز ده؟ الحساب نفسه مش هيتمسح.'))return;await ACCT.remove(sl);toast('اتشال من القايمة');rerender()}
+  else if(k=='add'){ACCT.addNew()}
+- else if(k=='outone'){if(!(await askPin('تسجيل الخروج')))return;if(!confirm('تسجّل خروج من الحساب ده؟'))return;await ACCT.remove(ACCT.slot)}
+- else if(k=='outall'){if(!(await askPin('الخروج من كل الحسابات')))return;if(!confirm('تسجّل خروج من كل الحسابات على الجهاز ده؟'))return;await ACCT.removeAll()}
++ else if(k=='outone'){if(!(await askPin('تسجيل الخروج')))return;if(!await SquadDialog.confirm('تسجّل خروج من الحساب ده؟'))return;await ACCT.remove(ACCT.slot)}
++ else if(k=='outall'){if(!(await askPin('الخروج من كل الحسابات')))return;if(!await SquadDialog.confirm('تسجّل خروج من كل الحسابات على الجهاز ده؟'))return;await ACCT.removeAll()}
+  else if(k=='lock'){if(ACCT.lockOn()){if(!(await askPin('إيقاف القفل')))return;ACCT.lockOff();toast('القفل اتقفل');rerender()}else if(await newPin()){toast('القفل اشتغل 🔒');rerender()}}
+  else if(k=='savex')saveExtra();else if(k=='claim')claimUn()}
