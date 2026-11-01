@@ -1,0 +1,11 @@
+/* v144: low-power visual profile. Keeps layout and core interactions unchanged. */
+html.squad-lite *,html.squad-lite *::before,html.squad-lite *::after{
+  scroll-behavior:auto!important;
+  animation-duration:.01ms!important;
+  animation-iteration-count:1!important;
+  transition-duration:.08s!important;
+  text-shadow:none!important;
+}
+html.squad-lite :where(*, *::before, *::after){backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+html.squad-lite :where(.room-dust,.lamp-halo,.auth-glow,.ambient-glow,.particle-layer){display:none!important}
+@media(prefers-reduced-motion:reduce){html *,html *::before,html *::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}

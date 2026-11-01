@@ -2,7 +2,7 @@
    DISTRICT.enter({from:'cafe'|''}) / DISTRICT.leave() */
 (()=>{
 const DC=window.DC;if(!DC){console.warn('district-core.js مش متحمّل');return}
-const MOB=/Android|iPhone|iPad|Mobi/i.test(navigator.userAgent),MP=DC.MAP,q=s=>document.querySelector(s);
+const MOB=/Android|iPhone|iPad|Mobi/i.test(navigator.userAgent),LOW_END=(Number(navigator.deviceMemory||8)<=4||Number(navigator.hardwareConcurrency||8)<=4),MP=DC.MAP,q=s=>document.querySelector(s);
 document.head.insertAdjacentHTML('beforeend',`<style>
 #dst{position:fixed;inset:0;z-index:100;background:#0d0828;color:#eaf6ff;direction:rtl;touch-action:none;user-select:none;-webkit-user-select:none}
 #dst[hidden]{display:none}#dstC{position:absolute;inset:0;width:100%;height:100%;display:block}
@@ -10,7 +10,9 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 #dst button{padding:9px 14px;border-radius:14px;border:1px solid rgba(255,255,255,.16);background:rgba(10,14,30,.72);backdrop-filter:blur(10px);color:#fff;font:700 14px Cairo,sans-serif;cursor:pointer}
 #dstTop b{flex:1;text-align:center;font-size:14px;text-shadow:0 2px 8px #000}#dstNet{font:700 10px Cairo,sans-serif;color:#ffd66b;padding:4px 7px;border:1px solid #ffffff22;border-radius:20px;background:#071323bb;white-space:nowrap}#dstNet[data-state=online]{color:#69f0b5}#dstNet[data-state=error],#dstNet[data-state=offline]{color:#ff8b8b}
 #dstEstate{position:absolute;inset:0;z-index:7;background:rgba(2,5,15,.88);display:grid;place-items:center;padding:16px}#dstEstate[hidden]{display:none}.estatePanel{width:min(94vw,760px);max-height:86vh;overflow:auto;padding:18px;border-radius:22px;background:linear-gradient(145deg,#111b32,#080d1c);border:1px solid #d9a441aa;box-shadow:0 20px 70px #000a}.estatePanel h3{margin:0 0 6px;color:#f1d48a}.estateGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;margin:14px 0}.estateCard{padding:12px;border:1px solid #ffffff22;border-radius:15px;background:#ffffff08}.estateCard b{display:block;color:#ffe3a0}.estateCard small{display:block;color:#b8c6df;margin:5px 0 9px}.estateCard button{width:100%}.estateCard .owned{border-color:#4de0a5;color:#4de0a5}#dstCoin{padding:8px 12px;border-radius:14px;background:rgba(10,14,30,.72);border:1px solid rgba(255,215,90,.5);font:800 14px Cairo,sans-serif;color:#ffd75a}
-#dstCars{position:absolute;inset:0;z-index:8;background:rgba(2,5,15,.92);display:grid;place-items:center;padding:14px;backdrop-filter:blur(9px)}#dstCars[hidden]{display:none}.carShopPanel{width:min(96vw,1040px);max-height:90vh;overflow:auto;padding:20px;border-radius:24px;background:linear-gradient(145deg,#17243b,#080d19 65%,#171522);border:1px solid #d9b66b;box-shadow:0 24px 80px #000c}.carShopPanel h3{margin:0 0 6px;color:#ffe3a0;font-size:23px}.carShopLead{color:#b9c7df;font-size:13px;line-height:1.8}.carShopGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;margin:15px 0}.carShopCard{padding:13px;border:1px solid #d9b66b55;border-radius:17px;background:linear-gradient(145deg,#ffffff0b,#ffffff03);min-width:0}.carShopCard .carGlyph{height:56px;display:grid;place-items:center;font-size:34px;background:linear-gradient(135deg,#26354d,#0a1020);border-radius:12px;margin-bottom:9px}.carShopCard b{display:block;color:#ffe3a0;font-size:14px;line-height:1.5}.carShopCard small{display:block;color:#b9c7df;margin:5px 0 10px}.carShopCard .price{color:#f3d58c;font-weight:800;margin:8px 0}.carShopCard button{width:100%}.carShopCard .owned{border-color:#4de0a5!important;color:#75f0bd!important}
+#dstCars{position:absolute;inset:0;z-index:8;background:rgba(2,5,15,.92);display:grid;place-items:center;padding:14px;backdrop-filter:blur(9px)}#dstCars[hidden]{display:none}.carShopPanel{width:min(96vw,1040px);max-height:90vh;overflow:auto;padding:20px;border-radius:24px;background:linear-gradient(145deg,#17243b,#080d19 65%,#171522);border:1px solid #d9b66b;box-shadow:0 24px 80px #000c}.carShopPanel h3{margin:0 0 6px;color:#ffe3a0;font-size:23px}.carShopLead{color:#b9c7df;font-size:13px;line-height:1.8}.carShopGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;margin:15px 0}.carShopCard{padding:13px;border:1px solid #d9b66b55;border-radius:17px;background:linear-gradient(145deg,#ffffff0b,#ffffff03);min-width:0}.carShopCard .carGlyph{height:56px;display:grid;place-items:center;font-size:34px;background:linear-gradient(135deg,#26354d,#0a1020);border-radius:12px;margin-bottom:9px}.carShopCard b{display:block;color:#ffe3a0;font-size:14px;line-height:1.5}.carShopCard small{display:block;color:#b9c7df;margin:5px 0 10px}.carShopCard .price{color:#f3d58c;font-weight:800;margin:8px 0}.carShopCard button{width:100%}.carShopCard .owned{border-color:#4de0a5!important;color:#75f0bd!important}.brandGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(135px,1fr));gap:8px;margin:12px 0}.brandPick{min-height:42px;border-color:#d9b66b66!important;color:#e9edf5!important;background:linear-gradient(135deg,#202b40,#101827)!important}.brandPick.active{background:linear-gradient(135deg,#b58b3c,#6e4d19)!important;color:#fff!important;border-color:#ffe2a0!important;box-shadow:0 0 18px #d9b66b44}
+#dstTune{position:absolute;inset:0;z-index:15;display:grid;place-items:center;padding:14px;background:#02050fdc;backdrop-filter:blur(10px)}#dstTune[hidden]{display:none}#dstTune .tunePanel{width:min(94vw,560px);max-height:88vh;overflow:auto;padding:20px;border-radius:22px;background:linear-gradient(145deg,#1a2943,#080d19);border:1px solid #d9b66b;box-shadow:0 24px 80px #000c;font-family:Cairo,sans-serif}#dstTune h3{margin:0;color:#ffe3a0}#dstTune p{color:#b9c7df;font-size:13px;line-height:1.7}#dstTune .tuneRow{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 16px}#dstTune .swatch{width:38px;height:38px;border-radius:50%;border:2px solid #ffffff66;padding:0}#dstTune .swatch[aria-pressed=true]{outline:3px solid #7ff6ff;outline-offset:2px}#dstTune label{display:block;color:#ffe3a0;margin-top:12px}#dstTune input[type=range]{width:100%;accent-color:#d9b66b}#dstTune .tuneActions{display:flex;gap:8px}#dstTune .tuneActions button{flex:1}
+
 #dstApts{position:absolute;inset:0;z-index:7;background:rgba(2,5,15,.9);display:grid;place-items:center;padding:16px;backdrop-filter:blur(8px)}#dstApts[hidden]{display:none}.aptPanel{width:min(94vw,820px);max-height:88vh;overflow:auto;padding:20px;border-radius:24px;background:linear-gradient(145deg,#17243b,#080d19);border:1px solid #d9b66b;box-shadow:0 24px 80px #000b}.aptPanel h3{margin:0 0 7px;color:#ffe3a0;font-size:22px}.aptLead{color:#b9c7df;font-size:13px;line-height:1.8}.aptGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;margin:16px 0}.aptCard{padding:14px;border:1px solid #d9b66b55;border-radius:17px;background:linear-gradient(145deg,#ffffff0b,#ffffff03);box-shadow:inset 0 1px #ffffff0a}.aptCard .aptIcon{font-size:27px}.aptCard b{display:block;color:#ffe3a0;margin:5px 0}.aptCard small{display:block;color:#b9c7df;line-height:1.7;margin:6px 0 12px}.aptCard button{width:100%}.aptCard .owned{border-color:#4de0a5!important;color:#75f0bd!important}.aptMeta{display:flex;justify-content:space-between;gap:8px;color:#f4d48c;font-size:12px;margin:8px 0}
 #dstMap{position:absolute;top:calc(58px + env(safe-area-inset-top,0px));inset-inline-end:10px;width:112px;height:112px;border-radius:16px;border:1px solid rgba(255,255,255,.18);z-index:3}
 #dstUsers{position:absolute;top:calc(58px + env(safe-area-inset-top,0px));inset-inline-start:10px;z-index:3;width:200px;max-height:40vh;overflow:auto;padding:8px;border-radius:18px;background:rgba(10,14,30,.8);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.12)}
@@ -23,12 +25,12 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 #dstAct button{font-size:16px;padding:12px 20px;border-color:#3fe0ff;box-shadow:0 0 18px #3fe0ff66}
 #dstEmo{position:absolute;top:calc(178px + env(safe-area-inset-top,0px));inset-inline-end:10px;z-index:3;display:flex;flex-direction:column;gap:6px}
 #dstEmo button{width:44px;height:44px;padding:0;font-size:20px}
-#dstJump,#dstRun{position:absolute;z-index:3;width:60px;height:60px;border-radius:50%!important;padding:0!important;font-size:22px!important}
-#dstJump{bottom:calc(34vh + 150px);inset-inline-end:30px}#dstRun{bottom:calc(34vh + 150px);inset-inline-end:104px}#dstRun.on{background:#3fe0ff!important;color:#06122e!important}
+#dstJump,#dstRun,#dstBrake{position:absolute;z-index:3;width:60px;height:60px;border-radius:50%!important;padding:0!important;font-size:20px!important}
+#dstJump{bottom:calc(34vh + 150px);inset-inline-end:30px}#dstRun{bottom:calc(34vh + 150px);inset-inline-end:104px}#dstBrake{bottom:calc(34vh + 150px);inset-inline-start:30px;background:linear-gradient(145deg,#b92d3c,#64101d)!important;touch-action:none}#dstBrake.on{filter:brightness(1.45);box-shadow:0 0 18px #ff334488}#dstRun.on{background:#3fe0ff!important;color:#06122e!important}
 #dstJoy{position:absolute;bottom:calc(34vh + 10px);inset-inline-end:22px;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.22);z-index:3;touch-action:none}
 #dstJoy i{position:absolute;left:36px;top:36px;width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#7ff6ff,#5c7cff);box-shadow:0 0 18px #3fe0ff99}
-@media (pointer:fine){#dstJoy,#dstJump,#dstRun{display:none}}
-#dstBank{position:absolute;inset:0;z-index:6;background:radial-gradient(ellipse at 50% 15%,rgba(41,58,94,.78),rgba(2,5,14,.94) 68%);display:grid;place-items:center;padding:14px;backdrop-filter:blur(9px)}#dstBank[hidden]{display:none}.bk{width:min(94vw,510px);max-height:88vh;overflow:auto;padding:22px;border-radius:25px;background:linear-gradient(145deg,#18253d 0%,#0b1120 62%,#151326 100%);border:1px solid #d9b66b;box-shadow:0 24px 80px #000b, inset 0 1px #fff2;text-align:center;line-height:1.9;position:relative}.bk:before{content:'♛  THE SQUAD PRIVATE BANK  ♛';display:block;color:#e9cd8a;font:700 10px Arial,sans-serif;letter-spacing:2px;padding:0 0 12px;border-bottom:1px solid #d9b66b44;margin-bottom:14px}.bk h3{margin:0 0 12px;color:#ffe6a2;font-size:24px;text-shadow:0 2px 12px #d9a44133}.bk b{color:#ffe6a2}.bk small{color:#b9c7df}.bb{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:14px 0}.bk button{border-color:#d9b66b55!important;background:linear-gradient(145deg,#23334f,#111b2e)!important}.bk button:hover{border-color:#ffe6a2!important;filter:brightness(1.15)}#bkInfo{padding:12px;border:1px solid #ffffff18;border-radius:16px;background:linear-gradient(135deg,#ffffff0c,#ffffff03);line-height:2.1}#bkLog{font-size:13px;color:#cfe;margin:12px 0;min-height:40px;padding:10px;border-radius:14px;background:#02081788;text-align:right}#bkLog div{padding:3px 0;border-bottom:1px solid #ffffff0d}
+@media (pointer:fine){#dstJoy,#dstJump,#dstRun,#dstBrake{display:none}}
+#dstBank{position:absolute;inset:0;z-index:6;background:radial-gradient(ellipse at 50% 15%,rgba(41,58,94,.78),rgba(2,5,14,.94) 68%);display:grid;place-items:center;padding:14px;backdrop-filter:blur(9px)}#dstBank[hidden]{display:none}.bk{width:min(94vw,510px);max-height:88vh;overflow:auto;padding:22px;border-radius:25px;background:linear-gradient(145deg,#18253d 0%,#0b1120 62%,#151326 100%);border:1px solid #d9b66b;box-shadow:0 24px 80px #000b, inset 0 1px #fff2;text-align:center;line-height:1.9;position:relative}.bk:before{content:'♛  THE SQUAD PRIVATE BANK  ♛';display:block;color:#e9cd8a;font:700 10px Arial,sans-serif;letter-spacing:2px;padding:0 0 12px;border-bottom:1px solid #d9b66b44;margin-bottom:14px}.bk h3{margin:0 0 12px;color:#ffe6a2;font-size:24px;text-shadow:0 2px 12px #d9a44133}.bk b{color:#ffe6a2}.bk small{color:#b9c7df}.bb{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:14px 0}.bk button{border-color:#d9b66b55!important;background:linear-gradient(145deg,#23334f,#111b2e)!important}.bk button:hover{border-color:#ffe6a2!important;filter:brightness(1.15)}#bkInfo{padding:12px;border:1px solid #ffffff18;border-radius:16px;background:linear-gradient(135deg,#ffffff0c,#ffffff03);line-height:2.1}#bkLog{font-size:13px;color:#cfe;margin:12px 0;min-height:40px;padding:10px;border-radius:14px;background:#02081788;text-align:right}#bkLog div{padding:3px 0;border-bottom:1px solid #ffffff0d}.bk-loading,.bk-error{padding:16px;border-radius:14px;background:#ffffff0b;line-height:1.9}.bk-loading{color:#ffe3a0}.bk-error{color:#ffb2a8}.bk button:disabled{opacity:.45;cursor:wait}#bkRetry{margin-top:12px}
 #dstLoad{position:absolute;inset:0;display:grid;place-items:center;background:#0d0828;z-index:5;font-weight:800;text-align:center;padding:20px}
 #dstLoad[hidden]{display:none}
 </style>`);
@@ -37,19 +39,20 @@ document.body.insertAdjacentHTML('beforeend',`<div id="dst" hidden><canvas id="d
 <canvas id="dstMap" width="224" height="224"></canvas><div id="dstUsers" hidden></div>
 <div id="dstEmo"><button data-e="wave">👋</button><button data-e="dance">💃</button><button data-e="heart">❤️</button><button data-e="laugh">😂</button></div>
 <div id="dstChat"><div id="dstMsgs"></div><div class="r"><input id="dstIn" maxlength="200" placeholder="اكتب للكل..." autocomplete="off"><button id="dstSend">➤</button></div></div>
-<div id="dstAct" hidden><button id="dstDoor"></button> <button id="dstBk" hidden>🏦 افتح الحساب</button></div><div id="dstBank" hidden><div class="bk"><h3>🏦 بنك The Squad</h3><div id="bkInfo"></div><div class="bb"><button data-b="d5">⬆️ إيداع 5</button><button data-b="d50">⬆️ إيداع 50</button><button data-b="d500">⬆️ إيداع 500</button><button data-b="da">⬆️ إيداع الكل</button><button data-b="w5">⬇️ سحب 5</button><button data-b="w50">⬇️ سحب 50</button><button data-b="w500">⬇️ سحب 500</button><button data-b="wa">⬇️ سحب الكل</button></div><div id="bkLog"></div><div class="bb"><button id="bkTransfer">💸 تحويل فلوس</button><button id="bkAsset">🎁 تحويل ملكية</button></div><small>التحويل يحتاج معرّف اللاعب (UID) من حسابه داخل اللعبة.</small><button id="bkX">إغلاق</button></div></div>
-<button id="dstRun">🏃</button><button id="dstJump">⤴</button><div id="dstJoy"><i></i></div><div id="dstLoad">بيحمّل الحي...</div></div>`);
+<div id="dstAct" hidden><button id="dstDoor"></button> <button id="dstBk" hidden>🏦 افتح الحساب</button></div><div id="dstBank" hidden><div class="bk"><h3>🏦 بنك The Squad</h3><div id="bkInfo"></div><section id="bkHeist" style="margin:12px 0;padding:12px;border:1px solid #d9b66b55;border-radius:16px;background:#080f20"><b>🚨 خزنة البنك المشتركة</b><div id="bkHeistInfo" style="font-size:12px;color:#c7d4e8;margin:6px 0">جارٍ تحميل حالة الخزنة...</div><div class="bb"><button data-heist="buy-weapon">⚡ شراء معدة مهمة · 1800</button><button data-heist="hire">👥 تعيين مساعد · 2500</button><button data-heist="upgrade">🛡️ تطوير التأمين</button><button data-heist="rob">🚨 بدء مهمة البنك</button></div><small>المهمة خيالية داخل اللعبة. الخزنة مشتركة، ومحاولة واحدة فقط كل ساعة.</small></section><div class="bb"><button data-b="d5">⬆️ إيداع 5</button><button data-b="d50">⬆️ إيداع 50</button><button data-b="d500">⬆️ إيداع 500</button><button data-b="da">⬆️ إيداع الكل</button><button data-b="w5">⬇️ سحب 5</button><button data-b="w50">⬇️ سحب 50</button><button data-b="w500">⬇️ سحب 500</button><button data-b="wa">⬇️ سحب الكل</button></div><div id="bkLog"></div><div class="bb"><button id="bkTransfer">💸 تحويل فلوس</button><button id="bkAsset">🎁 تحويل ملكية</button></div><small>التحويل يحتاج معرّف اللاعب (UID) من حسابه داخل اللعبة.</small><button id="bkX">إغلاق</button></div></div>
+<button id="dstRun">🏃</button><button id="dstJump">⤴</button><button id="dstBrake" aria-label="فرامل">■</button><div id="dstJoy"><i></i></div><div id="dstLoad">بيحمّل الحي...</div></div>`);
 if(MOB)q('#dstChat').classList.add('off');
 document.head.insertAdjacentHTML('beforeend','<style>#dstTp{position:absolute;inset:0;z-index:6;background:rgba(3,5,14,.8);display:grid;place-items:center}#dstTp[hidden]{display:none}.tp{width:min(92vw,360px);max-height:80vh;overflow:auto;padding:16px;border-radius:22px;background:#10142a;border:1px solid #3fe0ff88;text-align:center}.tp h3{margin:0 0 8px;color:#7ff6ff}.tp button{display:block;width:100%;margin:6px 0}</style>');
 q('#dst').insertAdjacentHTML('beforeend','<div id="dstTp" hidden><div class="tp"><h3>📍 روح على...</h3><div id="tpL"></div><button id="tpX">إغلاق</button></div></div>');
-q('#dstTop').insertAdjacentHTML('beforeend','<button id="dstTpB">📍</button><button id="dstHubB">✨ الخدمات</button>');
+q('#dstTop').insertAdjacentHTML('beforeend','<button id="dstTpB">📍</button><button id="dstTuneB" title="ورشة تخصيص السيارات">🛠️</button><button id="dstHubB">✨ الخدمات</button>');
 q('#dstTpB').onclick=()=>{q('#tpL').innerHTML=MP.buildings.map((b,i)=>'<button data-i="'+i+'">'+NAMES[b.id]+'</button>').join('')+'<button data-i="o">🧗 الأوبي</button><button data-i="f">⛲ النافورة</button><button data-i="s">🏁 نقطة البداية</button>';q('#dstTp').hidden=false};
 q('#tpX').onclick=()=>q('#dstTp').hidden=true;
 q('#dst').insertAdjacentHTML('beforeend','<div id="dstEstate" hidden><div class="estatePanel"><h3>🏡 مجموعة العقارات الفاخرة</h3><div>امتلك فيلا أو قصرًا جبليًا، ثم انتقل إليه من أي مكان في المدينة. الملكية محفوظة على هذا الجهاز والحساب الحالي.</div><div id="dstEstateGrid" class="estateGrid"></div><button id="dstEstateClose">إغلاق</button></div></div>');
 q('#dst').insertAdjacentHTML('beforeend','<div id="dstApts" hidden><div class="aptPanel"><h3>🏙️ The Squad Residences</h3><div class="aptLead">مجموعة شقق سكنية راقية داخل برج المدينة. اختر الوحدة حسب المساحة والطابق والإطلالة، ثم انتقل إلى شقتك من داخل العالم. الأسعار والملكية تجريبية ومحفوظة محليًا في هذه النسخة.</div><div id="dstAptGrid" class="aptGrid"></div><button id="dstAptClose">إغلاق</button></div></div>');
-q('#dst').insertAdjacentHTML('beforeend','<div id="dstCars" hidden><div class="carShopPanel"><h3>🚘 Luxury Motor Gallery</h3><div class="carShopLead">اختَر من 52 موديلًا إضافيًا من سيارات الإنتاج الحقيقية بالاسم. شراء السيارة يضيفها إلى جراجك المحلي ويستدعيها إلى ساحة المعرض لتقدر تركبها وتقودها. شكل السيارات الإضافية الحالي هيكل فئوي برمجي؛ الموديلات الأصلية التفصيلية تحتاج ملفات 3D مرخّصة غير موجودة في الأرشيف.</div><div id="dstCarShopGrid" class="carShopGrid"></div><button id="dstCarShopClose">إغلاق</button></div></div>');
+q('#dst').insertAdjacentHTML('beforeend','<div id="dstCars" hidden><div class="carShopPanel"><h3>🚘 Luxury Motor Gallery</h3><div class="carShopLead">استعرض 20 شركة سيارات عالمية، واختر الشركة ثم الموديل المتاح. الشراء يضيف السيارة إلى جراجك ويتيح استدعاءها وقيادتها. الموديلات الحالية مجسمات إجرائية داخل اللعبة وليست ملفات OEM أصلية؛ يلزم توفير أصول 3D مرخّصة للتطابق الواقعي.</div><div id="dstCarShopGrid" class="carShopGrid"></div><button id="dstCarShopClose">إغلاق</button></div></div>');
+q('#dst').insertAdjacentHTML('beforeend',`<div id="dstTune" hidden><div class="tunePanel"><h3>🛠️ ورشة تخصيص السيارات</h3><p id="dstTuneName">اختار سيارتك أولاً بالاقتراب منها أو الركوب فيها.</p><label>لون الهيكل</label><div id="dstPaintChoices" class="tuneRow"></div><label>لون الجنوط</label><div id="dstRimChoices" class="tuneRow"></div><label for="dstRide">ارتفاع السيارة <span id="dstRideVal">0</span></label><input id="dstRide" type="range" min="-0.12" max="0.12" step="0.01" value="0"><label><input id="dstNeonToggle" type="checkbox" checked> تشغيل الإضاءة السفلية</label><div class="tuneActions"><button id="dstTuneSave">💾 حفظ التعديلات</button><button id="dstTuneClose">إغلاق</button></div></div></div>`);
 q('#dst').insertAdjacentHTML('beforeend','<div id="dstHub" hidden style="position:absolute;inset:0;z-index:6;background:rgba(2,5,15,.82);display:grid;place-items:center;padding:16px;backdrop-filter:blur(8px)"><div class="estatePanel"><h3>✨ خدمات المدينة الفاخرة</h3><div class="aptLead">اختار المكان اللي عايز تديره أو تزوره.</div><div class="estateGrid"><div class="estateCard"><b>🏡 العقارات والقصور</b><small>شراء العقارات الجبلية والانتقال إلى الممتلكات.</small><button id="dstEstateB">فتح العقارات</button></div><div class="estateCard"><b>🏢 الشقق والبنتهاوس</b><small>اختيار وحدة سكنية داخل برج المدينة.</small><button id="dstAptB">فتح الشقق</button></div><div class="estateCard"><b>🚘 معرض السيارات</b><small>شراء واستدعاء موديلات السيارات الإضافية.</small><button id="dstCarShopB">فتح المعرض</button></div></div><button id="dstHubClose">إغلاق</button></div></div>');
-q('#dst').insertAdjacentHTML('beforeend','<div id="dstEntourage" hidden style="position:absolute;inset:0;z-index:12;background:#02050feF;display:grid;place-items:center;padding:14px"><div class="estatePanel"><h3>🛡️ الحراسة الخاصة والموكب الملكي</h3><p>اشترِ حارسًا شخصيًا من رصيدك عبر نظام تعيين الحراس الحالي، واجعله يتبعك. الموكب ميزة استعراضية داخل جلستك الحالية.</p><div class="estateGrid"><div class="estateCard"><b>🛡️ الحراس الشخصيون</b><small id="bodyguardInfo">اختَر عقارًا تملكه لتعيين الحارس بسعر 2,500 عملة.</small><div id="bodyguardChoices"></div><button id="bodyguardFollow">👣 تشغيل / إيقاف اتباعي</button></div><div class="estateCard"><b>🚘 موكب السيارات الفاخرة</b><small>ثلاث سيارات مرافقة تتبعك بصريًا في العالم الحالي.</small><button id="convoyToggle">🚘 تشغيل الموكب</button></div></div><button id="dstEntourageClose">إغلاق</button></div></div>');
+q('#dst').insertAdjacentHTML('beforeend','<div id="dstEntourage" hidden style="position:absolute;inset:0;z-index:12;background:#02050feF;display:grid;place-items:center;padding:14px"><div class="estatePanel"><h3>🛡️ الحراسة الخاصة والموكب الملكي</h3><p>موكب VIP بقيادة سائق: سيارة رئيسية وسائق ظاهر داخلها وسيارتا حراسة. اختار وجهتك وسيقودك الموكب إليها.</p><div class="estateGrid"><div class="estateCard"><b>🛡️ الحراس الشخصيون</b><small id="bodyguardInfo">اختَر عقارًا تملكه لتعيين حارس بسعر 2,500 عملة.</small><div id="bodyguardChoices"></div><button id="bodyguardFollow">👣 تشغيل / إيقاف اتباعي</button></div><div class="estateCard"><b>🚘 موكب VIP بسائق</b><small>السائق يقود السيارة الرئيسية، والحراسة تتحرك خلفها. تحكمك يرجع لك عند إيقاف السائق.</small><select id="chauffeurDest" style="width:100%;padding:10px;margin:6px 0;border-radius:10px;background:#101a2c;color:white;border:1px solid #ffffff44"></select><button id="chauffeurStart">👔 اطلب الموكب وابدأ الرحلة</button><button id="convoyToggle">🚘 تشغيل / إيقاف سيارات المرافقة</button><small id="chauffeurStatus">السائق ينتظر تعليماتك.</small></div></div><button id="dstEntourageClose">إغلاق</button></div></div>');
 q('#dstTop').insertAdjacentHTML('beforeend','<button id="dstEntourageB">🛡️ موكبي</button>');
 q('#tpL').onclick=e=>{const i=e.target.dataset&&e.target.dataset.i;if(i==null)return;let x,z,yw=0;if(i=='o'){x=MP.plats[0].x-3.5;z=MP.plats[0].z;yw=-Math.PI/2}else if(i=='f'){x=0;z=8}else if(i=='s'){x=MP.spawn.x;z=MP.spawn.z}else{const b=MP.buildings[+i],w=b.W(0,b.hd+3);x=w[0];z=w[1];yw=b.dir>0?0:Math.PI;if(b.id=='palace'&&!ADM){x=0;z=262;yw=Math.PI}}Object.assign(P,DC.newP(x,z));P.yaw=yw;q('#dstTp').hidden=true;net&&net.send(P,EM,1)};
 
@@ -57,10 +60,19 @@ q('#tpL').onclick=e=>{const i=e.target.dataset&&e.target.dataset.i;if(i==null)re
 let ENV_CUBE=null,CITY_ENV_CUBE=null,WG=null,NPCS_=[],lastNpc=0,lastCoinCheck=0,NEON_PALETTE=[0x20cfff,0xff2bd6,0x5cff7a,0xffb52e,0xffffff],NEON_INDEX=0,sc,cam,ren,ray,built=0,openD=0,raf=0,last=0,lastSend=0,lastSlow=0,lastMap=0,net=null,MYK='',EM='',emT=0,jx=0,jy=0,runT=0,ME=null,camD=6.2,camH=3.3,sig='',got=new Set(),seen=null;
 const P=DC.newP(MP.spawn.x,MP.spawn.z),K={},R={},coinObjs=[],pulse=[],GEO={},EMS={},DOORS=[];let fountainTop=null,drag=null,nearDoor=null;
 // v40: authoritative multiplayer economy. Browser cache is display-only; writes go through callable Functions.
-let ECON=null, ECON_READY=false, ECON_BUSY=false;
+let ECON=null, ECON_READY=false, ECON_BUSY=false, ECON_ERROR='';
 function economyClient(){try{if(!window.firebase||!firebase.functions||!me||!me.uid)return null;return firebase.app().functions('europe-west1')}catch(e){return null}}
 function applyEconomy(st){if(!st)return;W=Math.max(0,Number(st.wallet)||0);BANK.bal=Math.max(0,Number(st.bank)||0);OWN=st.cars||{};OWN_ESTATES=st.estates||{};OWN_APTS=st.apartments||{};OWN_STAFF={};Object.entries(st.staff||{}).forEach(([k,v])=>{const m=k.match(/^(.*)_(guard|servant)$/);if(!m)return;OWN_STAFF[m[1]]=OWN_STAFF[m[1]]||{guards:0,servants:0};OWN_STAFF[m[1]][m[2]==='guard'?'guards':'servants']=Number(v)||0});ECON=st;ECON_READY=true;coinUI();if(q('#dstBank')&&!q('#dstBank').hidden)bankUI();if(q('#dstEstate')&&!q('#dstEstate').hidden)estateUI();if(q('#dstApts')&&!q('#dstApts').hidden)aptUI();if(q('#dstCars')&&!q('#dstCars').hidden)carShopUI()}
-async function economyLoad(){const f=economyClient();if(!f){toast('لازم تسجيل الدخول وتفعيل Firebase Functions للعب بالأونلاين');return false}try{const r=await f.httpsCallable('economyGet')({});applyEconomy(r.data);return true}catch(e){ECON_READY=false;toast('تعذر تحميل حساب اللعبة من السيرفر. راجع إعدادات Firebase Functions.');console.error('economyGet',e);return false}}
+async function economyLoad(){
+ const f=economyClient();
+ if(!f){ECON_READY=false;ECON_ERROR='سجّل الدخول أولًا حتى نفتح حساب البنك.';return false}
+ try{
+  const call=f.httpsCallable('economyGet');
+  const result=await Promise.race([call({}),new Promise((_,reject)=>setTimeout(()=>reject(Object.assign(new Error('انتهت مهلة الاتصال بخدمة البنك.'),{code:'deadline-exceeded'})),12000))]);
+  if(!result||!result.data)throw Object.assign(new Error('السيرفر رجّع بيانات غير مكتملة.'),{code:'data-loss'});
+  applyEconomy(result.data);ECON_ERROR='';return true;
+ }catch(e){ECON_READY=false;console.error('economyGet',e);ECON_ERROR=e&&e.code==='functions/not-found'?'خدمة البنك غير منشورة على Firebase Functions.':e&&e.code==='deadline-exceeded'?'الاتصال بالبنك اتأخر. جرّب تاني بعد التأكد من الإنترنت.':'تعذّر الاتصال بحساب البنك. راجع نشر Firebase Functions وتسجيل الدخول.';return false}
+}
 async function economyAction(action,data={}){if(ECON_BUSY)return null;const f=economyClient();if(!f){toast('اقتصاد الأونلاين غير متاح: تأكد من تسجيل الدخول وإعداد Firebase Functions');return null}ECON_BUSY=true;try{const r=await f.httpsCallable('economyAction')({action,...data});applyEconomy(r.data.state);return r.data}catch(e){toast((e&&e.message)||'حصل خطأ في عملية الاقتصاد');console.error('economyAction',action,e);return null}finally{ECON_BUSY=false}}
 const ESTATE_CATALOG=[
  {id:'villa_ridge',name:'فيلا Ridge الزجاجية',price:85000,x:-48,z:-292,desc:'فيلا زجاجية بإطلالة جبلية وحديقة خاصة',color:0x9fb8c9,size:1},
@@ -73,17 +85,21 @@ const ESTATE_CATALOG=[
  {id:'villa_skyline',name:'فيلا Skyline',price:275000,x:-65,z:390,desc:'فيلا فاخرة بإضاءة محيطية وشرفات واسعة',color:0x9fb8c9,size:1.3},
  {id:'mansion_goldcrest',name:'قصر Gold Crest',price:950000,x:65,z:390,desc:'قصر ملكي بمدخل خاص وأجنحة فاخرة',color:0xd8c08a,size:1.6},
  {id:'mansion_royalgardens',name:'قصر Royal Gardens',price:1250000,x:135,z:390,desc:'قصر كبير بحدائق وممر سيارات خاص',color:0xc8b38b,size:1.7},
- {id:'villa_palm',name:'فيلا Palm Residence',price:315000,x:205,z:390,desc:'فيلا راقية بتصميم استوائي داخل حي الأغنياء',color:0x86a58b,size:1.35}
+ {id:'villa_palm',name:'فيلا Palm Residence',price:315000,x:205,z:390,desc:'فيلا راقية بتصميم استوائي داخل حي الأغنياء',color:0x86a58b,size:1.35},
+ {id:'mansion_supervillain',name:'قصر Supervillain الملكي',price:20000000,x:0,z:390,desc:'قصر استثنائي في قلب حي الأغنياء: بوابة أمنية، مسبح، جناح سينما، صالة رياضية، مكتب خاص، قاعة اجتماعات، خزنة، وأجنحة نوم متعددة.',color:0xd8c49a,size:2.15}
 ];
 const ESTATE_KEY=()=> 'sq_estates_'+me.uid;
 let OWN_ESTATES={};
-let BODYGUARDS=[],BODYGUARD_FOLLOW=false,CONVOY=[],CONVOY_ON=false;
+let BODYGUARDS=[],BODYGUARD_FOLLOW=false,CONVOY=[],CONVOY_ON=false,CHAUFFEUR_ON=false,CHAUFFEUR_DEST=null,CHAUFFEUR_ARRIVED=false,CHAUFFEUR_DOOR_UNTIL=0;
 function estateLoad(){/* Ownership comes only from economyGet/economyAction. */}
 function estateSave(){try{localStorage[ESTATE_KEY()]=JSON.stringify(OWN_ESTATES)}catch(e){}}
-function entourageUI(){const choices=q('#bodyguardChoices');if(!choices)return;const owned=ESTATE_CATALOG.filter(a=>!!OWN_ESTATES[a.id]);choices.innerHTML=owned.length?owned.map(a=>'<button data-bodyguard-estate="'+a.id+'">تعيين حارس من '+a.name+' · 2,500 🪙</button>').join(''):'<small>لازم تملك فيلا أو قصرًا أولًا.</small>';q('#bodyguardInfo').textContent='الحراس المتاحون: '+BODYGUARDS.length+' · السعر 2,500 عملة لكل حارس';q('#bodyguardFollow').textContent=BODYGUARD_FOLLOW?'⏸ إيقاف اتباع الحراس':'👣 خليهم يمشوا وراك';q('#convoyToggle').textContent=CONVOY_ON?'⏸ إيقاف الموكب':'🚘 تشغيل الموكب'}
+function entourageUI(){const choices=q('#bodyguardChoices');if(!choices)return;const owned=ESTATE_CATALOG.filter(a=>!!OWN_ESTATES[a.id]);choices.innerHTML=owned.length?owned.map(a=>'<button data-bodyguard-estate="'+a.id+'">تعيين حارس من '+a.name+' · 2,500 🪙</button>').join(''):'<small>لازم تملك فيلا أو قصرًا أولًا.</small>';q('#bodyguardInfo').textContent='الحراس المتاحون: '+BODYGUARDS.length+' · السعر 2,500 عملة لكل حارس';q('#bodyguardFollow').textContent=BODYGUARD_FOLLOW?'⏸ إيقاف اتباع الحراس':'👣 خليهم يمشوا وراك';q('#convoyToggle').textContent=CONVOY_ON?'⏸ إيقاف سيارات المرافقة':'🚘 تشغيل سيارات المرافقة';const sel=q('#chauffeurDest');if(sel&&!sel.options.length)sel.innerHTML=MP.buildings.map((b,i)=>'<option value="b:'+i+'">'+NAMES[b.id]+'</option>').join('')+'<option value="f">⛲ النافورة</option><option value="s">🏁 نقطة البداية</option><option value="o">🧗 الأوبي</option>';q('#chauffeurStatus').textContent=CHAUFFEUR_ON?'السائق في الطريق إلى '+(CHAUFFEUR_DEST&&CHAUFFEUR_DEST.name||'وجهتك'):'السائق ينتظر تعليماتك.';q('#chauffeurStart').textContent=CHAUFFEUR_ON?'⏹ إيقاف السائق':'👔 اطلب الموكب وابدأ الرحلة'}
 async function hirePersonalGuard(estateId){const a=ESTATE_CATALOG.find(x=>x.id===estateId);if(!a||!OWN_ESTATES[estateId])return toast('امتلك العقار أولًا');const r=await economyAction('hireStaff',{estateId,kind:'guard'});if(!r)return;const o=mkAv('personal_guard_'+Date.now(),'الحارس الشخصي','');o.position.set(P.x-2,0,P.z-2);o.userData=o.userData||{};o.userData.personalBodyguard={phase:BODYGUARDS.length*2.2,estateId};sc.add(o);BODYGUARDS.push(o);entourageUI();toast('🛡️ تم تعيين الحارس الشخصي!')}
-function toggleConvoy(){if(!CONVOY.length){const keys=['bugatti','rolls','rr'];for(let i=0;i<keys.length;i++){const key=DC.CS[keys[i]]?keys[i]:Object.keys(DC.CS)[i];const cr=DC.spawnCar(key,P.x+(i+1)*4,P.z+7,Math.PI);if(!cr)continue;cr.v=0;cr.sale=-1;const obj=mkCar(cr);sc.add(obj);CARO[cr.id]=obj;CONVOY.push({car:cr,obj,index:i,key})}}CONVOY_ON=!CONVOY_ON;entourageUI();toast(CONVOY_ON?'🚘 الموكب الفاخر جاهز ويتبعك في جلستك':'تم إيقاف الموكب')}
-function animateEntourage(dt,t){if(BODYGUARD_FOLLOW){BODYGUARDS.forEach((o,i)=>{const g=o.userData&&o.userData.personalBodyguard;if(!g)return;const ang=P.yaw+Math.PI+(i%2?-.55:.55),tx=P.x+Math.sin(ang)*(2.2+Math.floor(i/2)*1.1),tz=P.z+Math.cos(ang)*(2.2+Math.floor(i/2)*1.1),a=Math.min(1,dt*3.4);o.position.x+=(tx-o.position.x)*a;o.position.z+=(tz-o.position.z)*a;o.rotation.y=Math.atan2(P.x-o.position.x,P.z-o.position.z);anim(o,Math.hypot(tx-o.position.x,tz-o.position.z)>.15,t,false,false,'')})}if(CONVOY_ON){CONVOY.forEach(({car,obj,index})=>{const back=9+index*6,side=(index===1?3:index===2?-3:0),ang=P.yaw,tx=P.x-Math.sin(ang)*back+Math.cos(ang)*side,tz=P.z-Math.cos(ang)*back-Math.sin(ang)*side,a=Math.min(1,dt*2.2);car.x+=(tx-car.x)*a;car.z+=(tz-car.z)*a;car.yaw=P.yaw;obj.position.set(car.x,car.y||0,car.z);obj.rotation.y=car.yaw+Math.PI/2;syncCar(car,dt)})}}
+function ensureConvoy(){if(CONVOY.length)return;const keys=['limo','rolls','bugatti'];for(let i=0;i<keys.length;i++){const key=DC.CS[keys[i]]?keys[i]:Object.keys(DC.CS).find(k=>DC.CS[k]&&DC.CS[k].kind!=='bike');if(!key)continue;const cr=DC.spawnCar(key,P.x+(i-1)*4,P.z+8+i*5,Math.PI);if(!cr)continue;cr.v=0;cr.sale=-1;const obj=mkCar(cr);sc.add(obj);CARO[cr.id]=obj;CONVOY.push({car:cr,obj,index:i,key})}if(CONVOY[0]){const driver=new THREE.Group(),skin=new THREE.MeshStandardMaterial({color:0xb9825d}),suit=new THREE.MeshStandardMaterial({color:0x101722}),head=new THREE.Mesh(new THREE.SphereGeometry(.19,10,8),skin),body=new THREE.Mesh(new THREE.BoxGeometry(.42,.48,.3),suit);head.position.set(-.65,1.04,0);body.position.set(-.65,.72,0);driver.add(head,body);CONVOY[0].obj.add(driver);CONVOY[0].driver=driver}}
+function toggleConvoy(){ensureConvoy();CONVOY_ON=!CONVOY_ON;entourageUI();toast(CONVOY_ON?'🚘 سيارات المرافقة جاهزة':'تم إيقاف سيارات المرافقة')}
+function chauffeurDestination(){const v=q('#chauffeurDest').value;let x=0,z=0,name='';if(v==='f'){x=0;z=8;name='النافورة'}else if(v==='s'){x=MP.spawn.x;z=MP.spawn.z;name='نقطة البداية'}else if(v==='o'){x=MP.plats[0].x-3.5;z=MP.plats[0].z;name='الأوبي'}else{const b=MP.buildings[+v.split(':')[1]];if(!b)return null;const w=b.W(0,b.hd+3);x=w[0];z=w[1];name=NAMES[b.id]}return{x,z,name}}
+function startChauffeur(){if(CHAUFFEUR_ON){CHAUFFEUR_ON=false;CHAUFFEUR_DEST=null;P.v=0;entourageUI();toast('السائق وقف والقيادة رجعت لك');return}const dest=chauffeurDestination();if(!dest)return toast('اختار وجهة صحيحة');if(DRV)getOut();ensureConvoy();if(!CONVOY.length)return toast('تعذر تجهيز سيارات الموكب');CHAUFFEUR_DEST=dest;CHAUFFEUR_ON=true;CONVOY_ON=true;CHAUFFEUR_ARRIVED=false;CHAUFFEUR_DOOR_UNTIL=Date.now()+1400;if(CONVOY[0].obj.userData.doorHinges){CONVOY[0].obj.userData.doorsOpen=true;CONVOY[0].obj.userData.doorHinges.forEach(h=>{h.node.rotation.y=h.side*.92})}entourageUI();toast('👔 السائق فتح لك الباب — الموكب انطلق إلى '+dest.name)}
+function animateEntourage(dt,t){if(BODYGUARD_FOLLOW){BODYGUARDS.forEach((o,i)=>{const g=o.userData&&o.userData.personalBodyguard;if(!g)return;const ang=P.yaw+Math.PI+(i%2?-.55:.55),tx=P.x+Math.sin(ang)*(2.2+Math.floor(i/2)*1.1),tz=P.z+Math.cos(ang)*(2.2+Math.floor(i/2)*1.1),a=Math.min(1,dt*3.4);o.position.x+=(tx-o.position.x)*a;o.position.z+=(tz-o.position.z)*a;o.rotation.y=Math.atan2(P.x-o.position.x,P.z-o.position.z);anim(o,Math.hypot(tx-o.position.x,tz-o.position.z)>.15,t,false,false,'')})}if(CHAUFFEUR_ON&&CONVOY.length&&CHAUFFEUR_DEST){const lead=CONVOY[0],c=lead.car;if(lead.obj.userData.doorHinges&&Date.now()>CHAUFFEUR_DOOR_UNTIL&&lead.obj.userData.doorsOpen){lead.obj.userData.doorsOpen=false;lead.obj.userData.doorHinges.forEach(h=>{h.node.rotation.y=0})}const dx=CHAUFFEUR_DEST.x-c.x,dz=CHAUFFEUR_DEST.z-c.z,dist=Math.hypot(dx,dz);if(dist<3.2){c.v=0;CHAUFFEUR_ON=false;CHAUFFEUR_ARRIVED=true;CHAUFFEUR_DEST=null;P.x=c.x+Math.cos(c.yaw)*2.1;P.z=c.z-Math.sin(c.yaw)*2.1;P.y=c.y||0;P.yaw=c.yaw;ME&&ME.obj&&(ME.obj.visible=true);if(lead.obj.userData.doorHinges){lead.obj.userData.doorsOpen=true;lead.obj.userData.doorHinges.forEach(h=>{h.node.rotation.y=h.side*.92})}entourageUI();toast('📍 وصل الموكب وفتح السائق لك الباب للنزول')}else{const targetYaw=Math.atan2(-dx,-dz);let da=Math.atan2(Math.sin(targetYaw-c.yaw),Math.cos(targetYaw-c.yaw));c.yaw+=Math.max(-1.8*dt,Math.min(1.8*dt,da));const speed=Math.min(10,Math.max(3,dist*.55));c.v=speed;const nx=c.x+dx/dist*speed*dt,nz=c.z+dz/dist*speed*dt;if(!DC.blocked(nx,nz,c.y)){c.x=nx;c.z=nz}else{c.yaw+=Math.PI*.42;c.v=speed*.55}P.x=c.x;P.z=c.z;P.y=c.y||0;P.yaw=c.yaw;P.vy=0;P.on=1;P.moved=1;ME&&ME.obj&&(ME.obj.visible=false);if(lead.driver){lead.driver.rotation.y=0}}CONVOY.forEach(({car,obj,index},i)=>{if(i>0){const back=9+index*5,side=index===1?3:-3,ang=c.yaw,tx=c.x-Math.sin(ang)*back+Math.cos(ang)*side,tz=c.z-Math.cos(ang)*back-Math.sin(ang)*side,dx2=tx-car.x,dz2=tz-car.z,d2=Math.hypot(dx2,dz2),a=Math.min(1,dt*2.1);if(d2>.5){car.x+=dx2*a;car.z+=dz2*a}car.yaw=c.yaw;car.v=Math.min(9,d2*1.5)}obj.position.set(car.x,car.y||0,car.z);obj.rotation.y=car.yaw+Math.PI/2;syncCar(car,dt)})}else if(CONVOY_ON){CONVOY.forEach(({car,obj,index})=>{const back=9+index*6,side=(index===1?3:index===2?-3:0),ang=P.yaw,tx=P.x-Math.sin(ang)*back+Math.cos(ang)*side,tz=P.z-Math.cos(ang)*back-Math.sin(ang)*side,a=Math.min(1,dt*2.2);car.x+=(tx-car.x)*a;car.z+=(tz-car.z)*a;car.yaw=P.yaw;obj.position.set(car.x,car.y||0,car.z);obj.rotation.y=car.yaw+Math.PI/2;syncCar(car,dt)})}}
 function estateUI(){estateLoad();staffLoad();q('#dstEstateGrid').innerHTML=ESTATE_CATALOG.map(a=>{const own=!!OWN_ESTATES[a.id],st=OWN_STAFF[a.id]||{guards:0,servants:0};return '<div class="estateCard"><b>'+a.name+'</b><small>'+a.desc+'</small><small>السعر: '+fmt(a.price)+' 🪙</small><button data-estate="'+a.id+'" class="'+(own?'owned':'')+'">'+(own?'🚪 انتقل للعقار':'🛒 شراء العقار')+'</button>'+(own?'<div class="aptMeta"><span>🛡️ حراس '+st.guards+'/3</span><span>🧹 خدم '+st.servants+'/3</span></div><div class="bb"><button data-staff="'+a.id+'" data-kind="guard">تعيين حارس · 2,500</button><button data-staff="'+a.id+'" data-kind="servant">تعيين خادم · 1,800</button></div>':'<small>امتلك العقار أولًا لتعيين الحراس والخدم.</small>')+'</div>'}).join('')}
 async function estateAction(id){const a=ESTATE_CATALOG.find(x=>x.id===id);if(!a)return;if(!OWN_ESTATES[id]){const r=await economyAction('buyEstate',{id});if(!r)return;estateUI();toast('🏡 مبروك! أصبحت مالك '+a.name);return}Object.assign(P,DC.newP(a.x,a.z));P.yaw=Math.PI;q('#dstEstate').hidden=true;net&&net.send(P,EM,1);toast('🏡 وصلت إلى '+a.name)}
 const STAFF_KEY=()=>'sq_estate_staff_'+me.uid;let OWN_STAFF={};
@@ -100,7 +116,8 @@ function aptLoad(){/* Ownership comes only from economyGet/economyAction. */}
 function aptSave(){try{localStorage[APT_KEY()]=JSON.stringify(OWN_APTS)}catch(e){}}
 function aptUI(){aptLoad();q('#dstAptGrid').innerHTML=APT_CATALOG.map(a=>{const own=!!OWN_APTS[a.id];return '<div class="aptCard"><div class="aptIcon">'+a.icon+'</div><b>'+a.name+'</b><div class="aptMeta"><span>الطابق '+a.floor+'</span><span>'+fmt(a.price)+' 🪙</span></div><small>'+a.desc+'</small><button data-apt="'+a.id+'" class="'+(own?'owned':'')+'">'+(own?'🚪 ادخل شقتك':'🛒 شراء الوحدة')+'</button></div>'}).join('')}
 async function aptAction(id){const a=APT_CATALOG.find(x=>x.id===id);if(!a)return;if(!OWN_APTS[id]){const r=await economyAction('buyApartment',{id});if(!r)return;aptUI();toast('🏢 مبروك! أصبحت مالك '+a.name);return}const b=MP.buildings.find(x=>x.id==='flats');if(!b)return toast('الشقق غير متاحة حاليًا');const pos=b.W(a.id==='apt_penthouse'?3:0, a.id==='apt_penthouse'?-2:0);Object.assign(P,DC.newP(pos[0],pos[1]),{y:a.floor*b.fh+.25,yaw:b.dir>0?Math.PI:0});q('#dstApts').hidden=true;net&&net.send(P,EM,1);toast('🏙️ وصلت إلى '+a.name)}
-function carShopUI(){q('#dstCarShopGrid').innerHTML=DC.CAR_CATALOG.map((row,i)=>{const key='catalog_'+(i+1),own=!!OWN[key],type=({sedan:'سيدان فاخرة',sport:'رياضية',super:'سوبر/هايبر كار',suv:'دفع رباعي'})[row[1]]||row[1];return '<div class="carShopCard"><div class="carGlyph">'+(row[1]==='suv'?'🚙':row[1]==='sedan'?'🚘':'🏎️')+'</div><b>'+row[0]+'</b><small>'+type+'</small><div class="price">'+fmt(row[2])+' 🪙</div><button data-catalog-car="'+i+'" class="'+(own?'owned':'')+'">'+(own?'🔑 استدعاء سيارتك':'🛒 شراء السيارة')+'</button></div>'}).join('')}
+const CAR_BRANDS=[['Cadillac',['cadillac']],['Range Rover',['range rover']],['Rolls-Royce',['rolls-royce','rolls royce']],['BMW',['bmw']],['Mercedes-Benz',['mercedes']],['Lamborghini',['lamborghini']],['Ferrari',['ferrari']],['Porsche',['porsche']],['Bugatti',['bugatti']],['McLaren',['mclaren']],['Audi',['audi']],['Bentley',['bentley']],['Aston Martin',['aston martin']],['Tesla',['tesla']],['Toyota',['toyota']],['Nissan',['nissan']],['Jeep',['jeep']],['Land Rover',['land rover']],['Chevrolet',['chevrolet']],['Lexus',['lexus']]];let selectedCarBrand='';
+function carShopUI(){const head='<div class="brandChooser"><div class="carShopLead">اختار الشركة لعرض موديلاتها المتاحة. كل معرض يضم أربع علامات تجارية، ويمكنك استعراض بقية الشركات من هنا.</div><div class="brandGrid">'+CAR_BRANDS.map(([name])=>'<button class="brandPick '+(selectedCarBrand===name?'active':'')+'" data-car-brand="'+name+'">'+name+'</button>').join('')+'</div></div>';const rows=DC.CAR_CATALOG.map((row,i)=>({row,i})).filter(({row})=>{if(!selectedCarBrand)return false;const brand=CAR_BRANDS.find(x=>x[0]===selectedCarBrand);const n=row[0].toLowerCase();return brand[1].some(x=>n.includes(x))});const cards=rows.map(({row,i})=>{const key='catalog_'+(i+1),own=!!OWN[key],type=({sedan:'سيدان فاخرة',sport:'رياضية',super:'سوبر/هايبر كار',suv:'دفع رباعي',bike:'دراجة نارية رياضية'})[row[1]]||row[1];return '<div class="carShopCard"><div class="carGlyph">'+(row[1]==='bike'?'🏍️':row[1]==='suv'?'🚙':row[1]==='sedan'?'🚘':'🏎️')+'</div><b>'+row[0]+'</b><small>'+type+' · نموذج ثلاثي الأبعاد داخل اللعبة</small><div class="price">'+fmt(row[2])+' 🪙</div><button data-catalog-car="'+i+'" class="'+(own?'owned':'')+'">'+(own?'🔑 استدعاء سيارتك':'🛒 شراء السيارة')+'</button></div>'}).join('');q('#dstCarShopGrid').innerHTML=head+(selectedCarBrand?(cards||'<p class="carShopLead">لا توجد موديلات مسجلة لهذه الشركة في كتالوج هذه النسخة بعد.</p>'):'<p class="carShopLead">اختار واحدة من الشركات العشرين لعرض موديلاتها.</p>')}
 function catalogSpawnSpot(){const b=MP.buildings.find(x=>x.id==='showroom'),base=b?b.W(0,b.hd+6):{0:0,1:0};const bx=b?base[0]:-125,bz=b?base[1]:300;for(let row=0;row<5;row++)for(let col=-2;col<=2;col++){const x=bx+col*5.7,z=bz-row*5.8;if(!DC.blocked(x,z,0))return{x,z}}return null}
 async function carShopAction(i){i=+i;if(!Number.isInteger(i)||i<0||i>=DC.CAR_CATALOG.length)return;const row=DC.CAR_CATALOG[i],key='catalog_'+(i+1);if(!OWN[key]){const r=await economyAction('buyCar',{id:key});if(!r)return;carShopUI();toast('🎉 اتضافت '+row[0]+' لجراجك')}let car=MP.cars.find(c=>c.key===key&&c.sale===-1);const spot=catalogSpawnSpot();if(!spot)return toast('مفيش مساحة فاضية في ساحة المعرض دلوقتي');if(!car){car=DC.spawnCar(key,spot.x,spot.z,0);if(!car)return toast('تعذّر استدعاء السيارة');const obj=mkCar(car);sc.add(obj);CARO[car.id]=obj;syncCar(car)}else{car.x=spot.x;car.z=spot.z;car.y=0;car.yaw=0;car.v=0;DC.parkDyn(car);syncCar(car)}q('#dstCars').hidden=true;toast('🚘 '+row[0]+' جاهزة عند المعرض — اقترب منها واضغط زر القيادة')}
 const EMJ={wave:'👋',dance:'💃',heart:'❤️',laugh:'😂'};
@@ -116,6 +133,19 @@ function loadSquadModel(G,c,R){if(!c||!c.archetype)return;const archetype=['seda
  function begin(){if(!window.GLTFLoader){if(document.querySelector('script[data-squad-gltf]'))return;const s=document.createElement('script');s.dataset.squadGltf='1';s.src='https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/examples/js/loaders/GLTFLoader.js';s.onload=()=>{if(window.GLTFLoader)loadIt()};s.onerror=()=>{};document.head.appendChild(s)}else loadIt()}
  function loadIt(){if(!window.GLTFLoader)return;if(!SQUAD_GLB_PROMISES[archetype]){SQUAD_GLB_PROMISES[archetype]=new Promise((resolve,reject)=>{try{const l=new THREE.GLTFLoader();l.load(new URL('assets/models/squad-luxury-'+archetype+'.glb',document.baseURI).href,g=>resolve(g.scene),undefined,reject)}catch(e){reject(e)}})}SQUAD_GLB_PROMISES[archetype].then(src=>{if(!G||!G.parent)return;const m=src.clone(true);m.rotation.x=-Math.PI/2;const base={sedan:[5.0,1.9,1.3],sport:[4.5,1.95,1.12],super:[4.7,1.98,1.1],suv:[4.5,1.95,1.7]}[archetype];m.scale.set(c.L/base[0],c.W/base[1],c.H/base[2]);const glbWheels=[];m.traverse(o=>{if(o.isMesh){o.castShadow=archetype==='suv';o.receiveShadow=archetype==='suv';if(o.material){o.material=o.material.clone();const nm=(o.name+' '+(o.material.name||'')).toLowerCase();if(/wheel|tire|tyre/.test(nm)&&!/(wheel_hub|hubcap|alloy_wheel_detail)/.test(nm))glbWheels.push(o);if(o.material.color&&/(glass|windshield|window)/.test(nm)){o.material=new THREE.MeshPhysicalMaterial({color:0x233746,metalness:.18,roughness:.12,transparent:true,opacity:.46,depthWrite:false,clearcoat:1,clearcoatRoughness:.05,reflectivity:.95,envMap:ENV_CUBE,envMapIntensity:.7});}else if(o.material.color&&/(tire|rubber)/.test(nm)){o.material=new THREE.MeshStandardMaterial({color:0x111216,metalness:.01,roughness:.88});}else if(o.material.color&&/(wheel|rim|alloy|chrome|metal|hub)/.test(nm)){o.material=new THREE.MeshStandardMaterial({color:0xc5c9d0,metalness:.88,roughness:.23,envMap:ENV_CUBE,envMapIntensity:.65});}else if(o.material.color&&/(body|hood|roof|door|fender|lower_body|hatch)/.test(nm)){o.material=new THREE.MeshPhysicalMaterial({color:col,metalness:.42,roughness:.24,clearcoat:1,clearcoatRoughness:.1,reflectivity:.95,envMap:ENV_CUBE,envMapIntensity:.8});}if(o.material.transparent&&o.material.opacity<.9)o.material.depthWrite=false}}});G.clear();G.add(m);G.userData.wheels=glbWheels;G.userData.r=Math.max(.22,c.r||.32);if(R)R.userData.wheels=glbWheels;}).catch(()=>{/* Procedural vehicle remains the safe fallback if loading fails. */})}
  begin()}
+/* Optional manufacturer-model pipeline. Only user-supplied, properly licensed GLBs are loaded here.
+   Expected local axes: X=vehicle length/front, Y=up, Z=width; origin at ground centre.
+   Missing files silently keep the existing procedural fallback. */
+function loadLicensedVehicleModel(G,c,R,key){
+ if(!c||!c.brandSpecific||!key)return;
+ const url=new URL('assets/models/licensed/'+key+'.glb',document.baseURI).href;
+ const begin=()=>{if(!window.GLTFLoader){const existing=document.querySelector('script[data-squad-gltf]');if(existing){existing.addEventListener('load',()=>{if(window.GLTFLoader)loadIt()},{once:true});return}const s=document.createElement('script');s.dataset.squadGltf='1';s.src='https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/examples/js/loaders/GLTFLoader.js';s.onload=()=>{if(window.GLTFLoader)loadIt()};s.onerror=()=>{};document.head.appendChild(s)}else loadIt()};
+ const loadIt=()=>{if(!window.GLTFLoader)return;if(!SQUAD_GLB_PROMISES['licensed:'+key])SQUAD_GLB_PROMISES['licensed:'+key]=new Promise((resolve,reject)=>new THREE.GLTFLoader().load(url,g=>resolve(g.scene),undefined,reject));
+  SQUAD_GLB_PROMISES['licensed:'+key].then(src=>{if(!G||!G.parent)return;const m=src.clone(true),box=new THREE.Box3().setFromObject(m),size=new THREE.Vector3(),center=new THREE.Vector3();box.getSize(size);box.getCenter(center);if(!size.x||!size.y||!size.z)return;
+   m.position.sub(center);m.position.y+=size.y/2;m.scale.set(c.L/size.x,c.H/size.y,c.W/size.z);
+   const wheels=[];m.traverse(o=>{if(!o.isMesh)return;o.castShadow=true;o.receiveShadow=true;const n=(o.name+' '+(o.material&&o.material.name||'')).toLowerCase();if(/wheel|tire|tyre/.test(n)&&!/(hub|rim_detail)/.test(n))wheels.push(o);if(o.material){const mats=Array.isArray(o.material)?o.material:[o.material];mats.forEach(mat=>{if(mat&&mat.transparent&&mat.opacity<.9)mat.depthWrite=false})}});
+   G.clear();G.add(m);G.userData.wheels=wheels;G.userData.r=Math.max(.22,c.r||.32);if(R)R.userData.wheels=wheels;
+  }).catch(()=>{/* No licensed asset supplied: keep the procedural vehicle. */})};begin()}
 function fac(base,seed,st){st=st||'grid';let s=seed;const r=()=>(s=(s*16807)%2147483647)/2147483647,a=document.createElement('canvas'),e=document.createElement('canvas');a.width=a.height=e.width=e.height=128;
  const ga=a.getContext('2d'),ge=e.getContext('2d');ga.fillStyle=base;ga.fillRect(0,0,128,128);ge.fillStyle='#000';ge.fillRect(0,0,128,128);
  const win=(x,y,w,h,lit,dk)=>{ga.fillStyle=lit?'#ffe9a8':(dk||'#0c1126');ga.fillRect(x,y,w,h);if(lit){ge.fillStyle=r()<.8?'#ffcf70':'#7ff6ff';ge.fillRect(x,y,w,h)}};
@@ -148,17 +178,22 @@ function mbox(kind,cx,cy,cz,w,h,d,col,uvs){const g=mg(kind),hs=[w/2,h/2,d/2],cr=
 const WM={};
 function flush(){const base={lit:new THREE.MeshLambertMaterial({vertexColors:true}),emi:new THREE.MeshBasicMaterial({vertexColors:true}),glass:new THREE.MeshLambertMaterial({vertexColors:true,transparent:true,opacity:.26,depthWrite:false,emissive:0x1a2a3a})};
  for(const k in MG){const g=MG[k];if(!g.v)continue;const geo=new THREE.BufferGeometry();geo.setAttribute('position',new THREE.Float32BufferAttribute(g.p,3));geo.setAttribute('normal',new THREE.Float32BufferAttribute(g.n,3));geo.setAttribute('color',new THREE.Float32BufferAttribute(g.c,3));geo.setAttribute('uv',new THREE.Float32BufferAttribute(g.u,2));
-  geo.setIndex(new THREE.BufferAttribute(g.v>65000?new Uint32Array(g.i):new Uint16Array(g.i),1));const o=new THREE.Mesh(geo,base[k]||WM[k]);if(k=='glass'||k==='pbrGlass')o.renderOrder=2;o.frustumCulled=false;if(ren&&ren.shadowMap&&ren.shadowMap.enabled){o.castShadow=k.startsWith('win')||k==='lit'||k==='pbrStone'||k==='pbrMetal';o.receiveShadow=true}sc.add(o)}}
+  geo.setIndex(new THREE.BufferAttribute(g.v>65000?new Uint32Array(g.i):new Uint16Array(g.i),1));geo.computeBoundingSphere();const o=new THREE.Mesh(geo,base[k]||WM[k]);if(k=='glass'||k==='pbrGlass')o.renderOrder=2;o.frustumCulled=true;if(ren&&ren.shadowMap&&ren.shadowMap.enabled){o.castShadow=k.startsWith('win')||k==='lit'||k==='pbrStone'||k==='pbrMetal';o.receiveShadow=true}sc.add(o)}}
 
 /* ---------- مجسّمات العربيات (مقطع جانبي حقيقي + عجلات + إضاءة) ---------- */
 const CARG={},CARM={};
 function carGeo(key){if(CARG[key])return CARG[key];const sp=DC.carShape(key),c=DC.CS[key],mkS=pts=>{const sh=new THREE.Shape();pts.forEach((p,i)=>i?sh.lineTo(p[0],p[1]):sh.moveTo(p[0],p[1]));return sh};
- const D=c.W*.86,bt=.1,body=new THREE.ExtrudeGeometry(mkS(sp.body),{depth:D,bevelEnabled:true,bevelThickness:bt,bevelSize:.07,bevelSegments:3,curveSegments:1});body.translate(0,0,-D/2);
+ const D=c.W*.86,bt=.1,body=new THREE.ExtrudeGeometry(mkS(sp.body),{depth:D,bevelEnabled:true,bevelThickness:bt,bevelSize:.085,bevelSegments:5,curveSegments:5});body.translate(0,0,-D/2);
  const DG=D+2*bt+.05,glass=new THREE.ExtrudeGeometry(mkS(sp.glass),{depth:DG,bevelEnabled:false});glass.translate(0,0,-DG/2);
  const quad=(a,b,w)=>{const dx=b[0]-a[0],dy=b[1]-a[1],len=Math.hypot(dx,dy),g=new THREE.BoxGeometry(len,.03,w);g.rotateZ(Math.atan2(dy,dx));g.translate((a[0]+b[0])/2-dy/len*.04,(a[1]+b[1])/2+dx/len*.04,0);return g};
  return CARG[key]={body,glass,ws:quad(sp.ws[0],sp.ws[1],c.W*.74),rw:quad(sp.rw[0],sp.rw[1],c.W*.7),tire:(()=>{const g=new THREE.CylinderGeometry(c.r,c.r,.32,32);g.rotateX(Math.PI/2);return g})(),rim:(()=>{const g=new THREE.CylinderGeometry(c.r*.62,c.r*.62,.34,24);g.rotateX(Math.PI/2);return g})(),well:new THREE.BoxGeometry(sp.ra*2,sp.ra*1.05,D*.98)}}
 const cm=(k,f)=>CARM[k]||(CARM[k]=f());
-function mkCar(cr){const key=cr.key,c=DC.CS[key],g=carGeo(key),G=new THREE.Group(),wr=cr.wr,D=c.W*.86,bt=.1,col=wr?0x2a2a30:c.c;
+function mkBike(cr){const c=DC.CS[cr.key],R=new THREE.Group(),rub=cm('bikeRubber',()=>new THREE.MeshStandardMaterial({color:0x101115,roughness:.9})),metal=cm('bikeMetal',()=>new THREE.MeshStandardMaterial({color:0x9ca8b8,metalness:.88,roughness:.24})),paint=cm('bikePaint',()=>new THREE.MeshPhysicalMaterial({color:c.c,metalness:.72,roughness:.2,clearcoat:1,clearcoatRoughness:.08})),dark=cm('bikeDark',()=>new THREE.MeshStandardMaterial({color:0x171b24,metalness:.3,roughness:.48})),lamp=cm('bikeLamp',()=>new THREE.MeshBasicMaterial({color:0xeaf8ff}));
+ const wheel=(x)=>{const g=new THREE.Group(),t=new THREE.Mesh(new THREE.TorusGeometry(.34,.075,10,28),rub);g.add(t);const rim=new THREE.Mesh(new THREE.TorusGeometry(.235,.018,6,24),metal);g.add(rim);const hub=new THREE.Mesh(new THREE.CylinderGeometry(.045,.045,.13,12),metal);hub.rotation.x=Math.PI/2;g.add(hub);for(let i=0;i<8;i++){const a=i*Math.PI/4,sp=new THREE.Mesh(new THREE.BoxGeometry(.018,.43,.018),metal);sp.rotation.z=a;g.add(sp)}g.position.set(x,.42,0);R.add(g);return g};
+ const rear=wheel(-.72),front=wheel(.72);const bar=(w,h,d,m,x,y,z)=>{const o=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),m);o.position.set(x,y,z);R.add(o);return o};
+ bar(1.05,.09,.16,metal,0,.72,0);bar(.58,.22,.36,paint,-.08,.91,0);bar(.52,.12,.34,dark,-.42,.82,0);bar(.34,.16,.3,paint,.28,1.0,0);bar(.12,.38,.12,metal,.62,.76,0);bar(.08,.055,.68,metal,.7,1.12,0);bar(.32,.055,.32,dark,-.38,1.08,0);bar(.24,.07,.24,dark,-.45,1.0,0);
+ const exhaust=new THREE.Mesh(new THREE.CylinderGeometry(.055,.075,.58,10),metal);exhaust.rotation.z=Math.PI/2;exhaust.position.set(-.18,.58,.23);R.add(exhaust);const head=new THREE.Mesh(new THREE.SphereGeometry(.105,12,8),lamp);head.position.set(.58,1.02,0);R.add(head);const tail=bar(.07,.07,.2,cm('bikeTail',()=>new THREE.MeshBasicMaterial({color:0xff1b35})),-.62,.98,0);tail.scale.set(.7,.7,.7);bar(.32,.035,.12,dark,-.18,1.13,0);bar(.08,.12,.08,metal,.64,1.17,.28);bar(.08,.12,.08,metal,.64,1.17,-.28);R.userData.wheels=[rear,front];R.userData.r=.28;return R}
+function mkCar(cr){const key=cr.key,c=DC.CS[key];if(c&&c.kind==='bike')return mkBike(cr);const g=carGeo(key),G=new THREE.Group(),wr=cr.wr,D=c.W*.86,bt=.1,col=wr?0x2a2a30:c.c;
  /* v49: physically-based automotive finish; clearcoat adds a tighter showroom highlight while keeping the existing low-cost procedural geometry. */
  const paint=cm('p'+col,()=>new THREE.MeshPhysicalMaterial({color:col,metalness:wr?.16:.78,roughness:wr?.68:.2,clearcoat:wr?.05:.92,clearcoatRoughness:.12,reflectivity:.9,envMap:ENV_CUBE,envMapIntensity:wr?.18:.65})),dark=cm('dk',()=>new THREE.MeshStandardMaterial({color:0x090b10,metalness:.22,roughness:.42})),glassM=cm('gl'+wr,()=>new THREE.MeshPhysicalMaterial({color:wr?0x1a1a1a:0x0c1c2c,metalness:.28,roughness:.09,transparent:!wr,opacity:wr?1:.48,depthWrite:!!wr,clearcoat:.9,clearcoatRoughness:.06,reflectivity:1,envMap:ENV_CUBE,envMapIntensity:.45})),tire=cm('tr',()=>new THREE.MeshStandardMaterial({color:0x0c0c10,metalness:.02,roughness:.86})),rim=cm('rm'+key,()=>new THREE.MeshStandardMaterial({color:key=='rolls'||key=='bugatti'?0xd9d9e6:0xbfc3cf,metalness:.92,roughness:.2,envMap:ENV_CUBE,envMapIntensity:.5})),
   hl=cm('hl',()=>new THREE.MeshBasicMaterial({color:0xfff6d6})),tl=cm('tl',()=>new THREE.MeshBasicMaterial({color:0xff1a1a})),chrome=cm('ch',()=>new THREE.MeshPhongMaterial({color:0xd0d4de,shininess:150,specular:0xffffff}));
@@ -199,6 +234,33 @@ function mkCar(cr){const key=cr.key,c=DC.CS[key],g=carGeo(key),G=new THREE.Group
   const hub=new THREE.Mesh(new THREE.CylinderGeometry(.035,.035,.04,10),seam);hub.rotation.z=Math.PI/2;hub.position.set(c.xfw-.03,yFloor+.39,-c.W*.22);G.add(hub);
   /* Door armrests and metallic trim are intentionally low-poly for mobile performance. */
   [-1,1].forEach(side=>{cab(c.L*.36,.055,.035,leather,-.02,yFloor+.20,side*c.W*.39);cab(c.L*.25,.018,.025,seam,-.02,yFloor+.24,side*c.W*.405)});
+  /* v132 cockpit polish: stitched seat bolsters, belts, vents, pedals and console details. */
+  const trim=cm('cockpitTrim'+key,()=>new THREE.MeshStandardMaterial({color:(key==='rolls'||key==='limo')?0xc4a66b:0x8995a8,metalness:.78,roughness:.28}));
+  const belt=cm('belt'+key,()=>new THREE.MeshStandardMaterial({color:0x171b22,roughness:.82}));
+  [-1,1].forEach(side=>{
+   const z=side*zSeat;
+   cab(c.L*.12,.035,c.W*.035,trim,c.xft-.34,yFloor+.44,z+side*c.W*.105);
+   cab(c.L*.10,.025,c.W*.025,trim,c.xft-.34,yFloor+.20,z+side*c.W*.11);
+   const strap=cab(c.L*.018,.24,.018,belt,c.xft-.25,yFloor+.34,z+side*c.W*.075);strap.rotation.z=-.22;
+   cab(c.L*.045,.025,c.W*.055,trim,c.xfw-.17,yFloor+.32,side*c.W*.19);
+  });
+  /* Air vents, metallic toggles, cup holders and footwell pedals. */
+  [-1,1].forEach(side=>{
+   cab(c.L*.012,.035,c.W*.105,trim,c.xfw-.13,yFloor+.365,side*c.W*.255);
+   cab(c.L*.025,.018,c.W*.07,interior,c.xfw-.12,yFloor+.33,side*c.W*.255);
+  });
+  [-1,1].forEach(side=>{const cup=new THREE.Mesh(new THREE.CylinderGeometry(.035,.03,.035,10),trim);cup.position.set(.12,yFloor+.225,side*c.W*.085);G.add(cup)});
+  [-1,1].forEach(side=>{const pedal=cab(c.L*.025,.075,.025,trim,c.xfw-.02,yFloor+.105,side*c.W*.13);pedal.rotation.z=.12});
+  /* Individually hinged door panels; E toggles them while seated. */
+  const hinges=[];
+  [-1,1].forEach(side=>{
+   const hinge=new THREE.Group();hinge.position.set(c.xfw-.02,yFloor+.22,side*c.W*.405);G.add(hinge);
+   const panel=new THREE.Mesh(new THREE.BoxGeometry(c.L*.24,.22,.045),leather);panel.position.set(-c.L*.105,0,side*.035);hinge.add(panel);
+   const accent=new THREE.Mesh(new THREE.BoxGeometry(c.L*.13,.012,.012),trim);accent.position.set(-c.L*.105,.055,side*.061);hinge.add(accent);
+   const handle=new THREE.Mesh(new THREE.BoxGeometry(c.L*.045,.018,.018),chrome);handle.position.set(-c.L*.035,.025,side*.065);hinge.add(handle);
+   hinges.push({node:hinge,side,closed:0});
+  });
+  G.userData.doorHinges=hinges;G.userData.doorsOpen=false;
  }
  const wheels=[],half=c.W/2-.2;
  [[c.wf,1],[c.wf,-1],[c.wr,1],[c.wr,-1]].forEach(([x,sd])=>{const w=new THREE.Group();w.position.set(x,c.r,sd*half);w.add(new THREE.Mesh(g.tire,tire));w.add(new THREE.Mesh(g.rim,rim));
@@ -260,7 +322,7 @@ function mkCar(cr){const key=cr.key,c=DC.CS[key],g=carGeo(key),G=new THREE.Group
  bx_(.035,.14,c.W*.25,metal,L2+.04,c.gc+.12,0);
  bx_(.035,.11,c.W*.24,dark,-L2-.035,c.gc+.12,0);
  [-1,1].forEach(side=>{const ex= new THREE.Mesh(new THREE.CylinderGeometry(.045,.055,.12,8),metal);ex.rotation.x=Math.PI/2;ex.position.set(-L2+.12,c.gc+.08,side*c.W*.25);G.add(ex)});
- /* v117: model-specific front/rear signatures for the requested flagship SUVs. */
+ /* v117: model-specific front/rear signatures for flagship vehicles; procedural details are not OEM geometry. */
  if(c.brandStyle==='cadillac'){
    const grilleChrome=cm('cadGrilleChrome',()=>new THREE.MeshStandardMaterial({color:0xb8bec8,metalness:.94,roughness:.19,envMap:ENV_CUBE,envMapIntensity:.8}));
    bx_(.08,.34,c.W*.43,dark,L2+.075,c.gc+.48,0);
@@ -281,21 +343,404 @@ function mkCar(cr){const key=cr.key,c=DC.CS[key],g=carGeo(key),G=new THREE.Group
    for(let side of [-1,1]){const tip=new THREE.Mesh(new THREE.CylinderGeometry(.055,.06,.14,10),chrome);tip.rotation.x=Math.PI/2;tip.position.set(-L2-.04,c.gc+.16,side*c.W*.34);G.add(tip)}
    bx_(c.L*.23,.045,.035,dark,-L2+.18,c.hbR+.06,0);
  } else if(c.brandStyle==='g63'){
-   const gChrome=cm('g63Chrome',()=>new THREE.MeshStandardMaterial({color:0xb6bdc8,metalness:.9,roughness:.22}));
-   bx_(.08,.42,c.W*.39,dark,L2+.075,c.gc+.55,0);
-   for(let j=-3;j<=3;j++)bx_(.035,.35,.025,gChrome,L2+.13,c.gc+.55,j*c.W*.052);
-   const star=new THREE.Mesh(new THREE.TorusGeometry(.105,.018,6,18),gChrome);star.position.set(L2+.15,c.gc+.55,0);star.rotation.y=Math.PI/2;G.add(star);
-   [-1,1].forEach(side=>{bx_(.045,.22,.07,ledWhite,L2+.06,c.gc+.62,side*c.W*.39);bx_(c.L*.25,.10,.12,dark,(c.xfw+c.xrr)/2,c.gc+.12,side*(c.W*.53));bx_(.07,.12,.07,gChrome,c.xfw-.15,c.H-.04,side*c.W*.48)});
-   const spare=new THREE.Mesh(new THREE.TorusGeometry(c.r*.63,.10,8,24),tire);spare.position.set(-L2-.10,c.bl+.18,0);spare.rotation.y=Math.PI/2;G.add(spare);
-   const spareHub=new THREE.Mesh(new THREE.CylinderGeometry(c.r*.38,c.r*.38,.12,16),rim);spareHub.position.set(-L2-.13,c.bl+.18,0);spareHub.rotation.z=Math.PI/2;G.add(spareHub);
-   bx_(c.L*.72,.045,.04,gChrome,0,c.gc+.15,0);
+   const gChrome=cm('g63Chrome',()=>new THREE.MeshStandardMaterial({color:0xc1c7d0,metalness:.92,roughness:.2,envMap:ENV_CUBE,envMapIntensity:.75}));
+   bx_(.10,.34,c.W*.43,dark,L2+.075,c.gc+.47,0);
+   for(let j=-3;j<=3;j++)bx_(.035,.29,.035,gChrome,L2+.13,c.gc+.47,j*c.W*.052);
+   bx_(.12,.11,c.W*.82,dark,L2+.07,c.gc+.16,0);bx_(.06,.07,c.W*.78,gChrome,L2+.12,c.gc+.08,0);
+   [-1,1].forEach(side=>{bx_(.06,.25,.075,gChrome,L2+.08,c.gc+.5,side*c.W*.39);bx_(.045,.19,.035,ledWhite,L2+.12,c.gc+.5,side*c.W*.39);bx_(.08,.08,.12,dark,-L2-.05,c.gc+.15,side*c.W*.34)});
+   for(let j=0;j<4;j++)bx_(.045,.06,.06,gChrome,-L2+.35+j*.22,c.gc+.12,c.W*.51);
+ } else if(c.brandStyle==='ferrari-sf90'){
+   const aero=cm('sf90Aero',()=>new THREE.MeshStandardMaterial({color:0x171a20,metalness:.42,roughness:.28}));
+   bx_(c.L*.28,.075,c.W*.86,aero,L2-.12,c.gc+.08,0);bx_(c.L*.16,.12,.08,aero,c.L*.27,c.gc+.2,0);bx_(c.L*.2,.055,.06,aero,-L2+.18,c.gc+.13,0);
+   [-1,1].forEach(side=>{const blade=bx_(c.L*.19,.045,.06,aero,c.L*.17,c.gc+.3,side*c.W*.39);blade.rotation.y=side*.18;bx_(.05,.16,.12,ledWhite,c.L*.43,c.gc+.34,side*c.W*.31);bx_(c.L*.32,.035,.07,aero,-c.L*.35,c.hbR+.05,side*c.W*.36)});
+   bx_(c.L*.48,.055,.5,aero,-c.L*.12,c.H-.04,0);[-1,1].forEach(side=>{bx_(c.L*.17,.075,.12,aero,-.05,c.gc+.18,side*c.W*.47);for(let k=0;k<3;k++)bx_(.42,.025,.035,aero,-.32-k*.18,c.gc+.24,side*c.W*.49)});for(let k=-2;k<=2;k++)bx_(.12,.14,.07,aero,-L2+.12,c.gc+.08,k*c.W*.16);
  }
- if(key=='rolls'){const gold=cm('gold',()=>new THREE.MeshPhongMaterial({color:0xd9a441,shininess:150,specular:0xffeeaa,emissive:0x3a2a08}));bx_(.12,.8,.7,chrome,L2+.04,c.gc+.62,0);bx_(.14,.7,.5,gold,L2+.05,c.gc+.62,0);const st=new THREE.Mesh(new THREE.ConeGeometry(.07,.28,8),gold);st.position.set(L2-.28,hf+.2,0);st.rotation.z=-1.3;G.add(st);bx_(c.L*.9,.03,.04,gold,0,c.hbF*.9,D/2+bt+.012);bx_(c.L*.9,.03,.04,gold,0,c.hbF*.9,-D/2-bt-.012)}
+ /* v126: distinct handcrafted luxury-car geometry profiles. These are original procedural game meshes, not OEM CAD or licensed manufacturer assets. */
+ if(c.brandStyle==='rolls-phantom'||c.brandStyle==='rolls-ghost'||c.brandStyle==='rolls-cullinan'){
+   const rrBright=cm('rr126Bright',()=>new THREE.MeshStandardMaterial({color:0xd8d5cd,metalness:.96,roughness:.16,envMap:ENV_CUBE,envMapIntensity:.9}));
+   const rrDark=cm('rr126Dark',()=>new THREE.MeshStandardMaterial({color:0x101216,metalness:.58,roughness:.22}));
+   const rrLamp=cm('rr126Lamp',()=>new THREE.MeshPhysicalMaterial({color:0xe7f4ff,metalness:.12,roughness:.07,clearcoat:1,transparent:true,opacity:.62,emissive:0x25394a}));
+   const suv=c.brandStyle==='rolls-cullinan', grilleH=suv?.62:.58, grilleW=c.W*(suv?.48:.43), grilleY=c.gc+grilleH*.53;
+   /* Tall polished waterfall grille with a deep dark recess and fine vertical vanes. */
+   bx_(.095,grilleH,grilleW,rrDark,L2+.105,grilleY,0);
+   bx_(.035,grilleH+.07,grilleW+.07,rrBright,L2+.155,grilleY,0);
+   bx_(.04,grilleH-.035,grilleW-.035,rrDark,L2+.18,grilleY,0);
+   for(let i=-7;i<=7;i++)bx_(.025,grilleH-.08,.018,rrBright,L2+.205,grilleY,i*grilleW/16);
+   bx_(.045,.035,grilleW+.1,rrBright,L2+.17,grilleY+grilleH/2+.035,0);
+   /* Twin rectangular headlamp stacks and slim lower running lamps. */
+   [-1,1].forEach(side=>{
+     const z=side*c.W*.365;
+     bx_(.075,.34,.16,rrDark,L2+.075,c.gc+.48,z);
+     bx_(.095,.29,.105,rrLamp,L2+.13,c.gc+.49,z);
+     bx_(.035,.23,.035,rrBright,L2+.19,c.gc+.49,z);
+     bx_(.11,.07,.19,rrBright,L2+.08,c.gc+.19,side*c.W*.37);
+     /* Long coachline, bright window surround and individual door shut lines. */
+     bx_(c.L*.78,.025,.025,rrBright,-.02,c.bl+.025,side*c.W*.505);
+     bx_(c.L*.64,.018,.022,rrBright,-.03,c.bl-.015,side*c.W*.51);
+     [-.95,.15,.88].forEach(x=>bx_(.018,.42,.018,rrDark,x,c.bl-.24,side*(c.W*.505)));
+     bx_(c.L*.72,.045,.105,rrBright,-.02,c.gc+.17,side*c.W*.515);
+     bx_(.12,.045,.07,rrBright,c.xfw-.2,c.bl+.14,side*c.W*.53);
+     bx_(.14,.035,.035,rrDark,c.xfw-.17,c.bl+.17,side*c.W*.55);
+   });
+   /* Rear light signature and two-piece boot / tailgate treatment. */
+   [-1,1].forEach(side=>{
+     bx_(.055,.48,.09,rrDark,-L2-.045,c.gc+.62,side*c.W*.405);
+     bx_(.075,.4,.045,ledRed,-L2-.085,c.gc+.63,side*c.W*.405);
+     bx_(.035,.23,.055,rrBright,-L2-.09,c.gc+.65,side*c.W*.405);
+   });
+   bx_(.035,.045,c.W*.54,rrBright,-L2-.06,c.hbR-.04,0);
+   if(suv){
+     /* Cullinan-specific upright rear cabin, roof rails and substantial lower cladding. */
+     [-1,1].forEach(side=>{bx_(c.L*.52,.045,.055,rrBright,-.05,H+.025,side*c.W*.37);bx_(c.L*.72,.16,.075,rrDark,-.05,c.gc+.22,side*c.W*.515)});
+     bx_(.045,.46,c.W*.72,rrDark,-L2-.06,c.hbR-.28,0);
+     bx_(.055,.38,c.W*.58,rrBright,-L2-.095,c.hbR-.28,0);
+   }else{
+     /* Phantom's long bonnet, formal three-box roof and coach-door character line. */
+     bx_(c.L*.38,.018,.028,rrBright,c.L*.19,c.hbF+.025,0);
+     bx_(.035,.025,c.W*.56,rrBright,-.72,c.bl+.035,0);
+     /* Discreet sculpted bonnet mascot, deliberately abstract rather than an OEM emblem. */
+     const mascot=new THREE.Group();
+     const stem=new THREE.Mesh(new THREE.CylinderGeometry(.018,.025,.13,8),rrBright);stem.position.y=.065;mascot.add(stem);
+     const wings=new THREE.Mesh(new THREE.ConeGeometry(.055,.16,5),rrBright);wings.rotation.z=-Math.PI/2;wings.position.set(.035,.14,0);mascot.add(wings);
+     mascot.position.set(L2-.34,c.hbF+.035,0);G.add(mascot);
+   }
+   /* Rear executive cabin: armrest and individual lounge-seat cushions. */
+   const rrLeather=cm('rr126Leather',()=>new THREE.MeshStandardMaterial({color:0x5a4638,roughness:.72}));
+   bx_(c.L*.2,.07,c.W*.34,rrLeather,c.xrr+.28,c.gc+.42,0);
+   bx_(.34,.055,.28,rrBright,c.xrr+.28,c.gc+.47,0);
+ }
+
+ /* v127: dedicated front/rear identity kits for Bugatti, McLaren and Mercedes flagships.
+    Original game geometry; no OEM CAD or copied manufacturer assets. */
+ if(['bugatti-chiron','bugatti-tourbillon','mclaren-750s','mclaren-p1','mercedes-s-class','mercedes-amg-gt','mercedes-amg-gt-black-series'].includes(c.brandStyle)){
+   const v127Metal=cm('v127LuxuryMetal',()=>new THREE.MeshStandardMaterial({color:0xb8c2cf,metalness:.94,roughness:.2,envMap:ENV_CUBE,envMapIntensity:.8}));
+   const v127Dark=cm('v127LuxuryDark',()=>new THREE.MeshStandardMaterial({color:0x080b11,metalness:.58,roughness:.24}));
+   const v127Lamp=cm('v127LuxuryLamp',()=>new THREE.MeshPhysicalMaterial({color:0xeaf5ff,roughness:.08,clearcoat:1,emissive:0x253b55}));
+   const frontX=L2+.11, lowY=c.gc+.22;
+   if(c.brandStyle==='bugatti-chiron'||c.brandStyle==='bugatti-tourbillon'){
+     const grilleW=c.W*.39, grilleH=.48;
+     /* Horseshoe-inspired deep central intake, chrome perimeter and split side intakes. */
+     bx_(.10,grilleH,grilleW,v127Dark,frontX,c.gc+.43,0);
+     bx_(.045,grilleH+.07,grilleW+.07,v127Metal,frontX+.045,c.gc+.43,0);
+     bx_(.055,grilleH-.055,grilleW-.065,v127Dark,frontX+.075,c.gc+.43,0);
+     for(let j=-4;j<=4;j++)bx_(.018,.34,.018,v127Metal,frontX+.11,c.gc+.43,j*grilleW/10);
+     [-1,1].forEach(side=>{
+       bx_(.075,.22,.28,v127Dark,frontX-.015,c.gc+.47,side*c.W*.34);
+       bx_(.095,.12,.22,v127Lamp,frontX+.025,c.gc+.57,side*c.W*.34);
+       bx_(.09,.12,.25,v127Dark,frontX-.005,lowY,side*c.W*.36);
+       bx_(.055,.035,.34,v127Metal,frontX+.025,c.gc+.11,side*c.W*.34);
+       /* Horseshoe side sweep and sculpted lower sill. */
+       bx_(c.L*.34,.035,.045,v127Metal,-.05,c.gc+.19,side*c.W*.505);
+     });
+     bx_(.045,.035,c.W*.55,v127Metal,frontX+.02,c.gc+.15,0);
+     [-1,1].forEach(side=>bx_(.07,.10,.12,v127Dark,-L2-.06,c.gc+.25,side*c.W*.31));
+     bx_(.09,.08,c.W*.38,v127Dark,-L2-.075,c.gc+.18,0);
+   } else if(c.brandStyle==='mclaren-750s'||c.brandStyle==='mclaren-p1'){
+     /* Low nose, slim boomerang lamp signature and deep side air channels. */
+     [-1,1].forEach(side=>{
+       const z=side*c.W*.34;
+       bx_(.07,.12,.31,v127Dark,frontX,c.gc+.57,z);
+       bx_(.095,.055,.27,v127Lamp,frontX+.045,c.gc+.61,z);
+       bx_(.08,.20,.31,v127Dark,frontX-.005,lowY,side*c.W*.36);
+       bx_(.055,.035,.27,v127Metal,frontX+.025,c.gc+.12,side*c.W*.36);
+       bx_(c.L*.25,.12,.11,v127Dark,c.xft-.02,c.bl-.11,side*c.W*.48);
+       bx_(c.L*.36,.045,.045,v127Metal,-.02,c.gc+.16,side*c.W*.505);
+       bx_(.07,.18,.10,v127Dark,-L2-.05,c.gc+.48,side*c.W*.34);
+       bx_(.09,.14,.045,v127Lamp,-L2-.09,c.gc+.49,side*c.W*.34);
+     });
+     bx_(.10,.20,c.W*.46,v127Dark,frontX,c.gc+.34,0);
+     bx_(c.L*.34,.07,.18,v127Dark,-L2-.06,c.gc+.17,0);
+     /* Compact raised rear aero lip. */
+     bx_(c.L*.34,.055,c.W*.68,v127Dark,-L2+.12,c.hbR+.08,0);
+   } else {
+     const amg=c.brandStyle==='mercedes-amg-gt'||c.brandStyle==='mercedes-amg-gt-black-series';
+     /* Mercedes star-inspired central badge and Panamericana-style vertical grille. */
+     const gw=c.W*(amg?.48:.42), gh=amg?.42:.34;
+     bx_(.10,gh,gw,v127Dark,frontX,c.gc+.43,0);
+     bx_(.045,gh+.055,gw+.06,v127Metal,frontX+.045,c.gc+.43,0);
+     bx_(.055,gh-.045,gw-.07,v127Dark,frontX+.075,c.gc+.43,0);
+     for(let j=-5;j<=5;j++)bx_(.018,gh-.09,.018,v127Metal,frontX+.11,c.gc+.43,j*gw/11);
+     [-1,1].forEach(side=>{
+       bx_(.07,.13,.20,v127Lamp,frontX+.035,c.gc+.62,side*c.W*.35);
+       bx_(.09,.12,.24,v127Dark,frontX-.01,lowY,side*c.W*.35);
+       bx_(.055,.035,.28,v127Metal,frontX+.025,c.gc+.11,side*c.W*.35);
+       bx_(c.L*.28,.025,.022,v127Metal,-.03,c.bl+.02,side*c.W*.505);
+       bx_(.06,.34,.07,v127Dark,-L2-.04,c.gc+.48,side*c.W*.39);
+       bx_(.075,.27,.035,v127Lamp,-L2-.08,c.gc+.49,side*c.W*.39);
+     });
+     const star=new THREE.Mesh(new THREE.CylinderGeometry(.085,.085,.025,3),v127Metal);
+     star.rotation.x=Math.PI/2;star.position.set(frontX+.13,c.gc+.45,0);G.add(star);
+     if(amg){for(let side of [-1,1]){const ex=new THREE.Mesh(new THREE.CylinderGeometry(.055,.065,.12,10),v127Metal);ex.rotation.x=Math.PI/2;ex.position.set(-L2-.06,c.gc+.14,side*c.W*.34);G.add(ex)}}
+   }
+ }
+ /* v131: distinct original fascia/aero kits for additional catalog flagships. Geometry is stylized game art, not OEM CAD. */
+ if(['urus','purosangue','aston-dbx','bentley-bentayga','defender-130','porsche-911','corvette-c8','koenigsegg-jesko','pagani-huayra','mustang-dark-horse','audi-rs6','porsche-taycan'].includes(c.brandStyle)){
+   const v131Dark=cm('v131Dark',()=>new THREE.MeshStandardMaterial({color:0x090d14,metalness:.58,roughness:.25}));
+   const v131Metal=cm('v131Metal',()=>new THREE.MeshStandardMaterial({color:0xb6c0ca,metalness:.92,roughness:.22,envMap:ENV_CUBE,envMapIntensity:.7}));
+   const v131Lamp=cm('v131Lamp',()=>new THREE.MeshPhysicalMaterial({color:0xeaf5ff,roughness:.08,clearcoat:1,emissive:0x26384c}));
+   const fx=L2+.10, cy=c.gc+.42;
+   const suv=['urus','purosangue','aston-dbx','bentley-bentayga','defender-130'].includes(c.brandStyle);
+   const wide=c.W*(suv?.52:.43), tall=suv?.42:.31;
+   if(c.brandStyle==='bentley-bentayga'){
+     bx_(.09,tall,wide,v131Dark,fx,cy,0);bx_(.04,tall+.06,wide+.06,v131Metal,fx+.05,cy,0);
+     for(let j=-5;j<=5;j++)bx_(.018,tall-.06,.018,v131Metal,fx+.09,cy,j*wide/12);
+   }else if(c.brandStyle==='defender-130'){
+     bx_(.11,tall,wide,v131Dark,fx,cy,0);bx_(.035,tall+.04,wide+.04,v131Metal,fx+.05,cy,0);
+     [-1,1].forEach(side=>bx_(.08,.22,.10,v131Lamp,fx+.04,cy+.02,side*c.W*.39));
+   }else if(c.brandStyle==='porsche-911'||c.brandStyle==='porsche-taycan'){
+     bx_(.09,.18,wide,v131Dark,fx,cy-.12,0);
+     [-1,1].forEach(side=>{bx_(.07,.12,.22,v131Lamp,fx+.04,cy+.16,side*c.W*.34);bx_(.07,.09,.24,v131Dark,fx-.02,cy-.17,side*c.W*.34)});
+   }else if(c.brandStyle==='corvette-c8'||c.brandStyle==='koenigsegg-jesko'||c.brandStyle==='pagani-huayra'){
+     bx_(.10,.20,wide,v131Dark,fx,cy-.08,0);
+     [-1,1].forEach(side=>{bx_(.08,.11,.27,v131Lamp,fx+.04,cy+.17,side*c.W*.34);bx_(.07,.12,.20,v131Dark,fx-.02,cy-.20,side*c.W*.36)});
+   }else if(c.brandStyle==='mustang-dark-horse'){
+     bx_(.10,.28,wide,v131Dark,fx,cy,0);
+     [-1,1].forEach(side=>{for(let j=0;j<3;j++)bx_(.055,.20,.035,v131Lamp,fx+.045,cy+.02,side*c.W*.34+j*.055*side);bx_(.08,.12,.24,v131Dark,fx-.02,cy-.18,side*c.W*.36)});
+   }else if(c.brandStyle==='audi-rs6'){
+     bx_(.10,.31,wide,v131Dark,fx,cy,0);bx_(.035,.035,wide+.05,v131Metal,fx+.04,cy+.17,0);
+     [-1,1].forEach(side=>bx_(.08,.13,.24,v131Lamp,fx+.04,cy+.03,side*c.W*.36));
+   }else{
+     /* Lamborghini/Ferrari/Aston SUV family: low angular intakes, sharp DRLs and wide lower splitter. */
+     bx_(.09,.24,wide,v131Dark,fx,cy-.03,0);bx_(.045,.035,wide+.10,v131Metal,fx+.04,cy-.17,0);
+     [-1,1].forEach(side=>{bx_(.07,.11,.25,v131Lamp,fx+.04,cy+.18,side*c.W*.35);bx_(.08,.17,.23,v131Dark,fx-.02,cy-.12,side*c.W*.36)});
+   }
+   [-1,1].forEach(side=>{
+     bx_(c.L*.36,.035,.035,v131Metal,0,c.gc+.17,side*c.W*.505);
+     bx_(.055,.28,.055,v131Dark,-L2-.035,c.gc+.43,side*c.W*.38);
+     bx_(.065,.21,.035,v131Lamp,-L2-.075,c.gc+.44,side*c.W*.38);
+   });
+   if(['urus','purosangue','aston-dbx'].includes(c.brandStyle)){
+     [-1,1].forEach(side=>bx_(c.L*.48,.045,.06,v131Dark,-.08,c.gc+.22,side*c.W*.515));
+   }
+   if(['porsche-911','corvette-c8','koenigsegg-jesko','pagani-huayra'].includes(c.brandStyle)){
+     bx_(c.L*.30,.06,c.W*.72,v131Dark,-L2+.12,c.hbR+.07,0);
+   }
+ }
+ /* v135: twenty-car flagship detail pass. These are original procedural game meshes,
+    not copied game mods, OEM CAD, manufacturer badges or licensed 1:1 replicas. */
+ const v135FleetStyles=[
+   'rolls-phantom','rolls-cullinan','rolls-ghost','cadillac-escalade','range-rover',
+   'bmw-x6m','ferrari-sf90','g63','bugatti-chiron','bugatti-tourbillon',
+   'mclaren-750s','mclaren-p1','mercedes-s-class','mercedes-amg-gt-black-series','urus',
+   'purosangue','aston-dbx','bentley-bentayga','defender-130','porsche-911'
+ ];
+ if(v135FleetStyles.includes(c.brandStyle)){
+   const v135Carbon=cm('v135Carbon',()=>new THREE.MeshStandardMaterial({color:0x080b11,metalness:.62,roughness:.29}));
+   const v135Bright=cm('v135Bright',()=>new THREE.MeshStandardMaterial({color:0xc2c9d2,metalness:.94,roughness:.2,envMap:ENV_CUBE,envMapIntensity:.75}));
+   const v135Lamp=cm('v135Lamp',()=>new THREE.MeshPhysicalMaterial({color:0xeaf6ff,metalness:.08,roughness:.1,clearcoat:1,emissive:0x182b42}));
+   const v135Red=cm('v135Red',()=>new THREE.MeshBasicMaterial({color:0xff203d}));
+   const sideZ=c.W*.515, front=L2+.08, rear=-L2-.045;
+   /* Shared high-readability detailing: front splitter, rear diffuser, side blades and bonnet creases. */
+   bx_(c.L*.31,.045,c.W*.78,v135Carbon,front-.02,c.gc+.055,0);
+   bx_(c.L*.22,.065,c.W*.66,v135Carbon,rear,c.gc+.075,0);
+   [-1,1].forEach(side=>{
+     bx_(c.L*.34,.055,.055,v135Bright,0,c.gc+.19,side*sideZ);
+     bx_(.16,.105,.045,v135Carbon,c.wf-.16,c.r+.32,side*(c.W*.505));
+     bx_(c.L*.17,.018,.022,v135Bright,c.L*.22,c.bl+.035,side*c.W*.2);
+   });
+   if(['rolls-phantom','rolls-ghost','rolls-cullinan'].includes(c.brandStyle)){
+     /* Formal coachwork: bright bonnet spine, upright grille frame and polished window belt. */
+     bx_(c.L*.34,.025,.025,v135Bright,c.L*.24,c.hbF+.055,0);
+     bx_(.035,.32,.035,v135Bright,front+.06,c.gc+.43,0);
+     [-1,1].forEach(side=>bx_(c.L*.62,.022,.018,v135Bright,-.02,c.bl+.045,side*c.W*.49));
+     if(c.brandStyle==='rolls-cullinan')[-1,1].forEach(side=>bx_(c.L*.58,.045,.045,v135Bright,-.08,c.H+.035,side*c.W*.34));
+   }else if(c.brandStyle==='cadillac-escalade'){
+     [-1,1].forEach(side=>{bx_(c.L*.58,.05,.06,v135Bright,-.08,c.H+.04,side*c.W*.36);bx_(.045,.52,.035,v135Red,rear-.035,c.gc+.66,side*c.W*.405)});
+   }else if(c.brandStyle==='range-rover'){
+     [-1,1].forEach(side=>{bx_(c.L*.56,.04,.045,v135Bright,-.08,c.H+.035,side*c.W*.36);bx_(.22,.16,.04,v135Bright,c.xfw-.1,c.bl+.16,side*sideZ)});
+   }else if(c.brandStyle==='bmw-x6m'){
+     [-1,1].forEach(side=>{bx_(.12,.24,.035,v135Bright,front+.04,c.gc+.48,side*c.W*.13);bx_(.045,.12,.2,v135Lamp,front+.03,c.gc+.62,side*c.W*.35)});
+   }else if(c.brandStyle==='ferrari-sf90'){
+     bx_(c.L*.34,.055,c.W*.72,v135Carbon,rear+.12,c.hbR+.12,0);
+     [-1,1].forEach(side=>bx_(c.L*.22,.12,.045,v135Carbon,c.xft-.08,c.bl-.12,side*sideZ));
+   }else if(c.brandStyle==='g63'||c.brandStyle==='defender-130'){
+     [-1,1].forEach(side=>{bx_(c.L*.62,.07,.12,v135Carbon,-.08,c.gc+.2,side*(c.W*.54));bx_(c.L*.58,.045,.045,v135Bright,-.08,c.H+.045,side*c.W*.36)});
+     if(c.brandStyle==='defender-130'){
+       const spare=new THREE.Mesh(new THREE.TorusGeometry(c.r*.72,.075,8,20),v135Carbon);spare.position.set(rear-.10,c.gc+.55,0);spare.rotation.y=Math.PI/2;G.add(spare);
+       bx_(.08,.42,.46,v135Carbon,rear-.13,c.gc+.55,0);
+     }
+   }else if(c.brandStyle==='bugatti-chiron'||c.brandStyle==='bugatti-tourbillon'){
+     bx_(.035,.035,c.W*.62,v135Red,rear-.025,c.gc+.38,0);
+     [-1,1].forEach(side=>{bx_(c.L*.25,.045,.035,v135Bright,.02,c.bl+.07,side*c.W*.49);bx_(.08,.12,.24,v135Carbon,front-.01,c.gc+.18,side*c.W*.36)});
+   }else if(c.brandStyle==='mclaren-750s'||c.brandStyle==='mclaren-p1'){
+     [-1,1].forEach(side=>{bx_(c.L*.2,.17,.055,v135Carbon,c.xrr+.18,c.bl-.08,side*sideZ);bx_(.08,.12,.22,v135Lamp,front,c.gc+.58,side*c.W*.34)});
+     bx_(c.L*.38,.055,c.W*.7,v135Carbon,rear+.12,c.hbR+.1,0);
+   }else if(c.brandStyle==='mercedes-s-class'){
+     [-1,1].forEach(side=>bx_(c.L*.68,.022,.02,v135Bright,-.02,c.bl+.055,side*c.W*.49));
+     bx_(.025,.055,c.W*.58,v135Red,rear-.025,c.gc+.4,0);
+   }else if(c.brandStyle==='mercedes-amg-gt'||c.brandStyle==='mercedes-amg-gt-black-series'){
+     bx_(c.L*.32,.065,c.W*.76,v135Carbon,rear+.12,c.hbR+.12,0);
+     [-1,1].forEach(side=>bx_(.08,.13,.22,v135Lamp,front,c.gc+.58,side*c.W*.35));
+   }else if(c.brandStyle==='urus'||c.brandStyle==='purosangue'||c.brandStyle==='aston-dbx'){
+     [-1,1].forEach(side=>{bx_(c.L*.52,.045,.045,v135Bright,-.05,c.H+.035,side*c.W*.35);bx_(.18,.16,.045,v135Carbon,c.xfw-.12,c.bl+.12,side*sideZ)});
+   }else if(c.brandStyle==='bentley-bentayga'){
+     for(let i=-4;i<=4;i++)bx_(.025,.22,.018,v135Bright,front+.055,c.gc+.45,i*c.W*.045);
+     [-1,1].forEach(side=>bx_(c.L*.54,.045,.045,v135Bright,-.08,c.H+.035,side*c.W*.35));
+   }else if(c.brandStyle==='porsche-911'){
+     bx_(c.L*.36,.07,c.W*.72,v135Carbon,rear+.12,c.hbR+.12,0);
+     [-1,1].forEach(side=>bx_(.12,.08,.035,v135Lamp,front,c.gc+.58,side*c.W*.34));
+   }
+   /* A subtle continuous rear light strip ties the rear fascia together on all twenty cars. */
+   bx_(.022,.045,c.W*.58,v135Red,rear-.025,c.gc+.34,0);
+ }
+ if(c.brandStyle==='cadillac-escalade'){
+   const cadBright=cm('cad126Bright',()=>new THREE.MeshStandardMaterial({color:0xbfc5ce,metalness:.96,roughness:.18,envMap:ENV_CUBE,envMapIntensity:.85}));
+   const cadDark=cm('cad126Dark',()=>new THREE.MeshStandardMaterial({color:0x080b10,metalness:.62,roughness:.25}));
+   const cadLed=cm('cad126Led',()=>new THREE.MeshBasicMaterial({color:0xe9f6ff}));
+   /* Escalade's broad, tall shield grille and separate vertical lighting blades. */
+   bx_(.11,.63,c.W*.59,cadDark,L2+.11,c.gc+.55,0);
+   bx_(.045,.68,c.W*.62,cadBright,L2+.17,c.gc+.55,0);
+   bx_(.05,.57,c.W*.54,cadDark,L2+.20,c.gc+.55,0);
+   for(let i=-6;i<=6;i++)bx_(.028,.53,.025,cadBright,L2+.235,c.gc+.55,i*c.W*.041);
+   [-1,1].forEach(side=>{
+     const z=side*c.W*.405;
+     bx_(.07,.47,.115,cadDark,L2+.09,c.gc+.57,z);
+     bx_(.09,.39,.065,cadLed,L2+.14,c.gc+.57,z);
+     bx_(.035,.25,.075,cadBright,L2+.19,c.gc+.57,z);
+     bx_(.1,.075,.22,cadBright,L2+.08,c.gc+.2,side*c.W*.36);
+     /* Tall rear signature, bright window surround, flush handles and full-length running board. */
+     bx_(.07,.65,.095,cadDark,-L2-.035,c.gc+.72,side*c.W*.405);
+     bx_(.09,.57,.055,ledRed,-L2-.08,c.gc+.72,side*c.W*.405);
+     bx_(c.L*.7,.025,.025,cadBright,-.04,c.bl+.025,side*c.W*.505);
+     bx_(c.L*.66,.04,.11,cadDark,-.04,c.gc+.19,side*c.W*.52);
+     bx_(c.L*.62,.035,.045,cadBright,-.04,c.gc+.21,side*c.W*.535);
+     [-1.05,.05,1.0].forEach(x=>bx_(.02,.46,.02,cadDark,x,c.bl-.22,side*c.W*.506));
+     bx_(c.L*.56,.035,.045,cadBright,-.08,c.bl-.02,side*c.W*.51);
+     /* Raised roof rail and rear quarter glass pillar. */
+     bx_(c.L*.56,.04,.055,cadBright,-.1,H+.025,side*c.W*.37);
+   });
+   bx_(.035,.055,c.W*.58,cadBright,-L2-.055,c.hbR-.035,0);
+   bx_(.06,.11,c.W*.52,cadDark,-L2-.07,c.hbR-.13,0);
+   /* Sculpted wheel-arch lips and squared SUV lower bumper. */
+   [c.wf,c.wr].forEach(x=>[-1,1].forEach(side=>{
+     const lip=new THREE.Mesh(new THREE.TorusGeometry(c.r+.095,.035,6,24,Math.PI),cadBright);
+     lip.rotation.z=Math.PI;lip.position.set(x,c.r+.12,side*c.W*.485);G.add(lip);
+   }));
+   bx_(c.L*.7,.12,c.W*.78,cadDark,-.03,c.gc+.12,0);
+   bx_(c.L*.68,.025,c.W*.68,cadBright,-.03,c.gc+.055,0);
+ }
+  if(key=='rolls'){const gold=cm('gold',()=>new THREE.MeshPhongMaterial({color:0xd9a441,shininess:150,specular:0xffeeaa,emissive:0x3a2a08}));bx_(.12,.8,.7,chrome,L2+.04,c.gc+.62,0);bx_(.14,.7,.5,gold,L2+.05,c.gc+.62,0);const st=new THREE.Mesh(new THREE.ConeGeometry(.07,.28,8),gold);st.position.set(L2-.28,hf+.2,0);st.rotation.z=-1.3;G.add(st);bx_(c.L*.9,.03,.04,gold,0,c.hbF*.9,D/2+bt+.012);bx_(c.L*.9,.03,.04,gold,0,c.hbF*.9,-D/2-bt-.012)}
  if(key=='ferrari'){bx_(.4,.05,c.W*.92,dark,-L2+.15,c.hbR+.38,0);[-1,1].forEach(s=>bx_(.06,.34,.05,dark,-L2+.2,c.hbR+.2,s*c.W*.35));bx_(c.L*.55,.01,.3,chrome,.3,c.hbF+.02,0).material=cm('wh',()=>new THREE.MeshBasicMaterial({color:0xffffff}))}
  if(key=='bugatti'){bx_(c.L*.8,.012,.3,dark,.1,c.H-.01,0);const hs=new THREE.Mesh(new THREE.TorusGeometry(.26,.05,8,16,Math.PI),dark);hs.rotation.set(0,Math.PI/2,Math.PI);hs.position.set(L2+.03,c.gc+.45,0);G.add(hs);bx_(.05,.14,.14,new THREE.MeshBasicMaterial({color:0xff2020}),L2+.06,c.gc+.5,0);bx_(c.L*.38,.2,.012,cm('bc',()=>new THREE.MeshPhongMaterial({color:0x7ff6ff,shininess:140,emissive:0x0a3a4a})),-.2,c.H*.52,D/2+bt+.012)}
  if(!wr){const ug=new THREE.Mesh(new THREE.PlaneGeometry(c.L*1.12,c.W*1.12),new THREE.MeshBasicMaterial({color:NEON_PALETTE[NEON_INDEX],transparent:true,opacity:.42,blending:THREE.AdditiveBlending,depthWrite:false}));ug.rotation.x=-Math.PI/2;ug.position.y=.045;ug.userData.squadNeon=true;G.add(ug);const stripMat=new THREE.MeshBasicMaterial({color:NEON_PALETTE[NEON_INDEX]});[-1,1].forEach(side=>{const strip=new THREE.Mesh(new THREE.BoxGeometry(c.L*.72,.018,.025),stripMat);strip.position.set(0,c.r+.18,side*(c.W*.51));strip.userData.squadNeon=true;G.add(strip)})}
+ /* v142: fleet-wide detail pass for every catalog car, beyond the 20 flagship silhouettes. */
+ if(c.catalog){
+   const fleetDark=cm('v141FleetDark',()=>new THREE.MeshStandardMaterial({color:0x080b10,metalness:.48,roughness:.3}));
+   const fleetMetal=cm('v141FleetMetal',()=>new THREE.MeshStandardMaterial({color:0xb7c0ca,metalness:.9,roughness:.24,envMap:ENV_CUBE,envMapIntensity:.55}));
+   const fleetLamp=cm('v141FleetLamp',()=>new THREE.MeshPhysicalMaterial({color:0xeaf6ff,metalness:.08,roughness:.09,clearcoat:1,emissive:0x172b42}));
+   const fleetTail=cm('v141FleetTail',()=>new THREE.MeshBasicMaterial({color:0xff263e}));
+   const frontX=L2+.105,rearX=-L2-.065,headY=c.gc+Math.max(.24,c.H*.27),sporty=['sport','super'].includes(c.archetype);
+   [-1,1].forEach(side=>{
+     bx_(.075,.105,c.W*.19,fleetDark,frontX,headY,side*c.W*.34);
+   });
+   /* Lower front intake, bright grille surround and model-scaled horizontal slats. */
+   bx_(.065,sporty?.17:.22,c.W*(sporty?.48:.40),fleetDark,frontX,c.gc+.17,0);
+   bx_(.025,.035,c.W*(sporty?.52:.44),fleetMetal,frontX+.045,c.gc+.285,0);
+   const slats=c.archetype==='suv'?3:4;
+   for(let i=0;i<slats;i++)bx_(.018,.012,c.W*.30,fleetMetal,frontX+.055,c.gc+.12+i*.035,0);
+   /* Hood creases and rocker trim create highlights at normal driving distance. */
+   [-1,1].forEach(side=>{
+     const crease=bx_(c.L*.27,.018,.018,fleetMetal,c.L*.19,c.hbF+.035,side*c.W*.22);crease.rotation.y=side*.035;
+     bx_(c.L*.56,.035,.045,fleetDark,-.02,c.gc+.115,side*c.W*.505);
+     bx_(.035,.085,c.W*.15,fleetTail,rearX,c.gc+.31,side*c.W*.28);
+     bx_(.035,.045,c.W*.13,fleetLamp,frontX+.01,c.gc+.36,side*c.W*.28);
+   });
+   if(c.archetype==='suv')[-1,1].forEach(side=>bx_(c.L*.62,.035,.035,fleetMetal,-.05,c.H+.035,side*c.W*.34));
+   if(sporty)bx_(c.L*.32,.055,c.W*.72,fleetDark,rearX+.16,c.hbR+.10,0);
+ }
+ /* v142: premium procedural realism pass for the complete catalog.
+    These are authored Three.js details, not OEM scans or manufacturer CAD. */
+ {
+  const hi=!LOW_END&&!MOB, detail=hi?1:0;
+  const trim=cm('v142Trim',()=>new THREE.MeshStandardMaterial({color:0xaeb8c8,metalness:.9,roughness:.24,envMap:ENV_CUBE,envMapIntensity:.7}));
+  const black=cm('v142Black',()=>new THREE.MeshStandardMaterial({color:0x080b11,metalness:.28,roughness:.38}));
+  const rubber=cm('v142Rubber',()=>new THREE.MeshStandardMaterial({color:0x111317,roughness:.94}));
+  const lamp=cm('v142Lamp',()=>new THREE.MeshPhysicalMaterial({color:0xe9f4ff,roughness:.07,clearcoat:1,clearcoatRoughness:.03,transparent:true,opacity:.72,emissive:0x172635}));
+  const red=cm('v142Red',()=>new THREE.MeshPhysicalMaterial({color:0xa80e25,roughness:.16,clearcoat:1,emissive:0x260008}));
+  const detailBox=(w,h,d,m,x,y,z,rot=0)=>{const o=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),m);o.position.set(x,y,z);o.rotation.y=rot;G.add(o);return o};
+  /* Continuous glass surrounds, pillars, roof rails and windshield wipers. */
+  [-1,1].forEach(side=>{
+   const z=side*(c.W*.438);
+   detailBox(c.L*.025,Math.max(.28,c.H*.29),.035,trim,c.xfw-.12,c.bl+(c.H-c.bl)*.48,z,side*.10);
+   detailBox(c.L*.022,Math.max(.28,c.H*.29),.035,black,c.xrr+.12,c.bl+(c.H-c.bl)*.48,z,-side*.08);
+   detailBox(c.L*.025,.035,.035,trim,(c.xfw+c.xrr)/2,c.bl+.035,side*(c.W*.505));
+   /* Door shut lines and lower sill highlight, kept separate from the paint mesh. */
+   detailBox(.018,Math.max(.28,c.bl-c.gc-.12),.012,black,c.xft-.12,(c.bl+c.gc)/2,side*(c.W*.505));
+   detailBox(.018,Math.max(.28,c.bl-c.gc-.12),.012,black,c.xrr+.20,(c.bl+c.gc)/2,side*(c.W*.505));
+   detailBox(c.L*.46,.018,.018,trim,-.02,c.gc+.13,side*(c.W*.505));
+   /* Mirror glass inset. */
+   detailBox(.12,.075,.012,lamp,c.xfw-.12,c.bl+.25,side*(c.W*.615));
+  });
+  detailBox(c.L*.16,.018,.035,black,c.xfw-.15,c.hbF+.015,0);
+  [-1,1].forEach(side=>{
+   const wiper=detailBox(c.L*.18,.018,.018,black,c.xfw-.26,c.hbF-.015,side*c.W*.16,side*.08);
+   wiper.userData.squadWiper=true;
+  });
+  /* Front and rear lamps receive layered lenses and inner LED signatures. */
+  [-1,1].forEach(side=>{
+   detailBox(.035,.105,c.W*.16,lamp,c.L/2+.12,c.gc+.30,side*c.W*.285);
+   detailBox(.025,.085,c.W*.13,trim,c.L/2+.145,c.gc+.30,side*c.W*.285);
+   detailBox(.035,.11,c.W*.17,red,-c.L/2-.12,c.gc+.30,side*c.W*.29);
+   detailBox(.02,.075,c.W*.12,lamp,-c.L/2-.145,c.gc+.30,side*c.W*.29);
+  });
+  /* Fender lips follow each wheel arch; tire sidewall rings and tread blocks add depth. */
+  wheels.forEach((w,wi)=>{
+   const side=wi%2===0?1:-1,axle=wi<2?c.wf:c.wr;
+   const lip=new THREE.Mesh(new THREE.TorusGeometry(c.r*1.10,.027,5,28,Math.PI),trim);
+   lip.rotation.z=Math.PI;lip.position.set(axle,c.r+.035,side*(c.W*.43));G.add(lip);
+   const sidewall=new THREE.Mesh(new THREE.TorusGeometry(c.r*.82,.018,5,28),rubber);
+   sidewall.position.z=side*.168;w.add(sidewall);
+   const rimLip=new THREE.Mesh(new THREE.TorusGeometry(c.r*.56,.014,5,24),trim);
+   rimLip.position.z=side*.183;w.add(rimLip);
+   const valve=new THREE.Mesh(new THREE.CylinderGeometry(.009,.009,.055,6),trim);
+   valve.position.set(c.r*.72,0,side*.19);w.add(valve);
+   if(detail){
+    const treadGeo=new THREE.BoxGeometry(.075,.022,.025);
+    for(let n=0;n<18;n++){
+     const a=n*Math.PI*2/18,block=new THREE.Mesh(treadGeo,rubber);
+     block.position.set(Math.cos(a)*c.r*.985,Math.sin(a)*c.r*.985,0);block.rotation.z=a;w.add(block);
+    }
+    /* Ventilated rotor drill holes, deliberately low-count for frame stability. */
+    for(let n=0;n<8;n++){
+     const a=n*Math.PI/4,hole=new THREE.Mesh(new THREE.SphereGeometry(.012,5,4),black);
+     hole.position.set(Math.cos(a)*c.r*.39,Math.sin(a)*c.r*.39,side*.145);w.add(hole);
+    }
+   }
+  });
+  /* Rear diffuser, exhaust surrounds and a clean license plate recess. */
+  detailBox(c.L*.30,.09,c.W*.62,black,-c.L/2-.025,c.gc+.10,0);
+  detailBox(c.L*.18,.12,.025,trim,-c.L/2-.055,c.gc+.18,0);
+  [-1,1].forEach(side=>{
+   const tip=new THREE.Mesh(new THREE.TorusGeometry(.055,.012,6,16),trim);
+   tip.position.set(-c.L/2-.105,c.gc+.13,side*c.W*.28);G.add(tip);
+  });
+  /* More convincing cockpit: instrument binnacle, layered center screen, vents and console seams. */
+  if(!wr){
+   const screen=cm('v142Screen',()=>new THREE.MeshStandardMaterial({color:0x071a2a,metalness:.25,roughness:.12,emissive:0x07304a,emissiveIntensity:.55}));
+   const leather=cm('v142Leather',()=>new THREE.MeshStandardMaterial({color:0x24252b,roughness:.82}));
+   detailBox(c.L*.075,.09,c.W*.22,screen,c.xfw-.16,c.gc+.48,0);
+   detailBox(c.L*.06,.025,c.W*.16,lamp,c.xfw-.205,c.gc+.49,0);
+   detailBox(c.L*.20,.025,c.W*.12,trim,.04,c.gc+.24,0);
+   [-1,1].forEach(side=>{
+    detailBox(c.L*.055,.035,c.W*.035,trim,c.xfw-.12,c.gc+.37,side*c.W*.245);
+    detailBox(c.L*.14,.025,.025,leather,c.xrr+.18,c.gc+.42,side*c.W*.25);
+    detailBox(c.L*.11,.02,.02,trim,c.xrr+.18,c.gc+.445,side*c.W*.25);
+   });
+   /* Seat bolsters and stitching lines, scaled to the vehicle cabin. */
+   [-1,1].forEach(side=>{
+    const z=side*c.W*.24;
+    detailBox(c.L*.115,.035,.025,trim,c.xft-.33,c.gc+.48,z+side*c.W*.09);
+    detailBox(c.L*.10,.018,.018,trim,c.xrr+.13,c.gc+.38,z);
+   });
+  }
+ }
  /* Premium neon underglow, restrained so paint and body contours remain readable. */
  if(!wr){const neonColor=key==='ferrari'||key==='bugatti'?0xff284d:key==='limo'||key==='rolls'?0xffd46b:0x36dfff;const underMat=cm('underNeon'+key,()=>new THREE.MeshBasicMaterial({color:neonColor,transparent:true,opacity:.22,side:THREE.DoubleSide,depthWrite:false}));const under=new THREE.Mesh(new THREE.PlaneGeometry(c.L*.72,c.W*.72),underMat);under.rotation.x=-Math.PI/2;under.position.set(0,Math.max(.045,c.r*.24),0);G.add(under);const stripMat=cm('trimNeon'+key,()=>new THREE.MeshBasicMaterial({color:neonColor}));[-1,1].forEach(side=>{const strip=new THREE.Mesh(new THREE.BoxGeometry(c.L*.52,.018,.018),stripMat);strip.position.set(0,c.bl+.04,side*c.W*.475);G.add(strip)});}
+ // v133: isolate paint/rim materials per vehicle so customization never recolors the whole fleet.
+ const paintParts=[];G.traverse(o=>{if(o.isMesh&&o.material===paint){o.material=paint.clone();paintParts.push(o)} });
+ const rimParts=[];wheels.forEach(w=>{w.children.forEach((o,i)=>{if(i===1&&o.isMesh){o.material=o.material.clone();rimParts.push(o)}})});
+ G.userData.paintParts=paintParts;G.userData.rimParts=rimParts;G.userData.baseY=G.position.y;G.userData.customRide=0;G.userData.underglowParts=[];
+ G.traverse(o=>{if(o.isMesh&&o.userData&&o.userData.squadNeon)G.userData.underglowParts.push(o)});
  G.userData.wheels=wheels;G.userData.r=c.r;
  if(wr==1){G.rotation.z=.05;G.userData.tilt=1}
  const R=new THREE.Group();R.add(G);if(wr==2){G.rotation.x=Math.PI;G.position.y=c.H}
@@ -305,22 +750,22 @@ function mkCar(cr){const key=cr.key,c=DC.CS[key],g=carGeo(key),G=new THREE.Group
  const brakeLights=[];[-1,1].forEach(side=>{const lamp=new THREE.Mesh(new THREE.BoxGeometry(.035,.075,c.W*.16),brakeMat.clone());lamp.position.set(-L2-.055,c.bl-.12,side*c.W*.27);R.add(lamp);brakeLights.push(lamp)});
  const sprayMat=new THREE.MeshBasicMaterial({color:0xc9eaff,transparent:true,opacity:0,depthWrite:false});const spray=[];
  for(let i=0;i<4;i++){const drop=new THREE.Mesh(new THREE.SphereGeometry(.035,6,5),sprayMat.clone());drop.position.set(-c.L*.22,c.r*.18,(i%2?1:-1)*(c.W*.43));drop.visible=false;R.add(drop);spray.push(drop)}
- R.userData.brakeLights=brakeLights;R.userData.spray=spray;R.userData.wheels=wheels;R.userData.r=c.r;if(c.catalog&&!c.brandSpecific)loadSquadModel(G,c,R);return R}
+ R.userData.brakeLights=brakeLights;R.userData.spray=spray;R.userData.wheels=wheels;R.userData.r=c.r;if(c.catalog&&c.brandSpecific)loadLicensedVehicleModel(G,c,R,key);/* Generic archetype GLBs are intentionally not loaded: they replace the detailed cabin and hinged doors. */return R}
 const LIFTS=[],SLIDERS=[],CARO=[],REMOTE_CARS={},AUTO_ENGINEERS=[],FOUNTAIN_DROPS=[],FOUNTAIN_RIPPLES=[],WET_PATCHES=[];let fountainWaterSurface=null;
 function build(){
- sc=new THREE.Scene();sc.background=new THREE.Color(0x0d0828);sc.fog=new THREE.Fog(0x0d0828,90,400);
+ sc=new THREE.Scene();sc.background=new THREE.Color(0x0d0828);sc.fog=new THREE.Fog(0x0d0828,150,560);
  cam=new THREE.PerspectiveCamera(64,1,.1,800);
- ren=new THREE.WebGLRenderer({canvas:q('#dstC'),antialias:!MOB});
+ ren=new THREE.WebGLRenderer({canvas:q('#dstC'),antialias:!MOB&&!LOW_END,powerPreference:'high-performance',alpha:false,preserveDrawingBuffer:false});
  /* Lightweight procedural cubemap: actual environment reflections without downloading large HDR files. */
  if(!ENV_CUBE){const faces=[];for(let f=0;f<6;f++){const cv=document.createElement('canvas');cv.width=cv.height=128;const cx=cv.getContext('2d'),gr=cx.createLinearGradient(0,0,0,128);gr.addColorStop(0,'#182b50');gr.addColorStop(.48,'#33415a');gr.addColorStop(.5,'#f3c77a');gr.addColorStop(.54,'#101827');gr.addColorStop(1,'#050914');cx.fillStyle=gr;cx.fillRect(0,0,128,128);for(let j=0;j<24;j++){cx.fillStyle=j%4===0?'rgba(65,210,255,.85)':'rgba(255,190,95,.62)';cx.fillRect((j*37+f*19)%124,48+(j*13)%55,2+(j%3),3+(j%5)*2)}faces.push(cv)}ENV_CUBE=new THREE.CubeTexture(faces);ENV_CUBE.needsUpdate=true;}
  /* City-only reflection probe: warm window lights and a cool skyline, isolated from car materials. */
  if(!CITY_ENV_CUBE){const faces=[];for(let f=0;f<6;f++){const cv=document.createElement('canvas');cv.width=cv.height=256;const cx=cv.getContext('2d'),gr=cx.createLinearGradient(0,0,0,256);gr.addColorStop(0,'#263b58');gr.addColorStop(.38,'#68778a');gr.addColorStop(.49,'#d8a66e');gr.addColorStop(.52,'#202b3c');gr.addColorStop(1,'#080e19');cx.fillStyle=gr;cx.fillRect(0,0,256,256);for(let x=0;x<256;x+=17){const h=22+(x*29+f*13)%62;cx.fillStyle='#101a29';cx.fillRect(x,145-h,12,h+45);for(let y=154-h;y<145;y+=9)for(let wx=x+3;wx<x+10;wx+=5){cx.fillStyle=((x+y+f)%4===0)?'#f5c77d':'#42566b';cx.fillRect(wx,y,2,3)}}for(let j=0;j<22;j++){cx.fillStyle=j%3?'rgba(255,199,120,.48)':'rgba(130,207,230,.38)';cx.fillRect((j*43+f*19)%252,108+(j*17)%70,2+(j%4),3+(j%5))}faces.push(cv)}CITY_ENV_CUBE=new THREE.CubeTexture(faces);CITY_ENV_CUBE.needsUpdate=true;}
- ren.setPixelRatio(Math.min(devicePixelRatio||1,MOB?1.0:1.25));ren.shadowMap.enabled=!MOB&&!!ren.capabilities.isWebGL2;ren.shadowMap.type=THREE.PCFSoftShadowMap;if('outputEncoding' in ren && THREE.sRGBEncoding)ren.outputEncoding=THREE.sRGBEncoding;if('toneMapping' in ren && THREE.ACESFilmicToneMapping!==undefined){ren.toneMapping=THREE.ACESFilmicToneMapping;ren.toneMappingExposure=1.08}ray=new THREE.Raycaster();
+ ren.setPixelRatio(Math.min(devicePixelRatio||1,LOW_END?(MOB?.52:.62):(MOB?.78:1.1)));ren.shadowMap.enabled=!LOW_END&&!MOB&&!!ren.capabilities.isWebGL2;ren.shadowMap.type=THREE.PCFSoftShadowMap;if('outputEncoding' in ren && THREE.sRGBEncoding)ren.outputEncoding=THREE.sRGBEncoding;if('toneMapping' in ren && THREE.ACESFilmicToneMapping!==undefined){ren.toneMapping=THREE.ACESFilmicToneMapping;ren.toneMappingExposure=1.08}ray=new THREE.Raycaster();
  sc.add(new THREE.HemisphereLight(0xb4bcff,0x17243b,1.05));sc.add(new THREE.AmbientLight(0x526a9b,.28));const cityGlow=new THREE.PointLight(0x287dff,.55,260);cityGlow.position.set(0,36,0);sc.add(cityGlow);const warmGlow=new THREE.PointLight(0xffa34d,.35,190);warmGlow.position.set(-95,22,80);sc.add(warmGlow);const sun=new THREE.DirectionalLight(0xffd2a8,.62);sun.position.set(-80,120,60);if(ren.shadowMap.enabled){sun.castShadow=true;sun.shadow.mapSize.set(1024,1024);sun.shadow.camera.near=1;sun.shadow.camera.far=360;sun.shadow.camera.left=-190;sun.shadow.camera.right=190;sun.shadow.camera.top=190;sun.shadow.camera.bottom=-190;sun.shadow.bias=-.00018;sun.shadow.normalBias=.025}sc.add(sun);
  /* الأرض: بلوكات + شوارع + حدايق */
- const S=2048,B2=DC.BOUND*2+20,k=S/B2,X=x=>(x+B2/2)*k,Z=z=>(z+B2/2)*k;
+ const S=MOB?1280:2048,B2=DC.BOUND*2+20,k=S/B2,X=x=>(x+B2/2)*k,Z=z=>(z+B2/2)*k;
  const gt=cvt(S,S,g=>{g.fillStyle='#2b2630';g.fillRect(0,0,S,S);g.fillStyle='#141c34';g.fillRect(X(-DC.CITY),Z(-DC.CITY),DC.CITY*2*k,DC.CITY*2*k);let s=7;const r=()=>(s=(s*16807)%2147483647)/2147483647;
-  for(let i=0;i<5000;i++){g.fillStyle=r()<.5?'#18213c':'#10172c';g.fillRect(r()*S,r()*S,3+r()*8,3+r()*8)}
+  for(let i=0;i<(MOB?1900:5000);i++){g.fillStyle=r()<.5?'#18213c':'#10172c';g.fillRect(r()*S,r()*S,3+r()*8,3+r()*8)}
   MP.parks.forEach(p=>{g.fillStyle='#173d30';g.fillRect(X(p.x0),Z(p.z0),(p.x1-p.x0)*k,(p.z1-p.z0)*k);g.fillStyle='#1d4a38';for(let i=0;i<260;i++)g.fillRect(X(p.x0+r()*(p.x1-p.x0)),Z(p.z0+r()*(p.z1-p.z0)),3+r()*6,3+r()*6)});
   MP.roads.forEach(o=>{g.fillStyle='#3a4068';g.fillRect(X(o.cx-o.hw-1.2),Z(o.cz-o.hd-1.2),(o.hw*2+2.4)*k,(o.hd*2+2.4)*k)});
   MP.roads.forEach(o=>{g.fillStyle='#202642';g.fillRect(X(o.cx-o.hw),Z(o.cz-o.hd),o.hw*2*k,o.hd*2*k);
@@ -758,6 +1203,31 @@ function build(){
      add(new THREE.SphereGeometry(.2*s,6,4),new THREE.MeshLambertMaterial({color:0x4e8c5b}),px+.12*s,.63*s,pz+.08*s);
     }
    });
+   /* Supervillain mansion compound: distinctive luxury amenities built from native Three.js geometry. */
+   if(a.id==='mansion_supervillain'){
+    const obsidian=new THREE.MeshStandardMaterial({color:0x111827,metalness:.58,roughness:.25}),goldMetal=new THREE.MeshStandardMaterial({color:0xd5b46b,metalness:.86,roughness:.2}),poolWater=new THREE.MeshPhongMaterial({color:0x38c9e8,transparent:true,opacity:.78,shininess:120}),velvet=new THREE.MeshLambertMaterial({color:0x38243c}),screenMat=new THREE.MeshBasicMaterial({color:0x152a3d}),green=new THREE.MeshLambertMaterial({color:0x245b3e});
+    /* Private cinema pavilion and illuminated screen. */
+    add(new THREE.BoxGeometry(5.8*s,2.9*s,3.9*s),obsidian,-10.7*s,1.55*s,-1.5*s);
+    add(new THREE.BoxGeometry(4.1*s,1.75*s,.08*s),screenMat,-10.7*s,2.0*s,.52*s);
+    add(new THREE.BoxGeometry(4.4*s,.32*s,1.0*s),velvet,-10.7*s,.55*s,.2*s);
+    /* Fitness studio: equipment silhouettes beside the private wing. */
+    add(new THREE.BoxGeometry(5.6*s,2.8*s,4.0*s),base,10.8*s,1.5*s,-1.2*s);
+    add(new THREE.BoxGeometry(3.8*s,.12*s,.8*s),obsidian,10.8*s,.75*s,1.0*s);
+    [-1,1].forEach(side=>{add(new THREE.CylinderGeometry(.12*s,.12*s,.12*s,10),goldMetal,10.8*s+side*1.45*s,1.45*s,1.0*s);add(new THREE.CylinderGeometry(.12*s,.12*s,.12*s,10),goldMetal,10.8*s+side*1.45*s,1.45*s,-.2*s)});
+    /* Rooftop party terrace with lounge seating and a gold-lit canopy. */
+    add(new THREE.BoxGeometry(9.2*s,.18*s,5.8*s),obsidian,0,7.15*s,-.7*s);
+    add(new THREE.BoxGeometry(7.8*s,.12*s,4.5*s),goldMetal,0,7.28*s,-.7*s);
+    [-1,1].forEach(side=>{add(new THREE.BoxGeometry(2.8*s,.45*s,1.0*s),velvet,side*2.25*s,7.55*s,-1.0*s);add(new THREE.BoxGeometry(1.2*s,.38*s,.8*s),velvet,side*2.25*s,7.5*s,.55*s)});
+    for(let lamp=0;lamp<6;lamp++)add(new THREE.SphereGeometry(.12*s,8,6),new THREE.MeshBasicMaterial({color:0xffd78b}),(-2.5+lamp)*s,7.65*s,1.4*s);
+    /* Extended reflecting pool and private garden border. */
+    add(new THREE.BoxGeometry(7.0*s,.18*s,10.0*s),ivory,-12.2*s,.13*s,7.2*s);
+    add(new THREE.BoxGeometry(6.55*s,.045*s,9.55*s),poolWater,-12.2*s,.245*s,7.2*s);
+    [-1,1].forEach(side=>{add(new THREE.BoxGeometry(.65*s,.32*s,9.5*s),green,-12.2*s+side*3.9*s,.2*s,7.2*s)});
+    /* Gold nameplate and a reinforced vault door on the rear elevation. */
+    add(new THREE.BoxGeometry(4.2*s,.72*s,.12*s),obsidian,0,2.5*s,-4.05*s);
+    add(new THREE.BoxGeometry(3.7*s,.12*s,.08*s),goldMetal,0,2.5*s,-4.13*s);
+    add(new THREE.CylinderGeometry(.48*s,.48*s,.16*s,16),goldMetal,0,2.5*s,-4.22*s);
+   }
   });
  }
  /* Autonomous city engineering crews: patrol active work zones and make the city feel continuously maintained. */
@@ -770,6 +1240,100 @@ function build(){
   });
  }
  flush();
+ /* v125: realistic boulevard infrastructure — instanced streetlights and signal heads.
+    Instancing keeps draw calls low and leaves every original building/plot untouched. */
+ {
+  const lampSpots=[];
+  MP.roads.forEach(o=>{const horizontal=o.hw>o.hd,half=horizontal?o.hd:o.hw,len=horizontal?o.hw*2:o.hd*2;if(len<64||half<5)return;
+   const count=Math.max(1,Math.floor((len-24)/54));
+   for(let i=0;i<=count;i++){const u=-len/2+12+i*(len-24)/count;for(const side of [-1,1]){
+    const x=horizontal?o.cx+u:o.cx+side*(half+2.9),z=horizontal?o.cz+side*(half+2.9):o.cz+u;
+    const rot=horizontal?(side>0?Math.PI/2:-Math.PI/2):(side>0?Math.PI:0);lampSpots.push({x,z,rot});
+   }}
+  });
+  const poleGeo=new THREE.CylinderGeometry(.075,.105,6.2,8),armGeo=new THREE.BoxGeometry(1.15,.075,.09),headGeo=new THREE.BoxGeometry(.48,.16,.34),glowGeo=new THREE.BoxGeometry(.34,.025,.22);
+  const poleMat=new THREE.MeshStandardMaterial({color:0x303944,metalness:.72,roughness:.34}),armMat=new THREE.MeshStandardMaterial({color:0x48515b,metalness:.78,roughness:.28}),headMat=new THREE.MeshStandardMaterial({color:0x202a35,metalness:.5,roughness:.32}),glowMat=new THREE.MeshBasicMaterial({color:0xffe2a2});
+  const pole=new THREE.InstancedMesh(poleGeo,poleMat,lampSpots.length),arm=new THREE.InstancedMesh(armGeo,armMat,lampSpots.length),head=new THREE.InstancedMesh(headGeo,headMat,lampSpots.length),glow=new THREE.InstancedMesh(glowGeo,glowMat,lampSpots.length),dummy=new THREE.Object3D();
+  lampSpots.forEach((a,i)=>{dummy.position.set(a.x,3.1,a.z);dummy.rotation.set(0,0,0);dummy.scale.set(1,1,1);dummy.updateMatrix();pole.setMatrixAt(i,dummy.matrix);
+   const dir=a.rot;dummy.position.set(a.x+Math.cos(dir)*.58,6.05,a.z-Math.sin(dir)*.58);dummy.rotation.set(0,dir,0);dummy.updateMatrix();arm.setMatrixAt(i,dummy.matrix);
+   dummy.position.set(a.x+Math.cos(dir)*1.08,5.96,a.z-Math.sin(dir)*1.08);dummy.updateMatrix();head.setMatrixAt(i,dummy.matrix);
+   dummy.position.set(a.x+Math.cos(dir)*1.08,5.865,a.z-Math.sin(dir)*1.08);dummy.updateMatrix();glow.setMatrixAt(i,dummy.matrix);
+  });
+  [pole,arm,head,glow].forEach(o=>{o.instanceMatrix.needsUpdate=true;o.frustumCulled=true;o.castShadow=false;o.receiveShadow=true;sc.add(o)});
+  /* v128: social micro-plazas along existing boulevards. Instanced street furniture adds
+     recognizable Roblox-scale hangout spots without moving/removing any authored building. */
+  {
+   const plazaSpots=[];
+   MP.roads.forEach(o=>{const horizontal=o.hw>o.hd,half=horizontal?o.hd:o.hw,len=horizontal?o.hw*2:o.hd*2;
+    if(len<92||half<6)return;
+    const step=Math.max(1,Math.floor(len/118));
+    for(let n=0;n<step;n++){
+     const u=-len*.34+n*(len*.68/Math.max(1,step-1));
+     const side=(n%2?1:-1),x=horizontal?o.cx+u:o.cx+side*(half+4.4),z=horizontal?o.cz+side*(half+4.4):o.cz+u;
+     if(Math.hypot(x,z)<36)continue;
+     plazaSpots.push({x,z,rot:horizontal?0:Math.PI/2});
+     if(plazaSpots.length>=30)return;
+    }
+   });
+   const benchGeo=new THREE.BoxGeometry(2.15,.16,.48),benchBackGeo=new THREE.BoxGeometry(2.15,.72,.12),legGeo=new THREE.BoxGeometry(.12,.48,.38);
+   const benchMat=new THREE.MeshStandardMaterial({color:0x72553b,roughness:.78}),metalMat=new THREE.MeshStandardMaterial({color:0x394957,metalness:.72,roughness:.34});
+   const bench=new THREE.InstancedMesh(benchGeo,benchMat,plazaSpots.length),back=new THREE.InstancedMesh(benchBackGeo,benchMat,plazaSpots.length),legs=new THREE.InstancedMesh(legGeo,metalMat,plazaSpots.length*2);
+   const planterGeo=new THREE.BoxGeometry(1.25,.52,1.25),planterMat=new THREE.MeshStandardMaterial({color:0x454b4a,roughness:.9}),leafGeo=new THREE.SphereGeometry(.42,7,5),leafMat=new THREE.MeshLambertMaterial({color:0x39764c});
+   const planters=new THREE.InstancedMesh(planterGeo,planterMat,plazaSpots.length*2),foliage=new THREE.InstancedMesh(leafGeo,leafMat,plazaSpots.length*2);
+   plazaSpots.forEach((a,i)=>{dummy.position.set(a.x,.62,a.z);dummy.rotation.set(0,a.rot,0);dummy.scale.set(1,1,1);dummy.updateMatrix();bench.setMatrixAt(i,dummy.matrix);
+    dummy.position.set(a.x,.99,a.z-.16);dummy.updateMatrix();back.setMatrixAt(i,dummy.matrix);
+    [-.82,.82].forEach((side,j)=>{dummy.position.set(a.x+Math.cos(a.rot)*side,.34,a.z+Math.sin(a.rot)*side);dummy.updateMatrix();legs.setMatrixAt(i*2+j,dummy.matrix)});
+    [-2.05,2.05].forEach((side,j)=>{const px=a.x+Math.cos(a.rot)*side,pz=a.z+Math.sin(a.rot)*side;dummy.position.set(px,.28,pz);dummy.rotation.set(0,0,0);dummy.updateMatrix();planters.setMatrixAt(i*2+j,dummy.matrix);dummy.position.set(px,.78,pz);dummy.scale.set(1,1,1);dummy.updateMatrix();foliage.setMatrixAt(i*2+j,dummy.matrix)});
+   });
+   [bench,back,legs,planters,foliage].forEach(o=>{o.instanceMatrix.needsUpdate=true;o.frustumCulled=true;o.castShadow=false;o.receiveShadow=true;sc.add(o)});
+   /* v129: compact transit hubs beside existing boulevards. These are additive,
+      instanced props; they do not alter road, plot, palace or authored building data. */
+   const hubSpots=plazaSpots.filter((_,i)=>i%3===1).slice(0,10);
+   if(hubSpots.length){
+    const roofGeo=new THREE.BoxGeometry(4.2,.16,1.8),postGeo=new THREE.BoxGeometry(.12,2.45,.12),glassGeo=new THREE.BoxGeometry(3.85,1.45,.055),seatGeo=new THREE.BoxGeometry(2.15,.13,.42),signGeo=new THREE.BoxGeometry(.72,.92,.12),mapGeo=new THREE.BoxGeometry(.42,.56,.025);
+    const roofMat=new THREE.MeshStandardMaterial({color:0x263c50,metalness:.62,roughness:.3}),postMat=new THREE.MeshStandardMaterial({color:0xb5c1c9,metalness:.78,roughness:.25}),glassMat=new THREE.MeshPhysicalMaterial({color:0x9ed9e8,metalness:.08,roughness:.12,transparent:true,opacity:.28,depthWrite:false}),seatMat=new THREE.MeshStandardMaterial({color:0x6d563e,roughness:.72}),signMat=new THREE.MeshStandardMaterial({color:0x142a3b,metalness:.35,roughness:.38}),mapMat=new THREE.MeshBasicMaterial({color:0x55d9e8});
+    const roof=new THREE.InstancedMesh(roofGeo,roofMat,hubSpots.length),posts=new THREE.InstancedMesh(postGeo,postMat,hubSpots.length*4),glass=new THREE.InstancedMesh(glassGeo,glassMat,hubSpots.length),seats=new THREE.InstancedMesh(seatGeo,seatMat,hubSpots.length),signs=new THREE.InstancedMesh(signGeo,signMat,hubSpots.length),maps=new THREE.InstancedMesh(mapGeo,mapMat,hubSpots.length);
+    const put=(obj,i,a,lx,ly,lz,scale)=>{dummy.position.set(a.x+Math.cos(a.rot)*lx+Math.sin(a.rot)*lz,ly,a.z-Math.sin(a.rot)*lx+Math.cos(a.rot)*lz);dummy.rotation.set(0,a.rot,0);if(scale)dummy.scale.set(scale[0],scale[1],scale[2]);else dummy.scale.set(1,1,1);dummy.updateMatrix();obj.setMatrixAt(i,dummy.matrix)};
+    hubSpots.forEach((a,i)=>{put(roof,i,a,0,2.55,0);[[-1.92,-.78],[1.92,-.78],[-1.92,.78],[1.92,.78]].forEach(([x,z],j)=>put(posts,i*4+j,a,x,1.22,z));put(glass,i,a,0,1.35,.76);put(seats,i,a,0,.62,-.28);put(signs,i,a,2.28,2.08,-.58);put(maps,i,a,2.28,2.1,-.655)});
+    [roof,posts,glass,seats,signs,maps].forEach(o=>{o.instanceMatrix.needsUpdate=true;o.frustumCulled=true;o.castShadow=false;o.receiveShadow=true;sc.add(o)});
+   }
+  }
+  // Traffic signals at the busiest existing crosswalk junctions; all components are instanced.
+  const signalSpots=[];[-180,-60,60,180].forEach(ix=>[-185,-45,45,185].forEach(iz=>{
+   [[-1,-1],[1,-1],[-1,1],[1,1]].forEach(([sx,sz])=>{const x=ix+sx*8.2,z=iz+sz*8.2,rot=Math.atan2(-sx*8.2,-sz*8.2);signalSpots.push({x,z,rot})});
+  }));
+  const sigPole=new THREE.InstancedMesh(new THREE.CylinderGeometry(.055,.075,4.8,7),poleMat,signalSpots.length),sigBox=new THREE.InstancedMesh(new THREE.BoxGeometry(.34,.86,.25),headMat,signalSpots.length),red=new THREE.InstancedMesh(new THREE.SphereGeometry(.085,8,6),new THREE.MeshBasicMaterial({color:0xff3038}),signalSpots.length),amber=new THREE.InstancedMesh(new THREE.SphereGeometry(.085,8,6),new THREE.MeshStandardMaterial({color:0x60451a,emissive:0x100900,roughness:.35}),signalSpots.length),green=new THREE.InstancedMesh(new THREE.SphereGeometry(.085,8,6),new THREE.MeshStandardMaterial({color:0x174b32,emissive:0x061b10,roughness:.35}),signalSpots.length);
+  signalSpots.forEach((a,i)=>{const set=(o,y,zoff=0)=>{dummy.position.set(a.x+Math.sin(a.rot)*zoff,y,a.z+Math.cos(a.rot)*zoff);dummy.rotation.set(0,a.rot,0);dummy.updateMatrix();o.setMatrixAt(i,dummy.matrix)};set(sigPole,2.4);set(sigBox,4.9);set(red,5.16,.145);set(amber,4.92,.145);set(green,4.68,.145)});
+  [sigPole,sigBox,red,amber,green].forEach(o=>{o.instanceMatrix.needsUpdate=true;o.frustumCulled=true;sc.add(o)});
+ }
+ /* v130: neighborhood activity nodes — additive park kiosks and shaded hangout decks.
+    All placements are derived from existing road metadata; no authored plots/buildings are moved. */
+ {
+  const nodes=[];
+  MP.roads.forEach(o=>{
+   const horizontal=o.hw>o.hd,half=horizontal?o.hd:o.hw,len=horizontal?o.hw*2:o.hd*2;
+   if(len<110||half<7||nodes.length>=8)return;
+   const u=(nodes.length%2===0?-.22:.22)*len;
+   const side=nodes.length%2?1:-1;
+   const x=horizontal?o.cx+u:o.cx+side*(half+10.5),z=horizontal?o.cz+side*(half+10.5):o.cz+u;
+   if(Math.hypot(x,z)<58)return;
+   nodes.push({x,z,rot:horizontal?0:Math.PI/2});
+  });
+  if(nodes.length){
+   const deckGeo=new THREE.BoxGeometry(8.8,.22,6.2),roofGeo=new THREE.BoxGeometry(5.4,.18,3.5),postGeo=new THREE.BoxGeometry(.16,2.65,.16),counterGeo=new THREE.BoxGeometry(2.2,1.05,.9),topGeo=new THREE.BoxGeometry(2.35,.12,1.02),seatGeo=new THREE.BoxGeometry(2.4,.16,.48),planterGeo=new THREE.BoxGeometry(1.05,.55,1.05),bushGeo=new THREE.SphereGeometry(.48,7,5);
+   const deckMat=new THREE.MeshStandardMaterial({color:0x777d80,roughness:.88}),roofMat=new THREE.MeshStandardMaterial({color:0x263b50,metalness:.48,roughness:.38}),postMat=new THREE.MeshStandardMaterial({color:0xb6c2c8,metalness:.72,roughness:.3}),counterMat=new THREE.MeshStandardMaterial({color:0x344c5a,metalness:.22,roughness:.56}),topMat=new THREE.MeshStandardMaterial({color:0xd5b77d,roughness:.5}),seatMat=new THREE.MeshStandardMaterial({color:0x73543a,roughness:.78}),plantMat=new THREE.MeshStandardMaterial({color:0x424b47,roughness:.9}),bushMat=new THREE.MeshLambertMaterial({color:0x34784e});
+   const deck=new THREE.InstancedMesh(deckGeo,deckMat,nodes.length),roof=new THREE.InstancedMesh(roofGeo,roofMat,nodes.length),posts=new THREE.InstancedMesh(postGeo,postMat,nodes.length*4),counter=new THREE.InstancedMesh(counterGeo,counterMat,nodes.length),tops=new THREE.InstancedMesh(topGeo,topMat,nodes.length),seats=new THREE.InstancedMesh(seatGeo,seatMat,nodes.length*2),planters=new THREE.InstancedMesh(planterGeo,plantMat,nodes.length*2),bushes=new THREE.InstancedMesh(bushGeo,bushMat,nodes.length*2);
+   const put=(obj,i,a,lx,y,lz)=>{dummy.position.set(a.x+Math.cos(a.rot)*lx+Math.sin(a.rot)*lz,y,a.z-Math.sin(a.rot)*lx+Math.cos(a.rot)*lz);dummy.rotation.set(0,a.rot,0);dummy.scale.set(1,1,1);dummy.updateMatrix();obj.setMatrixAt(i,dummy.matrix)};
+   nodes.forEach((a,i)=>{
+    put(deck,i,a,0,.12,0);put(roof,i,a,0,2.95,-.25);
+    [[-2.5,-1.7],[2.5,-1.7],[-2.5,1.2],[2.5,1.2]].forEach(([x,z],j)=>put(posts,i*4+j,a,x,1.35,z));
+    put(counter,i,a,-1.15,.78,-.8);put(tops,i,a,-1.15,1.34,-.8);
+    put(seats,i*2,a,1.45,.62,-1.45);put(seats,i*2+1,a,1.45,.62,1.15);
+    [-3.65,3.65].forEach((x,j)=>{put(planters,i*2+j,a,x,.42,2.25);put(bushes,i*2+j,a,x,.95,2.25)});
+   });
+   [deck,roof,posts,counter,tops,seats,planters,bushes].forEach(o=>{o.instanceMatrix.needsUpdate=true;o.frustumCulled=true;o.castShadow=false;o.receiveShadow=true;sc.add(o)});
+  }
+ }
  /* أشجار وأعمدة إنارة (Instanced) */
  {const N=MP.trees.length,tg=new THREE.CylinderGeometry(.2,.28,1.4,6),c1=new THREE.ConeGeometry(1.25,2.4,7),c2=new THREE.ConeGeometry(.95,2,7),mt=new THREE.MeshLambertMaterial({color:0x3a2418}),ml=new THREE.MeshLambertMaterial({color:0xffffff}),I1=new THREE.InstancedMesh(tg,mt,N),I2=new THREE.InstancedMesh(c1,ml,N),I3=new THREE.InstancedMesh(c2,ml,N),m4=new THREE.Matrix4(),col=[0x1f7a5a,0x2a8a4a,0x4a3aa0].map(c=>new THREE.Color(c));
   MP.trees.forEach((t,i)=>{[[I1,.7],[I2,2.2],[I3,3.5]].forEach(([I,y])=>{m4.makeScale(t.s,t.s,t.s);m4.setPosition(t.x,y*t.s,t.z);I.setMatrixAt(i,m4)});I2.setColorAt(i,col[i%3]);I3.setColorAt(i,col[i%3])});[I1,I2,I3].forEach(I=>{I.frustumCulled=false;sc.add(I)});
@@ -845,13 +1409,33 @@ function bubble(a,tx){if(a.bub){a.obj.remove(a.bub.sp);a.bub.sp.material.map.dis
  const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(c),transparent:true,depthTest:false}));sp.scale.set(3.6,.68,1);sp.position.y=3.55;sp.renderOrder=11;a.obj.add(sp);a.bub={sp,t:performance.now()+6500}}
 
 /* ---------- البنك ---------- */
-let BANK={bal:0,t:Date.now(),log:[]};
+let BANK={bal:0,t:Date.now(),log:[]},BANK_GAME={balance:50000,securityLevel:0,lastRobberyHour:-1,hour:-1},BANK_GAME_BUSY=false;
 function bankUI(){
- q('#bkInfo').innerHTML=`<div>👛 محفظتك: <b>${W}</b> 🪙</div><div>🏦 رصيد البنك: <b>${BANK.bal}</b> 🪙</div><small>الرصيد محفوظ على السيرفر، ولا تُحتسب فوائد محلية غير مؤكدة.</small>`;q('#bkLog').innerHTML=BANK.log.map(x=>`<div>${esc(x)}</div>`).join('')||'<div class="mu">مفيش عمليات لسه</div>'}
+ q('#bkInfo').innerHTML=`<div>👛 محفظتك: <b>${W}</b> 🪙</div><div>🏦 رصيد حسابك: <b>${BANK.bal}</b> 🪙</div><small>حسابك الشخصي منفصل عن خزنة البنك المشتركة.</small>`;q('#bkLog').innerHTML=BANK.log.map(x=>`<div>${esc(x)}</div>`).join('')||'<div class="mu">مفيش عمليات لسه</div>';bankGameUI()}
+function bankGameUI(){const el=q('#bkHeistInfo');if(!el)return;const st=ECON||{},inv=st.bankGameInventory||{};const used=BANK_GAME.lastRobberyHour===Math.floor(Date.now()/3600000);el.innerHTML=`💰 الخزنة: <b>${fmt(BANK_GAME.balance||0)}</b> · 🛡️ التأمين: <b>${BANK_GAME.securityLevel||0}/5</b><br>⚡ المعدات: <b>${inv.stun||0}</b> · 👥 المساعدون: <b>${inv.assistants||0}</b><br>${used?'⏳ البنك اتسرق في الساعة الحالية.':'✅ الخزنة متاحة لمحاولة واحدة خلال الساعة الحالية.'}`;document.querySelectorAll('#bkHeist [data-heist]').forEach(b=>b.disabled=BANK_GAME_BUSY||(b.dataset.heist==='rob'&&used))}
+async function bankGameAction(kind){if(BANK_GAME_BUSY)return;const map={'buy-weapon':['buyBankGameWeapon',{id:'stun'}],hire:['hireBankAssistant',{}],upgrade:['upgradeBankSecurity',{}],rob:['bankRobbery',{}]};const item=map[kind];if(!item)return;BANK_GAME_BUSY=true;bankGameUI();try{const r=await economyAction(item[0],item[1]);if(r){if(r.bankGame)BANK_GAME=r.bankGame;else await bankGameRefresh();if(kind==='rob'&&r.bankGame)toast(r.message);else toast(r.message||'تمت العملية');bankUI()}}finally{BANK_GAME_BUSY=false;bankGameUI()}}
+async function bankGameRefresh(){const r=await economyAction('bankGameStatus');if(r&&r.bankGame)BANK_GAME=r.bankGame;bankGameUI()}
 async function bankOp(k){const dep=k[0]==='d',all=k===(dep?'da':'wa'),amount=({d5:5,d50:50,d500:500,w5:5,w50:50,w500:500})[k]||0;const r=await economyAction(dep?'bankDeposit':'bankWithdraw',{amount:all?'all':amount});if(!r)return;BANK.log.unshift(dep?'⬆️ إيداع تم':'⬇️ سحب تم');BANK.log=BANK.log.slice(0,6);bankUI()}
 async function bankTransferUI(){const targetUid=await SquadDialog.prompt('اكتب UID الخاص بالمستلم:');if(!targetUid)return;const amount=Number(await SquadDialog.prompt('المبلغ المراد تحويله من رصيد البنك:'));if(!Number.isSafeInteger(amount)||amount<=0)return toast('اكتب مبلغًا صحيحًا');const r=await economyAction('bankTransfer',{targetUid:targetUid.trim(),amount});if(r){BANK.log.unshift('💸 تحويل بنكي: '+amount);BANK.log=BANK.log.slice(0,6);bankUI();toast('تم التحويل البنكي بنجاح')}}
 async function assetTransferUI(){const targetUid=await SquadDialog.prompt('اكتب UID الخاص بالمستلم:');if(!targetUid)return;const kind=await SquadDialog.prompt('نوع الملكية: car للسيارة، estate للعقار، apartment للشقة');if(!['car','estate','apartment'].includes(kind))return toast('نوع ملكية غير صالح');const id=await SquadDialog.prompt('اكتب معرّف الأصل، مثل catalog_1 أو villa_ridge أو apt_classic');if(!id)return;const r=await economyAction('transferAsset',{targetUid:targetUid.trim(),kind,id:id.trim()});if(r){toast('تم نقل الملكية بنجاح');if(kind==='car')carShopUI();if(kind==='estate')estateUI();if(kind==='apartment')aptUI()}}
-const bankOpen=()=>{q('#dstBank').hidden=false;bankUI()},bankClose=()=>{q('#dstBank').hidden=true};
+let bankLoading=false;
+async function bankOpen(){
+ const panel=q('#dstBank');panel.hidden=false;
+ if(ECON_READY){await bankGameRefresh();bankUI();return}
+ if(bankLoading)return;
+ bankLoading=true;
+ q('#bkInfo').innerHTML='<div class="bk-loading">جارٍ الاتصال بحسابك الآمن...</div>';
+ q('#bkLog').textContent='يتم تحميل رصيد المحفظة والبنك من السيرفر.';
+ document.querySelectorAll('#dstBank [data-b],#bkTransfer,#bkAsset').forEach(b=>b.disabled=true);
+ const ok=await economyLoad();
+ bankLoading=false;
+ document.querySelectorAll('#dstBank [data-b],#bkTransfer,#bkAsset').forEach(b=>b.disabled=false);
+ if(ok){await bankGameRefresh();bankUI();return}
+ q('#bkInfo').innerHTML='<div class="bk-error">⚠️ '+esc(ECON_ERROR||'تعذّر تحميل البنك.')+'</div><button id="bkRetry" type="button">إعادة المحاولة</button>';
+ q('#bkLog').textContent='لم يتم تغيير أي رصيد.';
+ q('#bkRetry').onclick=bankOpen;
+}
+const bankClose=()=>{q('#dstBank').hidden=true};
 
 /* ---------- الشبكة ---------- */
 function onPlayers(m){if(!sc||!openD)return;
@@ -873,6 +1457,19 @@ function onMsgs(a){const el=q('#dstMsgs');el.innerHTML=a.slice(-30).map(m=>`<div
 function say(){const i=q('#dstIn'),tx=i.value.trim();if(!tx||!net)return;if(net.say(tx))i.value=''}
 function doEmote(e){EM=e;emT=performance.now()+3500;net&&net.send(P,EM,1);ME&&setEmote(ME,EM)}
 
+/* v133 Vehicle Customization Studio — per-owned-car visual tuning, persisted locally. */
+const TUNE_PAINTS=[0x111318,0xf0eee8,0x8d101b,0x123c72,0x176b4a,0x8c6a35,0x6f7078,0x6d3b83,0xb8b8bd,0x202020];
+const TUNE_RIMS=[0xd6d9df,0x17191e,0xc5a35b,0x8c929d,0x8b1e2d];let TUNE_CAR=null,TUNE_OBJ=null;
+const tuneStoreKey=()=>`sq_tune_${me&&me.uid||'guest'}`;
+function tuneStore(){try{return JSON.parse(localStorage.getItem(tuneStoreKey())||'{}')}catch(e){return {}}}
+function applyTune(car,obj,data){if(!obj||!obj.userData)return;const ud=obj.userData;if(data.paint!=null)ud.paintParts.forEach(m=>m.material.color.setHex(data.paint));if(data.rim!=null)ud.rimParts.forEach(m=>m.material.color.setHex(data.rim));if(data.ride!=null){ud.customRide=data.ride;obj.position.y=(car.y||0)+data.ride}if(data.neon!=null)ud.underglowParts.forEach(m=>{m.visible=!!data.neon});}
+function currentTuneTarget(){if(DRV)return DRV;let c=null,bd=1e9;MP.cars.forEach(v=>{if(v.wr||!canDrive(v))return;const d=Math.hypot(P.x-v.x,P.z-v.z);if(d<bd&&d<12){c=v;bd=d}});return c}
+function tuneUI(){const c=currentTuneTarget();if(!c){toast('اقترب من سيارة تملكها أو اركبها لفتح الورشة');return}const obj=CARO[c.id];if(!obj){toast('السيارة لم تجهز للعرض بعد');return}TUNE_CAR=c;TUNE_OBJ=obj;const name=DC.CS[c.key]&&DC.CS[c.key].n||c.key;q('#dstTuneName').textContent='تخصيص '+name+' — التغييرات تظهر مباشرة على سيارتك';const store=tuneStore(),data=store[c.key]||{};
+ const paint=q('#dstPaintChoices');paint.innerHTML=TUNE_PAINTS.map(v=>`<button class="swatch" data-paint="${v}" style="background:#${v.toString(16).padStart(6,'0')}" aria-label="لون الهيكل" aria-pressed="${data.paint===v}"></button>`).join('');
+ const rims=q('#dstRimChoices');rims.innerHTML=TUNE_RIMS.map(v=>`<button class="swatch" data-rim="${v}" style="background:#${v.toString(16).padStart(6,'0')}" aria-label="لون الجنوط" aria-pressed="${data.rim===v}"></button>`).join('');q('#dstRide').value=data.ride||0;q('#dstRideVal').textContent=Number(data.ride||0).toFixed(2);q('#dstNeonToggle').checked=data.neon!==false;applyTune(c,obj,data);q('#dstTune').hidden=false;
+}
+function tuneData(){return{paint:TUNE_OBJ&&TUNE_OBJ.userData.paintParts[0]?.material.color.getHex(),rim:TUNE_OBJ&&TUNE_OBJ.userData.rimParts[0]?.material.color.getHex(),ride:+q('#dstRide').value,neon:q('#dstNeonToggle').checked}}
+function tuneSave(){if(!TUNE_CAR||!TUNE_OBJ)return;const all=tuneStore();all[TUNE_CAR.key]=tuneData();try{localStorage.setItem(tuneStoreKey(),JSON.stringify(all));toast('💾 تم حفظ شكل '+DC.CS[TUNE_CAR.key].n+' على هذا الجهاز')}catch(e){toast('تعذر الحفظ على هذا الجهاز')}}
 /* ---------- العملات (بترجع بعد 5 دقايق) + المحفظة ---------- */
 let DRV=null,ADM=0,OWN={},lastJob=0,W=0,STAMP={};const RESP=3e5,ckey=()=>'sq_dc2_'+me.uid,fmt=n=>(+n).toLocaleString('en-US'),coinUI=()=>{q('#dstCoin').textContent='🪙 '+fmt(W)+(BANK.bal?' · 🏦 '+fmt(BANK.bal):'')};
 function saveCoins(){try{localStorage[ckey()]=JSON.stringify({w:W,t:STAMP})}catch(e){}}
@@ -899,12 +1496,12 @@ let renderSkip=0,frameBudgetAt=0,frameBudgetN=0,adaptiveDpr=0;
 function frame(t){raf=requestAnimationFrame(frame);const dt=Math.min((t-last)/1000||.016,.05);last=t;
  /* v90: adapt render resolution conservatively on sustained slow frames; simulation/network logic keeps its normal cadence. */
  frameBudgetN++;if(t-frameBudgetAt>=2200){const fps=frameBudgetN*1000/Math.max(1,t-frameBudgetAt);frameBudgetAt=t;frameBudgetN=0;
-  if(ren&&ren.setPixelRatio){const target=fps<28?(MOB?.72:.85):fps<42?(MOB?.82:1.0):(MOB?1.0:1.25);if(!adaptiveDpr)adaptiveDpr=Math.min(devicePixelRatio||1,MOB?1.0:1.25);const next=Math.min(adaptiveDpr,target);if(Math.abs(next-(ren.getPixelRatio?ren.getPixelRatio():next))>.08){ren.setPixelRatio(next);resize()}}
+  if(ren&&ren.setPixelRatio){const floor=LOW_END?(MOB?.42:.48):(MOB?.52:.64),ceiling=LOW_END?(MOB?.60:.68):(MOB?.90:1.1);const target=fps<24?floor:fps<36?(LOW_END?(MOB?.56:.68):(MOB?.72:1.0)):ceiling;if(!adaptiveDpr)adaptiveDpr=Math.min(devicePixelRatio||1,ceiling);const current=ren.getPixelRatio?ren.getPixelRatio():adaptiveDpr;const next=fps<24?Math.max(floor,current-.10):fps<36?Math.max(floor+.08,current-.045):Math.min(adaptiveDpr,current+.035);if(Math.abs(next-current)>.025){ren.setPixelRatio(next);resize()}}
  }
 
  let f=(K.w||K.arrowup?1:0)-(K.s||K.arrowdown?1:0)-jy,s=(K.d||K.arrowright?1:0)-(K.a||K.arrowleft?1:0)+jx;const l=Math.hypot(f,s);if(l<.08){f=s=0}
  const run=!!(K.shift||runT||((jx||jy)&&l>.92));if(K.q||K.e)P.yaw+=((K.q?1:0)-(K.e?1:0))*1.9*dt;
- DC.tick(Date.now());animateEngineers(t);animateEstateStaff(t);animateEntourage(dt,t);if(DRV){DC.drive(DRV,{f,s},dt);P.x=DRV.x;P.z=DRV.z;P.y=DRV.y;P.yaw=DRV.yaw;P.vy=0;P.on=1;P.moved=Math.abs(DRV.v)>.05?1:0;syncCar(DRV,dt)}else DC.step(P,{f,s,run,jump:K.jump?1:0},dt);K.jump=0;worldAnim(t,dt);if(P.moved&&EM&&t>emT-3300){EM='';net&&net.send(P,'',1);ME&&setEmote(ME,'')}
+ DC.tick(Date.now());if(!LOW_END||frameBudgetN%3===0){animateEngineers(t);animateEstateStaff(t)}animateEntourage(dt,t);if(CHAUFFEUR_ON){f=s=0;K.jump=0}else if(DRV){DC.drive(DRV,{f,s,b:!!(K.brake||K[' '])},dt);P.x=DRV.x;P.z=DRV.z;P.y=DRV.y;P.yaw=DRV.yaw;P.vy=0;P.on=1;P.moved=Math.abs(DRV.v)>.05?1:0;syncCar(DRV,dt)}else DC.step(P,{f,s,run,jump:K.jump?1:0},dt);K.jump=0;worldAnim(t,dt);if(P.moved&&EM&&t>emT-3300){EM='';net&&net.send(P,'',1);ME&&setEmote(ME,'')}
  if(EM&&t>emT){EM='';net&&net.send(P,'',1);ME&&setEmote(ME,'')}
  if(ME){ME.obj.position.set(P.x,P.y,P.z);ME.obj.rotation.y=P.yaw;anim(ME.obj,P.moved&&(f||s),t,run,!P.on,EM);if(ME.bub&&t>ME.bub.t){ME.obj.remove(ME.bub.sp);ME.bub=null}}
  if(net&&t-lastSend>1000){lastSend=t;net.send(P,EM,0,DRV?{key:DRV.key,x:DRV.x,y:DRV.y,z:DRV.z,yaw:DRV.yaw,v:DRV.v}:null)}
@@ -914,9 +1511,9 @@ function frame(t){raf=requestAnimationFrame(frame);const dt=Math.min((t-last)/10
   o.position.set(r.x,r.y,r.z);o.rotation.y=r.yaw;anim(o,r.sp>.4,t,r.sp>5.4,Math.abs(r.ty-r.y)>.25&&r.ty>.3,r.em);if(r.bub&&t>r.bub.t){o.remove(r.bub.sp);r.bub=null}}
  coinObjs.forEach(m=>{if(m.visible){m.rotation.y=t/400;m.position.y=m.userData.y+Math.sin(t/500+m.userData.i)*.1}});
  if(fountainTop)fountainTop.position.y=MP.fountain.top+2.1+Math.sin(t/300)*.12;
- if(fountainWaterSurface&&fountainWaterSurface.geometry&&fountainWaterSurface.geometry.attributes.position){const a=fountainWaterSurface.geometry.attributes.position;for(let i=0;i<a.count;i++){const x=a.getX(i),z=a.getY(i);a.setZ(i,Math.sin(t*.0028+x*2.7+z*1.8)*.012+Math.sin(t*.0019-z*3.1)*.007)}a.needsUpdate=true;fountainWaterSurface.geometry.computeVertexNormals()}
- FOUNTAIN_DROPS.forEach(d=>{const phase=(t*.00072+d.phase)%1,rad=d.range*phase,fall=MP.fountain.top+2.16+d.height*phase-2.85*phase*phase;d.mesh.position.set(MP.fountain.cx+Math.cos(d.angle)*rad,Math.max(MP.fountain.top+.13,fall),MP.fountain.cz+Math.sin(d.angle)*rad);const sca=.55+Math.sin(Math.PI*phase)*.72;d.mesh.scale.set(.72*sca,1.15*sca,.72*sca);d.mesh.visible=fall>MP.fountain.top+.14});
- FOUNTAIN_RIPPLES.forEach(r=>{const phase=(t*.00048+r.phase)%1,rad=.18+phase*1.55;r.mesh.position.set(MP.fountain.cx+Math.cos(r.angle)*rad,MP.fountain.top+.125,MP.fountain.cz+Math.sin(r.angle)*rad);r.mesh.scale.setScalar(.45+phase*1.15);r.mesh.material.opacity=.3*(1-phase)});
+ if((!LOW_END||frameBudgetN%3===0)&&fountainWaterSurface&&fountainWaterSurface.geometry&&fountainWaterSurface.geometry.attributes.position){const a=fountainWaterSurface.geometry.attributes.position;for(let i=0;i<a.count;i++){const x=a.getX(i),z=a.getY(i);a.setZ(i,Math.sin(t*.0028+x*2.7+z*1.8)*.012+Math.sin(t*.0019-z*3.1)*.007)}a.needsUpdate=true;fountainWaterSurface.geometry.computeVertexNormals()}
+ if(!LOW_END||frameBudgetN%2===0)FOUNTAIN_DROPS.forEach(d=>{const phase=(t*.00072+d.phase)%1,rad=d.range*phase,fall=MP.fountain.top+2.16+d.height*phase-2.85*phase*phase;d.mesh.position.set(MP.fountain.cx+Math.cos(d.angle)*rad,Math.max(MP.fountain.top+.13,fall),MP.fountain.cz+Math.sin(d.angle)*rad);const sca=.55+Math.sin(Math.PI*phase)*.72;d.mesh.scale.set(.72*sca,1.15*sca,.72*sca);d.mesh.visible=fall>MP.fountain.top+.14});
+ if(!LOW_END||frameBudgetN%2===0)FOUNTAIN_RIPPLES.forEach(r=>{const phase=(t*.00048+r.phase)%1,rad=.18+phase*1.55;r.mesh.position.set(MP.fountain.cx+Math.cos(r.angle)*rad,MP.fountain.top+.125,MP.fountain.cz+Math.sin(r.angle)*rad);r.mesh.scale.setScalar(.45+phase*1.15);r.mesh.material.opacity=.3*(1-phase)});
  pulse.forEach((r,i)=>{r.material.opacity=.45+.3*Math.sin(t/300+i);r.scale.setScalar(1+.08*Math.sin(t/300+i))});
  if(t-lastCoinCheck>160){lastCoinCheck=t;pickCoins()}
  /* الكاميرا: ورا اللاعب، وتقرّب لو في حيطة ورا */
@@ -969,9 +1566,12 @@ const toCafe=async()=>{leave();try{if(window.SQUAD_LOAD_WORLD)await SQUAD_LOAD_W
 
 /* ---------- إدخال ---------- */
 document.addEventListener('keydown',e=>{if(!openD)return;const k=e.key.toLowerCase();if(e.target.tagName=='INPUT'){if(e.key=='Enter'&&e.target.id=='dstIn'){say();if(!MOB)e.target.blur()}return}
- if(k=='e'&&!e.repeat){const b=q('#dstDoor');if(b&&!b.hidden)b.click()}
- if(k==' ')K.jump=1;K[k]=1;if(k=='enter')q('#dstIn').focus();if(['arrowup','arrowdown','arrowleft','arrowright',' '].includes(k))e.preventDefault()});
-document.addEventListener('keyup',e=>{K[e.key.toLowerCase()]=0});addEventListener('blur',()=>Object.keys(K).forEach(k=>K[k]=0));
+ if(k=='e'&&!e.repeat){
+  if(DRV){const obj=CARO[DRV.id],hinges=obj&&obj.userData&&obj.userData.doorHinges;if(hinges&&hinges.length){const open=!obj.userData.doorsOpen;obj.userData.doorsOpen=open;hinges.forEach(h=>{h.node.rotation.y=open?h.side*.92:0});toast(open?'🚘 الأبواب مفتوحة':'🚘 الأبواب مغلقة')}else{const b=q('#dstDoor');if(b&&!b.hidden)b.click()}}
+  else{const b=q('#dstDoor');if(b&&!b.hidden)b.click()}
+ }
+ if(k==' '){if(DRV)K.brake=1;else K.jump=1}K[k]=1;if(k=='enter')q('#dstIn').focus();if(['arrowup','arrowdown','arrowleft','arrowright',' '].includes(k))e.preventDefault()});
+document.addEventListener('keyup',e=>{const k=e.key.toLowerCase();K[k]=0;if(k===' ')K.brake=0});addEventListener('blur',()=>Object.keys(K).forEach(k=>K[k]=0));
 const cv=q('#dstC');
 cv.addEventListener('pointerdown',e=>{drag={x:e.clientX,y:e.clientY,x0:e.clientX,y0:e.clientY,t:Date.now(),id:e.pointerId};cv.setPointerCapture(e.pointerId)});
 cv.addEventListener('pointermove',e=>{if(!drag||e.pointerId!=drag.id)return;P.yaw-=(e.clientX-drag.x)*.006;camH=Math.max(1.6,Math.min(7,camH-(e.clientY-drag.y)*.015));drag.x=e.clientX;drag.y=e.clientY});
@@ -981,10 +1581,10 @@ function pick(x,y){if(!ray||!cam)return;ray.setFromCamera(new THREE.Vector2(x/in
  const h=ray.intersectObjects(l,false),u=h&&h[0]&&h[0].object.userData.uid;if(u&&window.ACCTUI)ACCTUI.prof(u)}
 const jyE=q('#dstJoy');function mvJ(e){const r=jyE.getBoundingClientRect();let x=e.clientX-r.left-60,y=e.clientY-r.top-60;const l=Math.hypot(x,y);if(l>46){x*=46/l;y*=46/l}jx=x/46;jy=y/46;jyE.firstElementChild.style.transform=`translate(${x}px,${y}px)`}
 jyE.addEventListener('pointerdown',e=>{jyE.setPointerCapture(e.pointerId);mvJ(e)});jyE.addEventListener('pointermove',e=>{e.buttons&&mvJ(e)});['pointerup','pointercancel'].forEach(n=>jyE.addEventListener(n,()=>{jx=jy=0;jyE.firstElementChild.style.transform=''}));
-q('#dstJump').onpointerdown=e=>{e.preventDefault();K.jump=1};q('#dstRun').onclick=()=>{runT=!runT;q('#dstRun').classList.toggle('on',runT)};
+q('#dstJump').onpointerdown=e=>{e.preventDefault();K.jump=1};const brakeBtn=q('#dstBrake');brakeBtn.addEventListener('pointerdown',e=>{e.preventDefault();K.brake=1;brakeBtn.classList.add('on');brakeBtn.setPointerCapture(e.pointerId)});['pointerup','pointercancel','lostpointercapture'].forEach(n=>brakeBtn.addEventListener(n,()=>{K.brake=0;brakeBtn.classList.remove('on')}));q('#dstRun').onclick=()=>{runT=!runT;q('#dstRun').classList.toggle('on',runT)};
 document.querySelectorAll('#dstEmo button').forEach(b=>b.onclick=()=>doEmote(b.dataset.e));
-q('#dstEntourageB').onclick=()=>{entourageUI();q('#dstEntourage').hidden=false};q('#dstEntourageClose').onclick=()=>q('#dstEntourage').hidden=true;q('#bodyguardChoices').onclick=e=>{const b=e.target.closest('[data-bodyguard-estate]');if(b)hirePersonalGuard(b.dataset.bodyguardEstate)};q('#bodyguardFollow').onclick=()=>{BODYGUARD_FOLLOW=!BODYGUARD_FOLLOW;entourageUI();toast(BODYGUARD_FOLLOW?'الحراس هيمشوا وراك':'تم إيقاف اتباع الحراس')};q('#convoyToggle').onclick=toggleConvoy;q('#dstX').onclick=leave;q('#dstCafe').onclick=toCafe;q('#dstNeon').onclick=()=>{NEON_INDEX=(NEON_INDEX+1)%NEON_PALETTE.length;const color=NEON_PALETTE[NEON_INDEX];const update=o=>{if(!o)return;o.traverse(n=>{if(n.userData&&n.userData.squadNeon&&n.material&&n.material.color)n.material.color.setHex(color)})};CARO.forEach(update);Object.values(REMOTE_CARS).forEach(r=>update(r&&r.obj));q('#dstNeon').textContent=['💡 أزرق','💡 وردي','💡 أخضر','💡 ذهبي','💡 أبيض'][NEON_INDEX];toast('تم تغيير لون نيون العربيات')};q('#dstHubB').onclick=()=>q('#dstHub').hidden=false;q('#dstHubClose').onclick=()=>q('#dstHub').hidden=true;q('#dstEstateB').onclick=()=>{q('#dstHub').hidden=true;estateUI();q('#dstEstate').hidden=false};q('#dstEstateClose').onclick=()=>q('#dstEstate').hidden=true;q('#dstEstateGrid').onclick=e=>{const st=e.target.closest('[data-staff]');if(st){staffAction(st.dataset.staff,st.dataset.kind);return}const b=e.target.closest('[data-estate]');if(b)estateAction(b.dataset.estate)};q('#dstAptB').onclick=()=>{q('#dstHub').hidden=true;aptUI();q('#dstApts').hidden=false};q('#dstAptClose').onclick=()=>q('#dstApts').hidden=true;q('#dstAptGrid').onclick=e=>{const b=e.target.closest('[data-apt]');if(b)aptAction(b.dataset.apt)};q('#dstCarShopB').onclick=()=>{q('#dstHub').hidden=true;carShopUI();q('#dstCars').hidden=false};q('#dstCarShopClose').onclick=()=>q('#dstCars').hidden=true;q('#dstCarShopGrid').onclick=e=>{const b=e.target.closest('[data-catalog-car]');if(b)carShopAction(b.dataset.catalogCar)};q('#dstUb').onclick=()=>{const u=q('#dstUsers');u.hidden=!u.hidden};q('#dstCb').onclick=()=>q('#dstChat').classList.toggle('off');q('#dstSend').onclick=()=>{say();q('#dstIn').blur()};
-q('#dstDoor').onclick=()=>{if(!nearDoor)return;if(nearDoor.id=='cafe')toCafe();else if(nearDoor.id=='job')doJob(nearDoor.o);else if(nearDoor.id=='buy')buyCar(nearDoor.o);else if(nearDoor.id=='drive')getIn(nearDoor.c);else if(nearDoor.id=='out')getOut()};q('#dstBk').onclick=bankOpen;q('#bkX').onclick=bankClose;q('#bkTransfer').onclick=bankTransferUI;q('#bkAsset').onclick=assetTransferUI;document.querySelectorAll('#dstBank [data-b]').forEach(b=>b.onclick=()=>bankOp(b.dataset.b));
+q('#dstEntourageB').onclick=()=>{entourageUI();q('#dstEntourage').hidden=false};q('#dstEntourageClose').onclick=()=>q('#dstEntourage').hidden=true;q('#bodyguardChoices').onclick=e=>{const b=e.target.closest('[data-bodyguard-estate]');if(b)hirePersonalGuard(b.dataset.bodyguardEstate)};q('#bodyguardFollow').onclick=()=>{BODYGUARD_FOLLOW=!BODYGUARD_FOLLOW;entourageUI();toast(BODYGUARD_FOLLOW?'الحراس هيمشوا وراك':'تم إيقاف اتباع الحراس')};q('#convoyToggle').onclick=toggleConvoy;q('#chauffeurStart').onclick=startChauffeur;q('#dstX').onclick=leave;q('#dstTuneB').onclick=tuneUI;q('#dstTuneClose').onclick=()=>q('#dstTune').hidden=true;q('#dstPaintChoices').onclick=e=>{const b=e.target.closest('[data-paint]');if(!b||!TUNE_OBJ)return;const v=+b.dataset.paint;TUNE_OBJ.userData.paintParts.forEach(m=>m.material.color.setHex(v));q('#dstPaintChoices').querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',String(x===b)))};q('#dstRimChoices').onclick=e=>{const b=e.target.closest('[data-rim]');if(!b||!TUNE_OBJ)return;const v=+b.dataset.rim;TUNE_OBJ.userData.rimParts.forEach(m=>m.material.color.setHex(v));q('#dstRimChoices').querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',String(x===b)))};q('#dstRide').oninput=e=>{if(!TUNE_OBJ||!TUNE_CAR)return;const v=+e.target.value;q('#dstRideVal').textContent=v.toFixed(2);TUNE_OBJ.position.y=(TUNE_CAR.y||0)+v;TUNE_OBJ.userData.customRide=v};q('#dstNeonToggle').onchange=e=>{if(TUNE_OBJ)TUNE_OBJ.userData.underglowParts.forEach(m=>m.visible=e.target.checked)};q('#dstTuneSave').onclick=tuneSave;q('#dstCafe').onclick=toCafe;q('#dstNeon').onclick=()=>{NEON_INDEX=(NEON_INDEX+1)%NEON_PALETTE.length;const color=NEON_PALETTE[NEON_INDEX];const update=o=>{if(!o)return;o.traverse(n=>{if(n.userData&&n.userData.squadNeon&&n.material&&n.material.color)n.material.color.setHex(color)})};CARO.forEach(update);Object.values(REMOTE_CARS).forEach(r=>update(r&&r.obj));q('#dstNeon').textContent=['💡 أزرق','💡 وردي','💡 أخضر','💡 ذهبي','💡 أبيض'][NEON_INDEX];toast('تم تغيير لون نيون العربيات')};q('#dstHubB').onclick=()=>q('#dstHub').hidden=false;q('#dstHubClose').onclick=()=>q('#dstHub').hidden=true;q('#dstEstateB').onclick=()=>{q('#dstHub').hidden=true;estateUI();q('#dstEstate').hidden=false};q('#dstEstateClose').onclick=()=>q('#dstEstate').hidden=true;q('#dstEstateGrid').onclick=e=>{const st=e.target.closest('[data-staff]');if(st){staffAction(st.dataset.staff,st.dataset.kind);return}const b=e.target.closest('[data-estate]');if(b)estateAction(b.dataset.estate)};q('#dstAptB').onclick=()=>{q('#dstHub').hidden=true;aptUI();q('#dstApts').hidden=false};q('#dstAptClose').onclick=()=>q('#dstApts').hidden=true;q('#dstAptGrid').onclick=e=>{const b=e.target.closest('[data-apt]');if(b)aptAction(b.dataset.apt)};q('#dstCarShopB').onclick=()=>{q('#dstHub').hidden=true;carShopUI();q('#dstCars').hidden=false};q('#dstCarShopClose').onclick=()=>q('#dstCars').hidden=true;q('#dstCarShopGrid').onclick=e=>{const brand=e.target.closest('[data-car-brand]');if(brand){selectedCarBrand=brand.dataset.carBrand;carShopUI();return}const b=e.target.closest('[data-catalog-car]');if(b)carShopAction(b.dataset.catalogCar)};q('#dstUb').onclick=()=>{const u=q('#dstUsers');u.hidden=!u.hidden};q('#dstCb').onclick=()=>q('#dstChat').classList.toggle('off');q('#dstSend').onclick=()=>{say();q('#dstIn').blur()};
+document.querySelectorAll('#bkHeist [data-heist]').forEach(b=>b.onclick=()=>bankGameAction(b.dataset.heist));q('#dstDoor').onclick=()=>{if(!nearDoor)return;if(nearDoor.id=='cafe')toCafe();else if(nearDoor.id=='job')doJob(nearDoor.o);else if(nearDoor.id=='buy')buyCar(nearDoor.o);else if(nearDoor.id=='drive')getIn(nearDoor.c);else if(nearDoor.id=='out')getOut()};q('#dstBk').onclick=bankOpen;q('#bkX').onclick=bankClose;q('#bkTransfer').onclick=bankTransferUI;q('#bkAsset').onclick=assetTransferUI;document.querySelectorAll('#dstBank [data-b]').forEach(b=>b.onclick=()=>bankOp(b.dataset.b));
 addEventListener('resize',resize);addEventListener('pagehide',()=>{if(openD&&net)try{db.doc('district/main/players/'+me.uid).delete()}catch(e){}});
 document.addEventListener('visibilitychange',()=>{if(openD&&!document.hidden&&net)net.send(P,EM,1)});
 addEventListener('online',()=>{if(openD&&net){q('#dstNet').dataset.state='connecting';q('#dstNet').textContent='● إعادة الاتصال...';net.send(P,EM,1,DRV?{key:DRV.key,x:DRV.x,y:DRV.y,z:DRV.z,yaw:DRV.yaw,v:DRV.v}:null)}});addEventListener('offline',()=>{if(openD){q('#dstNet').dataset.state='offline';q('#dstNet').textContent='● غير متصل'}});

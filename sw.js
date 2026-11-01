@@ -1,15 +1,16 @@
-/* The Squad v109: كاش أسرع مع تحديث آمن للملفات الثابتة.
+/* Legacy compatibility marker: squad-v117-luxury-fleet-city.
+   The Squad v118: كاش أسرع مع تحديث آمن للملفات الثابتة.
    صفحات HTML وملف الإصدار: الشبكة أولاً.
    ملفات CSS/JS/الأيقونات والنماذج: الكاش أولاً بعد التثبيت.
    ملفات المعاينة محفوظة بالمشروع لكنها ليست ضمن التحميل المسبق. */
-const C='squad-v117-luxury-fleet-city';
+const C='squad-v148-full-audit-fix';
 const F=[
  './','index.html','manifest.json','version.json','services-hub.html','stage4-chat-ui.js','stage4-chat-ui.css','stage4-extras.js','stage4-extras.css','tokens.css','squad.css','app.js','social-feed.js','stories.js','calls.js',
  'cafe.js','extras.js','games.js','channel.js','cafe2.js','community.js','plus.js','bot.js','cafe3.js',
  'theme.js','look.js','chatx.js','settings.js','ads.js','accounts.js','acct.js','auth.js','auth.css',
- 'auth-scene.js','ui2.js','ui2.css','v27.css','premium-refinement-v89.css','profile.js',
+ 'auth-scene.js','auth-v119.css','auth-v121.css','assets/design/auth-login-v121.png','quality-polish-v120.css','ui2.js','ui2.css','v27.css','premium-refinement-v89.css','profile.js',
  'cinema.js','time.js','welcome.js','luxe.js','luxe.css','gold.css','push.js','firebase-config.js',
- 'icon.svg','icon-192.png','icon-512.png','icon-maskable-512.png','apple-touch-icon.png','badge-96.png',
+ 'performance-v144.css','icon.svg','icon-192.png','icon-512.png','icon-maskable-512.png','apple-touch-icon.png','badge-96.png',
  'manifest.json','living-palace.css','living-palace-premium.css','living-palace.js',
  'living-palace-engine.js','living-palace-worker.js','version.json'
 ];
@@ -22,7 +23,7 @@ self.addEventListener('install',e=>e.waitUntil((async()=>{
 self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(x=>x.startsWith('squad-')&&x!==C).map(x=>caches.delete(x)))).then(()=>self.clients.claim())));
 self.addEventListener('fetch',e=>{
  const q=e.request;
- if(q.method!=='GET')return;
+ if(q.method!=='GET'||q.headers.has('range'))return;
  const u=new URL(q.url);
  if(u.origin!==self.location.origin)return;
  const isPage=q.mode==='navigate'||u.pathname.endsWith('.html')||u.pathname==='/'||u.pathname.endsWith('/');
@@ -30,10 +31,12 @@ self.addEventListener('fetch',e=>{
   e.respondWith(fetch(q).then(r=>{if(r.ok){const copy=r.clone();caches.open(C).then(c=>c.put(q,copy))}return r}).catch(()=>caches.match(q).then(r=>r||caches.match('index.html').then(x=>x||caches.match('./').then(y=>y||caches.match('/index.html'))))));
   return;
  }
- e.respondWith(caches.match(q).then(hit=>{
-  if(hit){fetch(q).then(r=>{if(r.ok)caches.open(C).then(c=>c.put(q,r))}).catch(()=>{});return hit}
-  return fetch(q).then(r=>{if(r.ok){const copy=r.clone();caches.open(C).then(c=>c.put(q,copy))}return r});
- }));
+ // Static assets are immutable within a versioned cache. Avoid a background network
+ // request on every hit; the cache name changes on each release.
+ e.respondWith(caches.match(q).then(hit=>hit||fetch(q).then(r=>{
+  if(r.ok){const copy=r.clone();caches.open(C).then(c=>c.put(q,copy))}
+  return r;
+ })));
 });
 
 /* إشعارات الموبايل (من الـ Worker عبر FCM). بتتخطى لو التطبيق مفتوح قدامك */
