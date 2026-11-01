@@ -1,0 +1,24 @@
+The Squad v138 — mansion integration check
+
+Scope:
+- Added mansion_supervillain to the client estate catalogue in the wealthy district at 20,000,000 coins.
+- Added the same server-owned price; server ignores client-provided prices.
+- Reconciled all 12 client-visible estate IDs/prices with the server price table (six older visible entries had been missing server authorization).
+- Added native Three.js mansion-specific exterior/compound details: cinema pavilion/screen, gym wing/equipment silhouettes, rooftop lounge terrace, pool/garden, gold trim and vault visual.
+- Supplied GTA V Map Editor/YMAP archive inspected; it is not directly loadable by this custom Three.js city.
+
+Checks:
+- node --check district.js: PASS
+- node --check firebase-functions/index.js: PASS
+- tests/v138_mansion_test.js: 9/9 PASS
+- ZIP integrity: PASS
+
+Not tested:
+- Real browser rendering / genuine in-game screenshot
+- Live Firebase Functions deployment and purchase
+- Real two-account multiplayer / ownership synchronization
+- Actual GTA V YMAP import (not supported by this project)
+
+Important: mansion amenity details are native 3D scene dressing; separate interactive rooms for the source mod's hacking room, conference room, vault, cinema, gym, lounge and five bedrooms have not been built as playable interior systems yet.
+- Existing standalone project test scripts: 66/66 PASS (three harness-only files excluded: fakefb.js, fakefb2.js, and the v138 test which is run from its original four-folder source layout).
+- All project JavaScript files passed `node --check` in the merged deployment view.

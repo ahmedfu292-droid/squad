@@ -1,0 +1,27 @@
+THE SQUAD v124 — CITY PERFORMANCE & PALACE POLISH
+
+CHANGES
+- Added bounding-sphere frustum culling to static merged city geometry.
+- Reduced mobile ground-map texture to 1280px and decorative ground pixels from 5000 to 1900.
+- Adaptive pixel ratio now gradually recovers when frame rate improves.
+- Added royal marble inlay, gold pilasters and ceiling-light details to the main palace.
+- Added a dedicated Mercedes G-Class grille, bumper and lamp treatment.
+- Updated release metadata and service-worker cache to v124.
+
+TESTS RUN
+- Node syntax checks: district.js, district-core.js, world.js, firebase-functions/index.js — passed.
+- Quality gate: 7/7 suites passed.
+- v117 luxury fleet regression — passed.
+- v90 performance regression — 11/11 passed.
+- v84 vehicle/roads/water regression — passed.
+- v83 city realism regression — 11 assertions passed.
+- v74 city expansion regression — passed.
+- v71 palace engine — 23 assertions passed.
+- v72 palace engine — 17 assertions passed.
+- v124 targeted checks — 8/8 passed.
+- firestore.rules and storage.rules SHA-256 hashes match v123 exactly.
+
+LIMITATIONS
+- The vehicles are still procedural meshes. The ZIP contains no licensed OEM GLB vehicle models, so authentic manufacturer-level 3D realism is not yet achieved.
+- No live browser/WebGL or physical Android/iOS FPS test was available. Performance changes are source-verified, not device-benchmarked.
+- No live Firebase deployment or multiplayer server test was run.

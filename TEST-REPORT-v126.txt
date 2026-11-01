@@ -1,0 +1,20 @@
+The Squad v126 — Luxury Vehicle Mesh Validation
+Date: 2026-10-31
+
+PASS
+- district.js JavaScript syntax check
+- district-core.js JavaScript syntax check
+- 56 runnable Node test files (56 passed, 0 failed; fakefb browser harness files excluded because they require a browser window)
+- v126 luxury vehicle profile and geometry routing test
+- v125 city infrastructure regression test updated for v126 build metadata
+- v124 city/performance/palace regression checks: 8/8
+- v117 luxury fleet regression test updated for the new Cadillac profile name
+
+NOT RUN / ENVIRONMENT LIMITATION
+- tests/run.py browser suite could not navigate to localhost:8765 because the environment returned ERR_BLOCKED_BY_ADMINISTRATOR.
+- No real-browser WebGL visual test, mobile FPS test, or physical device test was completed.
+
+SCOPE
+- Dedicated procedural silhouettes and exterior geometry added for Rolls-Royce Phantom, Cullinan, Ghost, and Cadillac Escalade-V.
+- Existing city infrastructure and existing buildings/roads/parks/palace/villas retained.
+- Models are original procedural interpretations, not OEM CAD or manufacturer-licensed 1:1 models.

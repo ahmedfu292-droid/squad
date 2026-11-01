@@ -1,0 +1,17 @@
+The Squad v137 static validation
+
+- Source archive: v136 divided ZIP; source ZIP integrity checked before editing.
+- New social-expansion.js: Node syntax check passed.
+- auth-scene.js: Node syntax check passed.
+- Firestore rules: opening/closing brace count balanced.
+- Feature wiring: index.html includes the new stylesheet and script.
+- Existing login pull-cord markup and auth-scene script retained.
+- Existing economy, car customization, character look editor, communities and games files retained.
+
+Not performed in this environment:
+- Firebase emulator/deployed Firestore Rules evaluation.
+- Two-account end-to-end friend request acceptance test.
+- Live browser/mobile interaction test.
+- Firebase callable functions deployment or live economy transaction test.
+
+Required before production use: deploy updated Firestore rules and test with two accounts.
