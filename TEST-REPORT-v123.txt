@@ -1,0 +1,20 @@
+THE SQUAD v123 — TEST REPORT
+Build: 123
+
+PASS
+- JavaScript syntax: district.js, district-core.js, firebase-functions/index.js
+- Quality gate: 7/7 suites passed
+- v117 luxury fleet regression: passed
+- v122 login regression: 8/8 passed
+- v90 world performance regression: 11/11 passed
+- Catalog mapping: all 123 client catalog IDs map to server stable IDs
+- Server economy price coverage: all 123 catalog entries have matching server prices
+- Motorcycle: catalog entry, physics profile and spawn path verified
+- Five vehicle profiles: Cadillac Escalade-V 2026, Range Rover SV 2026, BMW X6 M Competition 2026, Mercedes-AMG G 63 2026, Ferrari SF90/F80-inspired profile verified
+- Service-worker cache key matches build 123
+
+LIMITATIONS
+- No live browser/WebGL session or physical Android/iOS device test was run.
+- No live Firebase transaction or Cloud Functions deployment was run.
+- The five car bodies are custom procedural game meshes with model-specific proportions/details, not authentic OEM scans or licensed manufacturer CAD/GLB models.
+- The motorcycle uses a custom procedural mesh; verify actual riding feel and camera framing in browser before release.

@@ -1,0 +1,31 @@
+/* The Squad v148 — audited admin monitor */
+#sqAdminLaunch{position:fixed;z-index:9900;bottom:calc(86px + env(safe-area-inset-bottom,0px));inset-inline-end:14px;border:1px solid #b9954d;background:linear-gradient(135deg,#201b12,#090b10);color:#f4d78c;border-radius:999px;padding:11px 15px;font:700 13px Cairo, sans-serif;box-shadow:0 8px 28px #0008;display:none;cursor:pointer}
+#sqAdminLaunch.show{display:block}
+#sqAdmin{position:fixed;z-index:100000;inset:0;background:#07090df2;color:#edf2f8;display:none;overflow:auto;font:14px/1.6 Cairo,system-ui,sans-serif;padding:16px;box-sizing:border-box}
+#sqAdmin.open{display:block}
+#sqAdmin *{box-sizing:border-box}
+#sqAdmin .am-wrap{max-width:1180px;margin:0 auto}
+#sqAdmin .am-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;border-bottom:1px solid #ffffff18;padding:8px 0 16px;margin-bottom:18px}
+#sqAdmin .am-brand{font-size:22px;font-weight:900;color:#f2d28a}
+#sqAdmin .am-sub{color:#9ca8b7;font-size:12px}
+#sqAdmin button{border:1px solid #ffffff20;background:#171d27;color:#eef2f7;border-radius:10px;padding:9px 13px;font:700 13px Cairo, sans-serif;cursor:pointer}
+#sqAdmin button.primary{background:#b38b42;color:#17120a;border-color:#d7b76d}
+#sqAdmin button:disabled{opacity:.5;cursor:wait}
+#sqAdmin .am-status{padding:10px 13px;border-radius:10px;background:#111923;border:1px solid #ffffff16;margin-bottom:14px;color:#b9c5d3}
+#sqAdmin .am-status.ok{border-color:#287c59;color:#9ce2bd}#sqAdmin .am-status.bad{border-color:#9a4545;color:#ffb2b2}
+#sqAdmin .am-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:10px;margin:14px 0 20px}
+#sqAdmin .am-card{background:linear-gradient(145deg,#151d29,#0e131b);border:1px solid #ffffff16;border-radius:14px;padding:14px;min-height:94px}
+#sqAdmin .am-card small{color:#9ba9b9;display:block}.am-card strong{font-size:25px;display:block;color:#f1d28d;font-variant-numeric:tabular-nums}
+#sqAdmin .am-section{margin:18px 0}.am-section h3{font-size:16px;margin:0 0 10px;color:#e9d6ad}
+#sqAdmin .am-list{display:grid;gap:8px}.am-row{display:flex;justify-content:space-between;gap:12px;padding:10px 12px;background:#111821;border:1px solid #ffffff12;border-radius:10px}.am-row span:last-child{color:#c6d0dc;text-align:left;overflow-wrap:anywhere}
+#sqAdmin .am-foot{color:#8190a2;font-size:11px;margin:18px 0 8px}
+#sqAdmin .am-actions{display:flex;gap:8px;flex-wrap:wrap}
+@media(max-width:520px){#sqAdmin{padding:10px}.am-card strong{font-size:22px}#sqAdmin .am-brand{font-size:18px}}
+
+/* v148 audited platform wallet controls */
+#sqAdmin .am-wallet{border:1px solid #b9954d55;border-radius:15px;padding:14px;background:#10151d}
+#sqAdmin .am-wallet-form{display:flex;gap:10px;align-items:end;flex-wrap:wrap;margin:12px 0}
+#sqAdmin .am-wallet-form label{display:grid;gap:5px;color:#aeb9c8;flex:1;min-width:170px;font-size:12px}
+#sqAdmin .am-wallet-form input,#sqAdmin .am-wallet-form select{width:100%;min-width:0;background:#090e15;border:1px solid #ffffff24;color:#f0f3f7;border-radius:9px;padding:10px;font:14px Cairo,system-ui,sans-serif}
+#sqAdmin .am-wallet .am-row{align-items:center;flex-wrap:wrap}
+#sqAdmin .am-wallet .am-row button{margin:3px}

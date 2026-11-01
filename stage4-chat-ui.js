@@ -18,6 +18,9 @@
  const chat=e.target.closest('[data-open-chat]');if(chat)setTimeout(()=>{document.querySelector('#app')?.classList.add('dr-legacy-chat')},0);
  });
  document.addEventListener('input',e=>{if(e.target.id==='dr-chat-search')decorateList()});
- document.addEventListener('visibilitychange',refreshBadge);setInterval(refreshBadge,2500);
+ // v145: refresh unread badges from app state changes instead of waking the page every 2.5s.
+ document.addEventListener('visibilitychange',refreshBadge);window.addEventListener('focus',refreshBadge,{passive:true});
+ const baseHome=window.renderHome;if(typeof baseHome==='function')window.renderHome=function(){const out=baseHome.apply(this,arguments);refreshBadge();return out};
+ document.addEventListener('squad:unread-change',refreshBadge);
  // Existing private conversation and calls are opened through the original app functions.
 })();

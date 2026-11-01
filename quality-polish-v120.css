@@ -1,0 +1,27 @@
+/* v120 — consistency, mobile layout and keyboard-access polish. No new product features. */
+:root{scrollbar-gutter:stable}
+button,a,input,textarea,select{ -webkit-tap-highlight-color:transparent }
+:focus-visible{outline:2px solid rgba(226,197,140,.9);outline-offset:3px}
+button:disabled,[aria-disabled="true"]{cursor:not-allowed}
+@media(max-width:900px){
+ #app.social-mode .dr-mobile-nav{grid-template-columns:repeat(6,minmax(0,1fr));gap:2px}
+ #app.social-mode .dr-mobile-nav>a.dr-shortcut{min-width:0;display:grid;place-items:center;align-content:center;gap:3px;padding:0;margin:0;border:0;border-radius:0;background:transparent;color:var(--dr-muted);font:500 10px var(--dr-font-ar);text-align:center;white-space:nowrap}
+ #app.social-mode .dr-mobile-nav>a.dr-shortcut i{display:none}
+ #app.social-mode .dr-mobile-nav>a.dr-shortcut span{display:block;min-width:0;overflow:hidden;text-overflow:ellipsis}
+ #app.social-mode .dr-mobile-nav>a.dr-shortcut small{display:none}
+ #app.social-mode .dr-mobile-nav>a.dr-shortcut:focus-visible{outline-offset:-3px;border-radius:9px}
+ #app.social-mode #social-main{padding-bottom:calc(var(--dr-nav-h) + env(safe-area-inset-bottom) + 14px)}
+ #app.social-mode .dr-top{padding-top:env(safe-area-inset-top)}
+}
+@media(max-width:380px){
+ #app.social-mode .dr-mobile-nav button,
+ #app.social-mode .dr-mobile-nav>a.dr-shortcut{font-size:9px}
+ #app.social-mode .dr-mobile-nav svg{width:20px;height:20px}
+}
+@media(max-width:760px){
+ #auth.dark-room input{font-size:16px}
+ #auth.dark-room button{touch-action:manipulation}
+}
+@media(prefers-reduced-motion:reduce){
+ *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+}

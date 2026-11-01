@@ -6,6 +6,7 @@
 <title>The Squad</title>
 <meta name="theme-color" content="#050505"><meta name="color-scheme" content="dark light">
 <script>try{var t=localStorage.theme||"dark";document.documentElement.dataset.theme=t=="auto"?(matchMedia("(prefers-color-scheme: light)").matches?"light":"dark"):t}catch(e){document.documentElement.dataset.theme="dark"}</script>
+<script>/* v144: detect constrained devices before styles render. */(()=>{try{const c=navigator.hardwareConcurrency||8,m=navigator.deviceMemory||8,d=navigator.connection&&navigator.connection.saveData; if(c<=4||m<=4||d)document.documentElement.classList.add("squad-lite");}catch(e){}})();</script>
 <link rel="manifest" href="manifest.json">
 <link rel="icon" type="image/svg+xml" href="icon.svg">
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
@@ -13,7 +14,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://www.gstatic.com">
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&family=Sora:wght@500;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Sora:wght@500;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="tokens.css">
 <link rel="stylesheet" href="squad.css">
 <link rel="stylesheet" href="ui2.css">
@@ -24,7 +25,13 @@
 <link rel="stylesheet" href="living-palace-premium.css">
 <link rel="stylesheet" href="premium-refinement-v89.css">
 <link rel="stylesheet" href="auth.css">
+<link rel="stylesheet" href="auth-v119.css">
+<link rel="stylesheet" href="auth-v121.css">
 <link rel="stylesheet" href="stage4-chat-ui.css">
+<link rel="stylesheet" href="admin-monitor.css">
+<link rel="stylesheet" href="quality-polish-v120.css">
+<link rel="stylesheet" href="social-expansion.css">
+<link rel="stylesheet" href="performance-v144.css">
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f3d77a"/><stop offset="1" stop-color="#b8860b"/></linearGradient></defs></svg>
@@ -156,7 +163,7 @@
 <script src="stories.js"></script>
 <script src="calls.js"></script><script src="cafe.js"></script><script src="extras.js"></script><script src="games.js"></script>
 <script src="push.js"></script>
-<script src="bot.js"></script><script src="channel.js"></script><script src="cafe2.js"></script><script src="cafe3.js"></script><script src="community.js"></script><script src="plus.js"></script><script src="theme.js"></script><script src="look.js"></script><script src="chatx.js"></script><script src="settings.js"></script><script src="ads.js"></script><script src="accounts.js"></script><script src="social-feed.js"></script><script src="ui2.js"></script><script src="profile.js"></script><script src="stage4-chat-ui.js"></script><link rel="stylesheet" href="stage4-extras.css"><script src="stage4-extras.js"></script><script src="living-palace-engine.js"></script><script src="cinema.js"></script>
+<script src="bot.js"></script><script src="channel.js"></script><script src="cafe2.js"></script><script src="cafe3.js"></script><script src="community.js"></script><script src="plus.js"></script><script src="theme.js"></script><script src="look.js"></script><script src="chatx.js"></script><script src="settings.js"></script><script src="ads.js"></script><script src="accounts.js"></script><script src="social-feed.js"></script><script src="social-expansion.js"></script><script src="ui2.js"></script><script src="profile.js"></script><script src="stage4-chat-ui.js"></script><link rel="stylesheet" href="stage4-extras.css"><script src="stage4-extras.js"></script><script src="living-palace-engine.js"></script><script src="cinema.js"></script>
 <style>#squadOffline{position:fixed;z-index:99999;inset-inline:12px;top:calc(8px + env(safe-area-inset-top,0px));margin:auto;width:max-content;max-width:calc(100% - 24px);padding:8px 14px;border:1px solid #d9b76d;border-radius:999px;background:#171717;color:#f5d98e;font:600 12px Cairo,sans-serif;box-shadow:0 5px 22px #0008}#squadOffline[hidden]{display:none}</style><div id="squadOffline" role="status" aria-live="polite" hidden>أنت غير متصل — النسخة المحفوظة متاحة، والرسائل واللعب الجماعي متوقفان مؤقتًا</div>
 <script>/* v112: مؤشر اتصال واضح، مع استمرار فتح الواجهة المحفوظة دون إنترنت. */(()=>{const el=document.getElementById('squadOffline');function sync(){if(el)el.hidden=navigator.onLine}addEventListener('online',sync);addEventListener('offline',sync);sync()})();</script>
 <script>
@@ -184,6 +191,7 @@
 /* v90: real home-hub shortcuts connected to existing destinations */
 (()=>{const h=document.getElementById('squadHub');if(!h)return;h.addEventListener('click',async e=>{const b=e.target.closest('[data-hub]');if(!b)return;const k=b.dataset.hub;try{if(k==='city'){await window.SQUAD_LOAD_DISTRICT();window.DISTRICT&&DISTRICT.enter({})}else if(k==='cafe'){await window.SQUAD_LOAD_WORLD();window.WORLD&&WORLD.enter()}else{const n=document.querySelector(`#nav [data-go=\"${k}\"]`);if(n)n.click()}}catch(err){console.error('lazy game load',err);window.toast&&toast('تعذر تحميل اللعبة. راجع اتصال الإنترنت وحاول مرة أخرى.')}})})();
 </script>
+<script src="admin-monitor.js"></script>
 <script src="auth-scene.js" defer></script>
 </body>
 </html>
