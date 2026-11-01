@@ -36,10 +36,11 @@ $('.tb').onclick=e=>{const b=e.target.closest('[data-m]');b&&setM(b.dataset.m)};
 $('#eye').onclick=()=>$('#pw').type=$('#pw').type=='password'?'text':'password';
 
 /* ---------- الدخول ---------- */
-async function doLogin(){err('');const raw=$('#lid').value.trim().replace(/^@/,'').toLowerCase(),pw=$('#pw').value;
+let loginBusy=false;
+async function doLogin(){if(loginBusy)return;err('');const raw=$('#lid').value.trim().replace(/^@/,'').toLowerCase(),pw=$('#pw').value;
  if(!raw)return err('اكتب رقمك الخاص أو اسم المستخدم');
  if(!pw)return err('اكتب كلمة السر');
- const go=$('#go');go.disabled=true;
+ const go=$('#go');loginBusy=true;go.disabled=true;go.setAttribute('aria-busy','true');
  try{
   if(/^\d+$/.test(raw)){
    if(!OK(raw))throw{code:'x-fmt',m:'الرقم الخاص 10 أرقام وأول رقم مش صفر'};
@@ -53,7 +54,7 @@ async function doLogin(){err('');const raw=$('#lid').value.trim().replace(/^@/,'
    await auth.signInWithCustomToken(r.data.token);
   }}
  catch(e){err(e.m||AE[e.code]||'حصلت مشكلة، حاول تاني')}
- go.disabled=false}
+ finally{loginBusy=false;go.disabled=false;go.removeAttribute('aria-busy')}}
 $('#go').onclick=doLogin;
 // Password recovery is available only for real email accounts; legacy synthetic IDs need manual recovery.
 const resetBtn=document.getElementById('resetPassword');

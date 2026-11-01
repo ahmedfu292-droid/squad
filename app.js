@@ -2,6 +2,9 @@
 /* v26: كل حساب محفوظ ليه نسخة Firebase باسم خانته (acct.js). الخانة الأساسية '' = النسخة الافتراضية القديمة، فحسابك الحالي ما بيتأثرش. */
 const fbApp=firebase.initializeApp(firebaseConfig,(window.ACCT&&ACCT.slot)||undefined);
 const auth=fbApp.auth(),db=fbApp.firestore(),FV=firebase.firestore.FieldValue,callables=fbApp.functions('europe-west1'),storage=fbApp.storage();
+// v134: enable Firestore local cache/offline queue where the browser supports it.
+// Multi-tab mode avoids the common failed-precondition when the app is open in more than one tab.
+db.enablePersistence({synchronizeTabs:true}).catch(e=>{if(e&&e.code!=='failed-precondition'&&e.code!=='unimplemented')console.warn('Firestore persistence unavailable',e.code||e)});
 auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(()=>{}); // يفضل مسجّل دخول
 
 const $=s=>document.querySelector(s);
@@ -9,6 +12,9 @@ const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&
 const hue=s=>{let h=0;for(const c of String(s))h=(h*31+c.charCodeAt(0))%360;return h};
 const PH={},PQ={},MEDIA_URLS=Object.create(null),MEDIA_LOADING=Object.create(null);
 function loadChatMedia(path){if(!path||MEDIA_URLS[path]||MEDIA_LOADING[path])return;MEDIA_LOADING[path]=1;storage.ref(path).getBlob(6*1024*1024).then(blob=>{MEDIA_URLS[path]=URL.createObjectURL(blob);delete MEDIA_LOADING[path];if(cid&&Object.values(M).some(m=>m.imPath===path||m.auPath===path))draw()}).catch(()=>{delete MEDIA_LOADING[path];MEDIA_URLS[path]='error';if(cid)draw()})}
+// v145: fetch chat attachments only when their message is near the visible viewport.
+let chatMediaFrame=0;function loadVisibleChatMedia(){if(!cid)return;const box=$('#ms');if(!box)return;const top=box.getBoundingClientRect().top- Math.max(240,box.clientHeight),bottom=box.getBoundingClientRect().bottom+Math.max(240,box.clientHeight);box.querySelectorAll('.m[data-im-path],.m[data-au-path]').forEach(el=>{const r=el.getBoundingClientRect();if(r.bottom<top||r.top>bottom)return;const ip=el.dataset.imPath,ap=el.dataset.auPath;if(ip)loadChatMedia(ip);if(ap)loadChatMedia(ap)})}
+function queueVisibleChatMedia(){if(chatMediaFrame)return;const raf=window.requestAnimationFrame||((fn)=>setTimeout(fn,16));chatMediaFrame=raf(()=>{chatMediaFrame=0;loadVisibleChatMedia()})}
 
 function phLoad(id){if(PQ[id])return;PQ[id]=1;const done=p=>{if(p){PH[id]=p;renderHome();tab=='me'&&viewMe();window.hdr&&cid&&hdr()}};
  db.doc('photos/'+id).get().then(s=>s.exists?done(s.data().ph):done(null)).catch(()=>{})}
@@ -133,9 +139,10 @@ function draw(){const c=C[cid];if(!c)return;const o=c.members.filter(x=>x!=me.ui
   const ip=m.imPath&&MEDIA_URLS[m.imPath],ap=m.auPath&&MEDIA_URLS[m.auPath];
   const body=m.del?'<p class="dl">🚫 الرسالة اتمسحت</p>':m.im?`<img class="ph" src="${esc(m.im)}" data-a="img">`:m.imPath?(ip&&ip!=='error'?`<img class="ph" src="${esc(ip)}" data-a="img">`:ip==='error'?'<p class="dl">تعذر تحميل الصورة</p>':'<p class="mu">جاري تحميل الصورة…</p>'):m.au?`<audio controls src="${esc(m.au)}"></audio>`:m.auPath?(ap&&ap!=='error'?`<audio controls src="${esc(ap)}"></audio>`:ap==='error'?'<p class="dl">تعذر تحميل الصوت</p>':'<p class="mu">جاري تحميل الصوت…</p>'):`<p>${esc(m.tx)}</p>`;
   const txt=!m.del&&!m.im&&!m.au&&!m.imPath&&!m.auPath;
-  h+=`<div class="m${mine?' me':''}${sel==id?' sel':''}" data-id="${id}">${!mine&&c.type=='g'?`<small style="--h:${hue(m.u)}">${esc(m.n)}</small>`:''}${m.fw?'<small class="fw">↪️ محوّلة</small>':''}${m.rp?`<q>${esc(m.rp.n)}: ${esc(m.rp.tx)}</q>`:''}${body}<div class="rx">${Object.entries(rc).map(([e,n])=>`<span>${e}${n>1?' '+n:''}</span>`).join('')}</div><span class="tm">${m.ed?'معدّلة':''}<span>${m.t?hm(d):'⏳'}</span>${mine&&m.t?`<b class="${rd?'rd':''}">${rd?'✓✓':'✓'}</b>`:''}</span>
+  h+=`<div class="m${mine?' me':''}${sel==id?' sel':''}" data-id="${id}"${m.imPath?` data-im-path="${esc(m.imPath)}"`:''}${m.auPath?` data-au-path="${esc(m.auPath)}"`:''}>${!mine&&c.type=='g'?`<small style="--h:${hue(m.u)}">${esc(m.n)}</small>`:''}${m.fw?'<small class="fw">↪️ محوّلة</small>':''}${m.rp?`<q>${esc(m.rp.n)}: ${esc(m.rp.tx)}</q>`:''}${body}<div class="rx">${Object.entries(rc).map(([e,n])=>`<span>${e}${n>1?' '+n:''}</span>`).join('')}</div><span class="tm">${m.ed?'معدّلة':''}<span>${m.t?hm(d):'⏳'}</span>${mine&&m.t?`<b class="${rd?'rd':''}">${rd?'✓✓':'✓'}</b>`:''}</span>
   <div class="ac">${['❤️','😂','🔥','👍','😮'].map(e=>`<i data-a="x" data-e="${e}">${e}</i>`).join('')}${m.del?'':'<i data-a="rp" title="رد">↩</i>'}${txt?'<i data-a="cp" title="نسخ">📋</i><i data-a="fw" title="تحويل">↪️</i>':''}${mine&&txt?'<i data-a="ed" title="تعديل">✏️</i>':''}${(mine&&!m.del)||(!mine&&c.ad==me.uid)?'<i data-a="dl" title="حذف نهائي للجميع">🗑</i>':''}</div></div>`});
- el.innerHTML=h||'<div class="es">ابدأ أول رسالة 👋</div>';Object.values(M).forEach(m=>{if(m.imPath)loadChatMedia(m.imPath);if(m.auPath)loadChatMedia(m.auPath)});if(stick||bot){el.scrollTop=1e9;stick=0}}
+ el.innerHTML=h||'<div class="es">ابدأ أول رسالة 👋</div>';if(stick||bot){el.scrollTop=1e9;stick=0}queueVisibleChatMedia()}
+$('#ms').addEventListener('scroll',queueVisibleChatMedia,{passive:true});
 function mark(){const c=C[cid];if(!c||document.hidden)return;const l=Object.entries(M).pop();if(!l)return;
  if(l[1].u==me.uid&&!((c.un||{})[me.uid]))return;if(lastMark==l[0])return;lastMark=l[0];
  db.doc('chats/'+cid).update((U.pv||{}).rr===false?{['un.'+me.uid]:0}:{['un.'+me.uid]:0,['seen.'+me.uid]:FV.serverTimestamp()}).catch(()=>{})}
@@ -155,15 +162,17 @@ $('#ms').onclick=async e=>{const el=e.target.closest('.m');if(!el||e.target.tagN
  draw()};
 $('#xr').onclick=()=>{reply=null;$('#rp').hidden=true};
 
-async function send(o){const c=C[cid];if(!c)return;const id=o.cid||cid;delete o.cid;const t=C[id];
- const b=db.batch(),m=db.collection(`chats/${id}/messages`).doc(),pv=o.tx||(o.im||o.imPath?'📷 صورة':'🎤 رسالة صوتية');
- b.set(m,{u:me.uid,n:nm(),t:FV.serverTimestamp(),...(id==cid&&reply?{rp:reply}:{}),...o});
+let sendingChats=new Set();
+async function send(o){const c=C[cid];if(!c)return false;const id=o.cid||cid;if(!C[id]||!(C[id].members||[]).includes(me.uid))return toast('المحادثة دي مش متاحة لحسابك'),false;
+ if(sendingChats.has(id))return false;sendingChats.add(id);const payload={...o};delete payload.cid;
+ const b=db.batch(),m=db.collection(`chats/${id}/messages`).doc(),pv=payload.tx||(payload.im||payload.imPath?'📷 صورة':'🎤 رسالة صوتية');
+ b.set(m,{u:me.uid,n:nm(),t:FV.serverTimestamp(),...(id==cid&&reply?{rp:reply}:{}),...payload});
  const up={last:{tx:pv.slice(0,80),u:me.uid,n:nm()},lt:FV.serverTimestamp(),['seen.'+me.uid]:FV.serverTimestamp(),['ty.'+me.uid]:FV.delete()};
  // Recipient unread counters are updated by the trusted message-created trigger.
  b.update(db.doc('chats/'+id),up);
- try{await b.commit();window.pushNotify&&pushNotify('msg',id,pv)}catch(e){toast('الرسالة ماتبعتتش — نصّك لسه محفوظ، جرّب تاني');return false}
+ try{await b.commit();window.pushNotify&&pushNotify('msg',id,pv)}catch(e){toast('الرسالة ماتبعتتش — نصّك لسه محفوظ، جرّب تاني');return false}finally{sendingChats.delete(id)}
  reply=null;$('#rp').hidden=true;stick=1;return true}
-$('#snd').onclick=async()=>{const tx=$('#in').value.trim(),target=cid;if(!tx||!target)return;const ok=await send({tx:tx.slice(0,2000),cid:target});if(ok&&cid===target&&$('#in').value.trim()===tx){$('#in').value='';localStorage.removeItem('d_'+target);autosize()}};
+$('#snd').onclick=async()=>{const tx=$('#in').value.trim(),target=cid;if(!tx||!target||sendingChats.has(target))return;const b=$('#snd');b.disabled=true;b.setAttribute('aria-busy','true');try{const ok=await send({tx:tx.slice(0,2000),cid:target});if(ok&&cid===target&&$('#in').value.trim()===tx){$('#in').value='';localStorage.removeItem('d_'+target);autosize()}}finally{b.disabled=false;b.removeAttribute('aria-busy')}};
 function autosize(){const t=$('#in');t.style.height='auto';t.style.height=Math.min(120,t.scrollHeight)+'px'}
 $('#in').oninput=e=>{autosize();const v=e.target.value;v?localStorage['d_'+cid]=v:localStorage.removeItem('d_'+cid);
  if(cid&&Date.now()-tt>2500){tt=Date.now();db.doc('chats/'+cid).update({['ty.'+me.uid]:FV.serverTimestamp()}).catch(()=>{})}};

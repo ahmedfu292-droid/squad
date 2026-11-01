@@ -1,0 +1,10 @@
+const assert=require('assert');
+const DC=require('./chanse1/district-core.js');
+const dealers=DC.MAP.buildings.filter(b=>b.id==='showroom');
+assert.strictEqual(dealers.length,5,'exactly five dealerships');
+assert(dealers.every(b=>b.n===3),'each dealership has three floors');
+assert(dealers.every(b=>!!b.lift),'each dealership has an elevator');
+assert(dealers.every(b=>b.npcs.length>=9),'each dealership has staffed floors');
+assert.strictEqual(DC.SHOWROOM_BRANDS.length,5,'five brand groups');
+assert.strictEqual(DC.SHOWROOM_BRANDS.flat().length,20,'twenty brands');
+console.log('PASS v140: five 3-floor dealerships, elevators, staff, and twenty brands');

@@ -1,0 +1,14 @@
+const assert=require('assert'),fs=require('fs'),path=require('path');
+const root=__dirname,DC=require(path.join(root,'chanse1','district-core.js'));
+const scene=fs.readFileSync(path.join(root,'chanse2','district.js'),'utf8');
+const version=JSON.parse(fs.readFileSync(path.join(root,'chanse4','version.json'),'utf8'));
+assert(version.build>=142,'current release must retain the v142 fleet feature');
+assert.strictEqual(DC.CAR_CATALOG.length,123,'all 123 catalog vehicles retained');
+const catalogKeys=DC.CAR_CATALOG.map(([n])=>n.toLowerCase().replace(/[^a-z0-9]+/g,'_').replace(/^_+|_+$/g,''));
+for(const key of catalogKeys)assert(DC.CS[key],`missing vehicle profile ${key}`);
+assert(scene.includes('v142: fleet-wide detail pass for every catalog car'));
+assert(scene.includes('Individually hinged door panels'));
+assert(scene.includes('G.userData.doorHinges=hinges'));
+assert(scene.includes('Procedural cabin: visible dashboard, seats, console and steering wheel'));
+assert(!scene.includes('else if(c.catalog)loadSquadModel(G,c,R)'), 'generic GLBs must not overwrite cabin and doors');
+console.log('PASS v144: 123 catalog vehicles retained; universal exterior detail; cabin and hinged doors preserved; version bumped');

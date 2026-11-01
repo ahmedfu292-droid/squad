@@ -16,7 +16,7 @@
     { id: 'cafe', bx: -150, side: -1, hw: 12, hd: 12, n: 1, fh: 5.2 }, { id: 'flats', bx: -90, side: -1, hw: 12, hd: 14, n: 4, fh: 4.2, lift: 1 },
     { id: 'hall', bx: -30, side: -1, hw: 16, hd: 14, n: 1, fh: 9 }, { id: 'bank', bx: 30, side: -1, hw: 14, hd: 14, n: 3, fh: 4.6, lift: 1 },
     { id: 'lab', bx: 90, side: -1, hw: 12, hd: 14, n: 3, fh: 4.4, lift: 1 }, { id: 'bank', bx: 210, side: -1, hw: 14, hd: 14, n: 3, fh: 4.6, lift: 1, label: '🏦 بنك The Squad — فرع المارينا' },
-    { id: 'palace', bx: 0, side: 1, cz: 355, hw: 24, hd: 20, n: 3, fh: 6, lift: 1, dw: 3.4, label: '👑 قصر The Squad' }, { id: 'showroom', bx: -125, side: 1, cz: 325, hw: 24, hd: 18, n: 1, fh: 7, dw: 3.4, label: '🏎️ معرض السيارات الفاخرة — الفرع الأول' }, { id: 'showroom', bx: 125, side: 1, cz: 325, hw: 24, hd: 18, n: 1, fh: 7, dw: 3.4, label: '🏁 معرض السيارات الرياضية — الفرع الثاني' },
+    { id: 'palace', bx: 0, side: 1, cz: 355, hw: 24, hd: 20, n: 3, fh: 6, lift: 1, dw: 3.4, label: '👑 قصر The Squad' }, { id: 'showroom', branch: 0, bx: -220, side: 1, cz: 285, hw: 25, hd: 19, n: 3, fh: 7.2, lift: 1, dw: 3.4, label: '🏛️ Royal Luxury — معرض الفخامة' }, { id: 'showroom', branch: 1, bx: -110, side: 1, cz: 285, hw: 25, hd: 19, n: 3, fh: 7.2, lift: 1, dw: 3.4, label: '🏎️ Supercar Boulevard — معرض السوبركار' }, { id: 'showroom', branch: 2, bx: 0, side: 1, cz: 285, hw: 25, hd: 19, n: 3, fh: 7.2, lift: 1, dw: 3.4, label: '⚡ Performance House — معرض الأداء' }, { id: 'showroom', branch: 3, bx: 110, side: 1, cz: 285, hw: 25, hd: 19, n: 3, fh: 7.2, lift: 1, dw: 3.4, label: '🛻 SUV & Adventure — معرض الدفع الرباعي' }, { id: 'showroom', branch: 4, bx: 220, side: 1, cz: 285, hw: 25, hd: 19, n: 3, fh: 7.2, lift: 1, dw: 3.4, label: '🌐 Modern Mobility — معرض التنوع والتقنيات' },
     { id: 'palace', bx: -205, side: 1, cz: 390, hw: 19, hd: 16, n: 2, fh: 5.2, lift: 1, label: '🏡 فيلا Emerald' }, { id: 'palace', bx: -135, side: 1, cz: 390, hw: 19, hd: 16, n: 2, fh: 5.2, label: '🏡 فيلا Azure' }, { id: 'palace', bx: -65, side: 1, cz: 390, hw: 19, hd: 16, n: 2, fh: 5.2, label: '🏡 فيلا Skyline' }, { id: 'palace', bx: 65, side: 1, cz: 390, hw: 19, hd: 16, n: 2, fh: 5.2, label: '🏰 قصر Gold Crest' }, { id: 'palace', bx: 135, side: 1, cz: 390, hw: 19, hd: 16, n: 2, fh: 5.2, label: '🏰 قصر Royal Gardens' }, { id: 'palace', bx: 205, side: 1, cz: 390, hw: 19, hd: 16, n: 2, fh: 5.2, label: '🏡 فيلا Palm Residence' },
     { id: 'shop', bx: -90, side: 1, hw: 18, hd: 14, n: 2, fh: 4.8, lift: 1 }, { id: 'arcade', bx: -30, side: 1, hw: 14, hd: 14, n: 2, fh: 4.6 },
     { id: 'gym', bx: 30, side: 1, hw: 14, hd: 14, n: 2, fh: 4.6 }, { id: 'kiosk', bx: 90, side: 1, hw: 7, hd: 6, n: 1, fh: 4 }];
@@ -109,7 +109,7 @@
   };
   function mkB(o) {
     const dir = o.side < 0 ? 1 : -1, hw = o.hw, hd = o.hd, cz = o.cz != null ? o.cz : (o.side < 0 ? -9 - hd : 9 + hd), dw = o.dw || DW, cx = o.bx, n = o.n, fh = o.fh;
-    const b = { id: o.id, cx, cz, hw, hd, n, fh, dir, h: n * fh, items: [], signs: [], npcs: [], spots: [], slabs: {}, stairs: [], lift: null };
+    const b = { id: o.id, branch: o.branch == null ? 0 : o.branch, cx, cz, hw, hd, n, fh, dir, h: n * fh, items: [], signs: [], npcs: [], spots: [], slabs: {}, stairs: [], lift: null };
     b.W = (u, v) => dir > 0 ? [cx + u, cz + v] : [cx - u, cz - v]; const ry0 = dir > 0 ? 0 : Math.PI;
     const rect = (u, v, hu, hv, bot, top) => { const p = b.W(u, v); return add(p[0], p[1], hu, hv, bot, top) };
     rect(0, -hd + T / 2, hw, T / 2, 0, 99); rect(-hw + T / 2, 0, T / 2, hd, 0, 99); rect(hw - T / 2, 0, T / 2, hd, 0, 99);
@@ -144,6 +144,7 @@
     bmw: { n: 'BMW X6', L: 4.95, W: 2.1, H: 1.7, gc: .2, r: .43, hbR: 1.28, hbF: 1.06, bl: 1.08, xrr: -2.4, xrt: -1.05, xft: .6, xfw: 1.15, wf: 1.5, wr: -1.5, c: 0x1a2a6a, nc: 0x3a8cff, p: 150000, vmax: 36, acc: 14 },
     rolls: { n: 'رولز رويس فانتوم (أعلى إصدار)', L: 5.76, W: 2.0, H: 1.65, gc: .22, r: .45, hbR: 1.22, hbF: 1.16, bl: 1.2, xrr: -2.65, xrt: -2.5, xft: .7, xfw: 1.15, wf: 1.95, wr: -1.75, c: 0xf4f0e6, nc: 0xd9a441, p: 2000000, vmax: 34, acc: 12, ex: 'rolls' },
     ferrari: { n: 'فيراري SF90', L: 4.71, W: 1.97, H: 1.17, gc: .1, r: .35, hbR: .97, hbF: .8, bl: .8, xrr: -1.0, xrt: -.45, xft: .35, xfw: .85, wf: 1.45, wr: -1.4, c: 0xd01818, nc: 0xff4a4a, p: 1200000, vmax: 48, acc: 22, ex: 'ferrari' },
+    motorcycle: { n: 'BMW M 1000 RR', L: 2.12, W: .82, H: 1.18, gc: .22, r: .34, hbR: .78, hbF: .82, bl: .82, xrr: -.78, xrt: -.62, xft: .62, xfw: .72, wf: .72, wr: -.72, c: 0x16243a, nc: 0x3fe0ff, p: 95000, vmax: 58, acc: 25, kind: 'bike' },
     bugatti: { n: 'بوجاتي شيرون', L: 4.54, W: 2.04, H: 1.21, gc: .1, r: .38, hbR: .98, hbF: .9, bl: .92, xrr: -1.8, xrt: -.9, xft: .3, xfw: .85, wf: 1.4, wr: -1.35, c: 0x1a3a9a, nc: 0x7ff6ff, p: 3500000, vmax: 58, acc: 26, ex: 'bugatti' }  };
   /* كتالوج موسع لموديلات حقيقية بالاسم. الأبعاد/الشكل الحاليان مبنيان على فئة هيكل عامة؛
      يجب استبدال كل archetype بملف GLB مرخّص للحصول على تطابق بصري أصلي مع الموديل. */
@@ -269,22 +270,45 @@
     ['Volkswagen Tiguan', 'suv', 32000],
     ['Ford Edge', 'suv', 35000],
     ['Geely Coolray', 'suv', 22000],
-    ['MG 6', 'sedan', 21000]
+    ['MG 6', 'sedan', 21000],
+    ['BMW M 1000 RR', 'bike', 95000]
   ];
-  const ARCH = { sedan:'rr', sport:'bmw', super:'ferrari', suv:'cad' };
-  CAR_CATALOG.forEach((row, i) => { const [name, type, price] = row, base = CS[ARCH[type]], key = name.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '');
+  const ARCH = { sedan:'rr', sport:'bmw', super:'ferrari', suv:'cad', bike:'motorcycle' };
+  CAR_CATALOG.forEach((row, i) => { const [name, type, price] = row, base = CS[ARCH[type]] || CS.bmw, key = name.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '');
     /* Deterministic proportion variants keep the 52 catalog vehicles visually distinct while exact OEM meshes are unavailable. */
-    const Ls=(type==='suv'?1.00:type==='sedan'?.98:type==='sport'?.91:.94)+((i%5)-2)*.018;
-    const Ws=(type==='suv'?1.02:type==='sedan'?.96:1.00)+((i%3)-1)*.018;
-    const Hs=(type==='suv'?1.20:type==='sedan'?1.04:type==='sport'?.94:.88)+((i%4)-1.5)*.025;
+    const Ls=(type==='bike'?1.0:type==='suv'?1.00:type==='sedan'?.98:type==='sport'?.91:.94)+((i%5)-2)*.018;
+    const Ws=(type==='bike'?1.0:type==='suv'?1.02:type==='sedan'?.96:1.00)+((i%3)-1)*.018;
+    const Hs=(type==='bike'?1.0:type==='suv'?1.20:type==='sedan'?1.04:type==='sport'?.94:.88)+((i%4)-1.5)*.025;
     const sc={L:base.L*Ls,W:base.W*Ws,H:base.H*Hs,gc:base.gc*Hs,r:base.r*Math.min(Ls,Ws),hbR:base.hbR*Hs,hbF:base.hbF*Hs,bl:base.bl*Hs,xrr:base.xrr*Ls,xrt:base.xrt*Ls,xft:base.xft*Ls,xfw:base.xfw*Ls,wf:base.wf*Ls,wr:base.wr*Ls};
-    CS[key] = Object.assign({}, base, sc, { n:name, p:price, nc:[0xd9a441,0x3fe0ff,0x7d8da8,0x1e7a4b,0xb62030][i%5], c:[0x151821,0xe6e8f0,0x1b3e78,0x8a8c92,0x8c1826][i%5], vmax:type==='super'?50:type==='sport'?40:type==='suv'?31:34, acc:type==='super'?23:type==='sport'?17:type==='suv'?11:12, catalog:1, archetype:type });
+    CS[key] = Object.assign({}, base, sc, { n:name, p:price, nc:[0xd9a441,0x3fe0ff,0x7d8da8,0x1e7a4b,0xb62030][i%5], c:[0x151821,0xe6e8f0,0x1b3e78,0x8a8c92,0x8c1826][i%5], vmax:type==='bike'?58:type==='super'?50:type==='sport'?40:type==='suv'?31:34, acc:type==='bike'?25:type==='super'?23:type==='sport'?17:type==='suv'?11:12, catalog:1, archetype:type });
     /* v117 brand-specific proportions: four separately tuned silhouettes, not one shared SUV shell. */
     const BRAND={
-      cadillac_escalade_v_2026:{L:5.38,W:2.06,H:1.94,gc:.25,r:.49,hbR:1.58,hbF:1.34,bl:1.39,xrr:-2.53,xrt:-2.32,xft:.96,xfw:1.48,wf:1.72,wr:-1.68,c:0x101116,vmax:34,acc:13,brandSpecific:1,brandStyle:'cadillac'},
+      rolls_royce_phantom:{L:5.76,W:2.02,H:1.66,gc:.22,r:.46,hbR:1.24,hbF:1.22,bl:1.25,xrr:-2.67,xrt:-2.42,xft:.78,xfw:1.38,wf:1.98,wr:-1.78,c:0xf1eee7,vmax:34,acc:11,brandSpecific:1,brandStyle:'rolls-phantom'},
+      rolls_royce_cullinan:{L:5.34,W:2.16,H:1.84,gc:.24,r:.49,hbR:1.52,hbF:1.35,bl:1.39,xrr:-2.52,xrt:-2.36,xft:1.00,xfw:1.52,wf:1.72,wr:-1.72,c:0x171a20,vmax:32,acc:12,brandSpecific:1,brandStyle:'rolls-cullinan'},
+      rolls_royce_ghost:{L:5.55,W:2.02,H:1.58,gc:.20,r:.44,hbR:1.18,hbF:1.15,bl:1.18,xrr:-2.56,xrt:-2.25,xft:.72,xfw:1.34,wf:1.88,wr:-1.72,c:0x252a34,vmax:36,acc:13,brandSpecific:1,brandStyle:'rolls-ghost'},
+      cadillac_escalade_v_2026:{L:5.38,W:2.16,H:1.98,gc:.25,r:.51,hbR:1.61,hbF:1.42,bl:1.43,xrr:-2.54,xrt:-2.35,xft:1.03,xfw:1.53,wf:1.73,wr:-1.72,c:0x101116,vmax:34,acc:13,brandSpecific:1,brandStyle:'cadillac-escalade'},
       range_rover_sv_2026:{L:5.05,W:2.05,H:1.88,gc:.23,r:.46,hbR:1.51,hbF:1.29,bl:1.31,xrr:-2.36,xrt:-1.96,xft:.76,xfw:1.34,wf:1.55,wr:-1.55,c:0x20242a,vmax:32,acc:12,brandSpecific:1,brandStyle:'range-rover'},
       bmw_x6_m_competition_2026:{L:4.96,W:2.02,H:1.70,gc:.20,r:.44,hbR:1.28,hbF:1.13,bl:1.16,xrr:-2.30,xrt:-.92,xft:.60,xfw:1.18,wf:1.52,wr:-1.50,c:0x111722,vmax:42,acc:18,brandSpecific:1,brandStyle:'bmw-x6m'},
-      mercedes_amg_g_63_2026:{L:4.88,W:1.99,H:1.98,gc:.25,r:.46,hbR:1.72,hbF:1.55,bl:1.55,xrr:-2.12,xrt:-2.12,xft:.88,xfw:1.27,wf:1.48,wr:-1.48,c:0x15171b,vmax:33,acc:14,brandSpecific:1,brandStyle:'g63'}
+      ferrari_sf90_stradale:{L:4.72,W:1.98,H:1.19,gc:.105,r:.36,hbR:.98,hbF:.82,bl:.82,xrr:-1.05,xrt:-.47,xft:.36,xfw:.88,wf:1.46,wr:-1.42,c:0xc80d20,vmax:52,acc:24,brandSpecific:1,brandStyle:'ferrari-sf90'},
+      mercedes_amg_g_63_2026:{L:4.88,W:1.99,H:1.98,gc:.25,r:.46,hbR:1.72,hbF:1.55,bl:1.55,xrr:-2.12,xrt:-2.12,xft:.88,xfw:1.27,wf:1.48,wr:-1.48,c:0x15171b,vmax:33,acc:14,brandSpecific:1,brandStyle:'g63'},
+      bugatti_chiron:{L:4.54,W:2.04,H:1.21,gc:.115,r:.37,hbR:.98,hbF:.83,bl:.84,xrr:-1.48,xrt:-.63,xft:.42,xfw:1.05,wf:1.42,wr:-1.42,c:0x123f78,vmax:58,acc:27,brandSpecific:1,brandStyle:'bugatti-chiron'},
+      bugatti_tourbillon:{L:4.67,W:2.05,H:1.19,gc:.11,r:.37,hbR:.96,hbF:.82,bl:.83,xrr:-1.52,xrt:-.62,xft:.43,xfw:1.08,wf:1.48,wr:-1.45,c:0x15191f,vmax:60,acc:28,brandSpecific:1,brandStyle:'bugatti-tourbillon'},
+      mclaren_750s:{L:4.57,W:1.93,H:1.19,gc:.105,r:.35,hbR:.94,hbF:.82,bl:.82,xrr:-1.40,xrt:-.52,xft:.38,xfw:.98,wf:1.42,wr:-1.40,c:0xe87519,vmax:56,acc:26,brandSpecific:1,brandStyle:'mclaren-750s'},
+      mclaren_p1:{L:4.59,W:1.95,H:1.20,gc:.11,r:.36,hbR:.95,hbF:.81,bl:.82,xrr:-1.42,xrt:-.54,xft:.38,xfw:1.00,wf:1.44,wr:-1.42,c:0x0e4c3b,vmax:55,acc:25,brandSpecific:1,brandStyle:'mclaren-p1'},
+      mercedes_benz_s_class:{L:5.18,W:1.95,H:1.49,gc:.16,r:.42,hbR:1.10,hbF:1.08,bl:1.10,xrr:-2.30,xrt:-1.52,xft:.66,xfw:1.30,wf:1.72,wr:-1.65,c:0x18202a,vmax:39,acc:15,brandSpecific:1,brandStyle:'mercedes-s-class'},
+      mercedes_amg_gt_black_series:{L:4.55,W:1.99,H:1.22,gc:.11,r:.36,hbR:.96,hbF:.82,bl:.82,xrr:-1.42,xrt:-.55,xft:.38,xfw:.99,wf:1.42,wr:-1.41,c:0x202126,vmax:53,acc:24,brandSpecific:1,brandStyle:'mercedes-amg-gt-black-series'},
+      lamborghini_urus:{L:5.11,W:2.02,H:1.64,gc:.20,r:.45,hbR:1.34,hbF:1.20,bl:1.18,xrr:-2.36,xrt:-1.05,xft:.66,xfw:1.22,wf:1.55,wr:-1.58,c:0xc8a51b,vmax:44,acc:19,brandSpecific:1,brandStyle:'urus'},
+      ferrari_purosangue:{L:4.97,W:2.02,H:1.59,gc:.19,r:.44,hbR:1.30,hbF:1.17,bl:1.14,xrr:-2.32,xrt:-1.02,xft:.62,xfw:1.19,wf:1.50,wr:-1.53,c:0xb91625,vmax:46,acc:20,brandSpecific:1,brandStyle:'purosangue'},
+      aston_martin_dbx707:{L:5.04,W:2.02,H:1.68,gc:.20,r:.45,hbR:1.36,hbF:1.22,bl:1.19,xrr:-2.34,xrt:-1.02,xft:.64,xfw:1.21,wf:1.53,wr:-1.56,c:0x174d42,vmax:43,acc:18,brandSpecific:1,brandStyle:'aston-dbx'},
+      bentley_bentayga:{L:5.12,W:2.02,H:1.78,gc:.22,r:.47,hbR:1.45,hbF:1.28,bl:1.30,xrr:-2.38,xrt:-1.94,xft:.82,xfw:1.38,wf:1.58,wr:-1.60,c:0x263c36,vmax:37,acc:15,brandSpecific:1,brandStyle:'bentley-bentayga'},
+      land_rover_defender_130:{L:5.36,W:2.02,H:1.98,gc:.29,r:.50,hbR:1.66,hbF:1.48,bl:1.48,xrr:-2.55,xrt:-2.42,xft:1.02,xfw:1.50,wf:1.70,wr:-1.72,c:0x65705a,vmax:32,acc:12,brandSpecific:1,brandStyle:'defender-130'},
+      porsche_911_gt3_rs:{L:4.57,W:1.92,H:1.29,gc:.12,r:.36,hbR:1.02,hbF:.88,bl:.86,xrr:-1.42,xrt:-.58,xft:.40,xfw:1.00,wf:1.42,wr:-1.40,c:0xe6e6e6,vmax:55,acc:25,brandSpecific:1,brandStyle:'porsche-911'},
+      chevrolet_corvette_c8_z06:{L:4.63,W:2.02,H:1.23,gc:.11,r:.36,hbR:.98,hbF:.84,bl:.84,xrr:-1.48,xrt:-.62,xft:.42,xfw:1.04,wf:1.44,wr:-1.42,c:0x176c45,vmax:53,acc:23,brandSpecific:1,brandStyle:'corvette-c8'},
+      koenigsegg_jesko:{L:4.61,W:2.03,H:1.12,gc:.095,r:.34,hbR:.91,hbF:.78,bl:.77,xrr:-1.50,xrt:-.55,xft:.38,xfw:1.02,wf:1.45,wr:-1.43,c:0xd7dce5,vmax:62,acc:29,brandSpecific:1,brandStyle:'koenigsegg-jesko'},
+      pagani_huayra:{L:4.61,W:2.04,H:1.18,gc:.105,r:.35,hbR:.95,hbF:.82,bl:.81,xrr:-1.48,xrt:-.56,xft:.39,xfw:1.02,wf:1.43,wr:-1.42,c:0x9b9da4,vmax:54,acc:24,brandSpecific:1,brandStyle:'pagani-huayra'},
+      ford_mustang_dark_horse:{L:4.82,W:1.92,H:1.39,gc:.14,r:.39,hbR:1.12,hbF:1.02,bl:.98,xrr:-2.22,xrt:-.95,xft:.55,xfw:1.12,wf:1.48,wr:-1.48,c:0x20242a,vmax:42,acc:18,brandSpecific:1,brandStyle:'mustang-dark-horse'},
+      audi_rs6_avant:{L:4.99,W:1.95,H:1.48,gc:.17,r:.41,hbR:1.18,hbF:1.10,bl:1.08,xrr:-2.30,xrt:-1.50,xft:.65,xfw:1.28,wf:1.55,wr:-1.55,c:0x343a42,vmax:41,acc:17,brandSpecific:1,brandStyle:'audi-rs6'},
+      porsche_taycan:{L:4.96,W:1.97,H:1.38,gc:.14,r:.39,hbR:1.06,hbF:1.03,bl:1.00,xrr:-2.28,xrt:-1.38,xft:.62,xfw:1.28,wf:1.52,wr:-1.54,c:0x1f4e7a,vmax:46,acc:21,brandSpecific:1,brandStyle:'porsche-taycan'}
     };
     if(BRAND[key])Object.assign(CS[key],BRAND[key]);
   });
@@ -295,7 +319,15 @@
   function crs(P, n) { const o = []; for (let i = 0; i < P.length - 1; i++) { const p0 = P[Math.max(0, i - 1)], p1 = P[i], p2 = P[i + 1], p3 = P[Math.min(P.length - 1, i + 2)]; for (let k = 0; k < n; k++) { const t = k / n, t2 = t * t, t3 = t2 * t; o.push([.5 * ((2 * p1[0]) + (-p0[0] + p2[0]) * t + (2 * p0[0] - 5 * p1[0] + 4 * p2[0] - p3[0]) * t2 + (-p0[0] + 3 * p1[0] - 3 * p2[0] + p3[0]) * t3), .5 * ((2 * p1[1]) + (-p0[1] + p2[1]) * t + (2 * p0[1] - 5 * p1[1] + 4 * p2[1] - p3[1]) * t2 + (-p0[1] + 3 * p1[1] - 3 * p2[1] + p3[1]) * t3)]) } } o.push(P[P.length - 1]); return o }
   const shapeCache = {};
   function carShape(key) { if (shapeCache[key]) return shapeCache[key]; const c = CS[key], L = c.L, h = L / 2, gc = c.gc, H = c.H;
-    const T = [[-h, gc + .14], [-h, c.hbR - .3], [-h + .1, c.hbR - .04], [-h + .35, c.hbR], [c.xrr, c.hbR + .01], [c.xrt, H - .05], [c.xrt + .3, H], [c.xft - .3, H], [c.xft, H - .05], [c.xfw, c.hbF + .03], [(c.xfw + h) / 2, c.hbF], [h - .18, c.hbF - .07], [h - .02, c.hbF - .26], [h, gc + .24]];
+    let T;
+    if(c.brandStyle==='rolls-phantom'||c.brandStyle==='rolls-ghost') T=[[-h,gc+.14],[-h,c.hbR-.22],[-h+.08,c.hbR-.02],[-h+.3,c.hbR],[c.xrr,c.hbR+.015],[c.xrt,H-.035],[c.xrt+.18,H],[c.xft-.22,H],[c.xft,H-.035],[c.xfw,c.hbF+.025],[h-.72,c.hbF+.015],[h-.18,c.hbF-.035],[h-.035,gc+.27],[h,gc+.23]];
+    else if(c.brandStyle==='rolls-cullinan'||c.brandStyle==='cadillac-escalade') T=[[-h,gc+.15],[-h,c.hbR-.18],[-h+.08,c.hbR-.015],[-h+.24,c.hbR],[c.xrr,c.hbR+.01],[c.xrt,H-.035],[c.xrt+.18,H],[c.xft-.18,H],[c.xft,H-.035],[c.xfw,c.hbF+.025],[h-.55,c.hbF+.015],[h-.16,c.hbF-.045],[h-.025,gc+.27],[h,gc+.23]];
+    else if(['bugatti-chiron','bugatti-tourbillon'].includes(c.brandStyle)) T=[[-h,gc+.12],[-h,c.hbR-.20],[-h+.12,c.hbR-.03],[c.xrr,c.hbR+.015],[c.xrt,H-.04],[c.xrt+.22,H],[c.xft-.22,H],[c.xft,H-.04],[c.xfw,c.hbF+.025],[h-.42,c.hbF-.02],[h-.12,gc+.23],[h,gc+.18]];
+    else if(['mclaren-750s','mclaren-p1','mercedes-amg-gt','mercedes-amg-gt-black-series','porsche-911','corvette-c8','koenigsegg-jesko','pagani-huayra'].includes(c.brandStyle)) T=[[-h,gc+.10],[-h,c.hbR-.19],[-h+.12,c.hbR-.02],[c.xrr,c.hbR],[c.xrt,H-.045],[c.xrt+.19,H],[c.xft-.22,H],[c.xft,H-.045],[c.xfw,c.hbF+.02],[h-.34,c.hbF-.025],[h-.09,gc+.20],[h,gc+.16]];
+    else if(['urus','purosangue','aston-dbx'].includes(c.brandStyle)) T=[[-h,gc+.14],[-h,c.hbR-.25],[-h+.12,c.hbR-.03],[c.xrr,c.hbR],[c.xrt,H-.045],[c.xrt+.18,H],[c.xft-.22,H],[c.xft,H-.045],[c.xfw,c.hbF+.025],[h-.56,c.hbF],[h-.16,gc+.25],[h,gc+.21]];
+    else if(['bentley-bentayga','defender-130'].includes(c.brandStyle)) T=[[-h,gc+.15],[-h,c.hbR-.18],[-h+.08,c.hbR-.02],[-h+.25,c.hbR],[c.xrr,c.hbR+.01],[c.xrt,H-.04],[c.xrt+.18,H],[c.xft-.18,H],[c.xft,H-.04],[c.xfw,c.hbF+.025],[h-.55,c.hbF+.015],[h-.16,c.hbF-.04],[h-.025,gc+.27],[h,gc+.22]];
+    else if(['mustang-dark-horse','audi-rs6','porsche-taycan'].includes(c.brandStyle)) T=[[-h,gc+.13],[-h,c.hbR-.24],[-h+.1,c.hbR-.03],[c.xrr,c.hbR],[c.xrt,H-.04],[c.xrt+.2,H],[c.xft-.2,H],[c.xft,H-.04],[c.xfw,c.hbF+.02],[h-.5,c.hbF],[h-.12,gc+.23],[h,gc+.19]];
+    else T=[[ -h, gc + .14], [-h, c.hbR - .3], [-h + .1, c.hbR - .04], [-h + .35, c.hbR], [c.xrr, c.hbR + .01], [c.xrt, H - .05], [c.xrt + .3, H], [c.xft - .3, H], [c.xft, H - .05], [c.xfw, c.hbF + .03], [(c.xfw + h) / 2, c.hbF], [h - .18, c.hbF - .07], [h - .02, c.hbF - .26], [h, gc + .24]];
     const top = crs(T, 6), pts = [[-h, gc]].concat(top, [[h, gc]]);
     const arch = (wx) => { const ra = c.r + .08, a0 = Math.asin((gc - c.r) / ra), o = []; for (let k = 0; k <= 12; k++) { const a = a0 + (Math.PI - 2 * a0) * k / 12; o.push([wx + ra * Math.cos(a), c.r + ra * Math.sin(a)]) } return o };
     const bot = arch(c.wf).concat(arch(c.wr)); const body = pts.concat(bot);
@@ -306,23 +338,82 @@
   function parkDyn(c) { const s = CS[c.key], sw = Math.abs(Math.sin(c.yaw)) > .7071, hw = (sw ? s.L : s.W) / 2 + .05, hd = (sw ? s.W : s.L) / 2 + .05; Object.assign(c.dyn, { cx: c.x, cz: c.z, hw, hd, bot: c.y + .1, top: c.y + s.H * .9 }) }
   function regCar(key, x, z, yaw, y, wr, sale) { const s = CS[key], c = { id: CARS.length, key, x, z, y: y || 0, yaw: yaw || 0, wr: wr || 0, sale: sale == null ? -1 : sale, v: 0, dyn: { blk: 1 } }; dyn.push(c.dyn); parkDyn(c); CARS.push(c); return c }
   function carPts(c, x, z, yaw) { const s = CS[c.key], fx = -Math.sin(yaw), fz = -Math.cos(yaw), rx = Math.cos(yaw), rz = -Math.sin(yaw), L = s.L * .46, W = s.W * .4; return [[0, 0], [L, 0], [-L, 0], [L, W], [L, -W], [-L, W], [-L, -W]].map(([a, b]) => [x + fx * a + rx * b, z + fz * a + rz * b]) }
-  function drive(c, inp, dt) { const s = CS[c.key], f = inp.f || 0, st = inp.s || 0, prevV = c.v, tg = f > 0 ? s.vmax * f : f < 0 ? s.vmax * .3 * f : 0;
-    const dec = f == 0 ? 5 : (f * c.v < 0 ? 22 : 9); c.v += Math.max(-dec * dt, Math.min(s.acc * dt, tg - c.v));
-    c.steer = Math.max(-1, Math.min(1, st)); c.braking = f < 0 || (Math.abs(prevV) > 2 && Math.abs(c.v) < Math.abs(prevV) - .35);
-    c.yaw += -st * 1.9 * Math.min(1, Math.abs(c.v) / 5) / (1 + Math.abs(c.v) / 45) * (c.v >= 0 ? 1 : -1) * dt;
-    const n = Math.max(1, Math.ceil(Math.abs(c.v) * dt / .4)), sd = dt / n;
-    for (let i = 0; i < n; i++) { const nx = c.x - Math.sin(c.yaw) * c.v * sd, nz = c.z - Math.cos(c.yaw) * c.v * sd;
-      if (carPts(c, nx, nz, c.yaw).some(p => blocked(p[0], p[1], c.y))) { c.v *= -.25; break } c.x = Math.max(-BOUND, Math.min(BOUND, nx)); c.z = Math.max(-BOUND, Math.min(BOUND, nz)); c.y = groundAt(c.x, c.z, c.y) } return c }
+  function drive(c, inp, dt) {
+    const s = CS[c.key], throttle = Math.max(-1, Math.min(1, inp.f || 0));
+    const steerInput = Math.max(-1, Math.min(1, inp.s || 0)), brake = !!inp.b;
+    const previousSpeed = c.v, speed = Math.abs(c.v), direction = Math.sign(c.v || 1);
+    /* v136: progressive throttle, brake-before-reverse, rolling drag and speed-sensitive Ackermann-style steering. */
+    if (brake || (throttle && Math.sign(throttle) !== direction && speed > .45)) {
+      const force = brake ? 25 : 17;
+      c.v -= direction * Math.min(speed, force * dt);
+    } else if (throttle) {
+      const target = throttle > 0 ? s.vmax : -s.vmax * .28;
+      const acceleration = throttle > 0 ? s.acc : s.acc * .62;
+      c.v += Math.max(-acceleration * dt, Math.min(acceleration * dt, target - c.v));
+    } else {
+      const rollingDrag = (1.15 + speed * .035) * dt;
+      c.v -= direction * Math.min(speed, rollingDrag);
+    }
+    c.v = Math.max(-s.vmax * .28, Math.min(s.vmax, c.v));
+    c.steer = steerInput;
+    c.braking = brake || (Math.abs(previousSpeed) > .8 && Math.abs(c.v) < Math.abs(previousSpeed) - .08);
+    const wheelBase = Math.max(1.4, s.L * .58);
+    const steeringAngle = c.steer * .48 * (1 - Math.min(.48, speed / Math.max(1, s.vmax) * .48));
+    c.yaw += -Math.tan(steeringAngle) * c.v / wheelBase * dt;
+    const n = Math.max(1, Math.ceil(Math.abs(c.v) * dt / .3)), sd = dt / n;
+    for (let i = 0; i < n; i++) {
+      const nx = c.x - Math.sin(c.yaw) * c.v * sd, nz = c.z - Math.cos(c.yaw) * c.v * sd;
+      if (carPts(c, nx, nz, c.yaw).some(p => blocked(p[0], p[1], c.y))) { c.v = 0; c.braking = true; break }
+      c.x = Math.max(-BOUND, Math.min(BOUND, nx)); c.z = Math.max(-BOUND, Math.min(BOUND, nz)); c.y = groundAt(c.x, c.z, c.y);
+    }
+    return c;
+  }
   const carHold = (c, on) => { if (on) { c.dyn.top = -1000; c.dyn.bot = -1000 } else parkDyn(c) };
-  FURN.showroom = function (F, NP, SG, SP, b) { const hw = b.hw, hd = b.hd, order = ['cadillac_escalade_v_2026','range_rover_sv_2026','bmw_x6_m_competition_2026','mercedes_amg_g_63_2026','ferrari','bugatti','rolls'], pos = [[-18, -8], [-9, -8], [0, -8], [9, -8], [18, -8], [-12, 3], [12, 3]], keys = order;
-    for (let i = -hw + 2; i < hw - 1; i += 6) F(0, i, 0, .3, hd * 2 - 4, .03, 0x3fe0ff, 'e', .02);
-    F(0, 0, -hd + .6, hw * 2 - 2, .5, 5.6, 0x0a0f22, 'e', .3); F(0, 0, -hd + .9, hw * 2 - 3, .1, 5, 0x3fe0ff, 'e', .6); [-1,1].forEach(side=>{F(0,side*(hw-1.1),0,.16,hd*2-1,.12,0xd9b66b,'e',4.9);F(0,side*(hw-1.1),0,.07,hd*2-1,.07,0x3fe0ff,'e',5.08)});
-    keys.forEach((key, i) => { const [u, v] = pos[i], s = CS[key], idx = SALE.length; SALE.push({ key, n: s.n, p: s.p });
-      F(0, u, v, s.W + 1.4, s.L + 1.8, .1, 0x3fe0ff, 'e', 0); F(0, u, v, s.W + 1.12, s.L + 1.52, .045, 0xd9b66b, 'e', .12); F(0, u, v, s.W + .92, s.L + 1.32, .16, 0x101827, '', .16); F(0, u, v + s.L * .38, s.W * .72, .045, .055, 0x3fe0ff, 'e', .24); F(0, u, v - s.L * .38, s.W * .72, .045, .055, 0xd9b66b, 'e', .24); { const w = b.W(u, v); regCar(key, w[0], w[1], 0, .26, 0, idx) }
-      SG(0, u, v + s.L / 2 + .7, s.n + ' · ' + s.p.toLocaleString('en-US') + ' 🪙', '#' + s.nc.toString(16).padStart(6, '0'), 5.4, .8, 2.7, Math.PI); SP(0, u, v, 4.6, 'car' + idx) });
-    F(0, 0, 11, 9, 1.4, 1.1, 0x2a2f4a, 's'); F(0, 0, 11, 9.1, 1.5, .08, 0x3fe0ff, 'e', 1.1);
-    [-14, 14].forEach((u, i) => NP(0, u, 10, 'مندوب مبيعات ' + (i + 1), 0x3fe0ff, Math.PI)); NP(0, 0, 9.6, 'مدير المعرض', 0xffd75a, Math.PI);
-    SG(0, 0, -hd + .5, b.label || '🏎️ معرض سيارات The Squad', '#3fe0ff', 15, 1.6, 4.6, 0) };
+  const SHOWROOM_BRANDS = [
+    ['Cadillac','Range Rover','Rolls-Royce','BMW'],
+    ['Ferrari','Lamborghini','Bugatti','McLaren'],
+    ['Mercedes-Benz','Porsche','Audi','Aston Martin'],
+    ['Land Rover','Jeep','Toyota','Chevrolet'],
+    ['Tesla','Lexus','Nissan','Bentley']
+  ];
+  FURN.showroom = function (F, NP, SG, SP, b) {
+    const hw=b.hw, hd=b.hd, branch=Number(b.branch)||0, brands=SHOWROOM_BRANDS[branch]||SHOWROOM_BRANDS[0];
+    const floors=[
+      ['cadillac_escalade_v_2026','range_rover_sv_2026','rolls_royce_phantom','bmw_x6_m_competition_2026'],
+      ['ferrari_sf90_stradale','bugatti_chiron','mclaren_750s','porsche_911_gt3_rs'],
+      ['mercedes_benz_s_class','mercedes_amg_g_63_2026','audi_rs6_avant','aston_martin_dbx707']
+    ];
+    const cols=[0xd9b66b,0x9baec4,0x8d9aab,0xc4a36a,0x8babc5];
+    /* Premium three-level dealership: glass display plinths, metallic rails and staffed floors. */
+    for(let k=0;k<3;k++){
+      const y=k*b.fh, col=cols[branch];
+      F(k,0,0,hw*1.65,hd*1.55,.035,0x202733,'',.04);
+      F(k,0,-hd+1.1,hw*1.75,.22,4.8,0x111a29,'s',.1);
+      F(k,0,-hd+1.3,hw*1.65,.06,4.5,col,'e',.7);
+      [-1,1].forEach(side=>F(k,side*(hw-1.1),0,.12,hd*1.72,.12,col,'e',4.7));
+      const keys=floors[k];
+      keys.forEach((key,i)=>{
+        const u=[-15,-5,5,15][i],v=(k===0?-7:k===1?-5:-3),spec=CS[key];
+        if(!spec)return;
+        F(k,u,v,spec.W+1.4,spec.L+1.8,.12,0x202733,'',.12);
+        F(k,u,v,spec.W+1.1,spec.L+1.5,.045,col,'e',.28);
+        F(k,u,v+spec.L*.38,spec.W*.7,.045,.05,0x3fe0ff,'e',.38);
+        const w=b.W(u,v);regCar(key,w[0],w[1],0,k*b.fh+.42,0,SALE.length);
+        const idx=SALE.length;SALE.push({key,n:spec.n,p:spec.p});
+        SG(k,u,v+spec.L/2+1.05,spec.n,'#'+col.toString(16).padStart(6,'0'),5,.7,2.6,Math.PI);
+        SP(k,u,v,4.4,'car'+idx);
+      });
+      NP(k,-18,10,'مستشار مبيعات',col,Math.PI);
+      NP(k,18,10,'موظف استقبال',0xe8edf5,Math.PI);
+      NP(k,0,12,'مدير الطابق',0xd9b66b,Math.PI);
+      SG(k,0,-hd+1.0,brands.join('  •  '),'#'+col.toString(16).padStart(6,'0'),22,1.1,4.9,0);
+      if(k===1) SG(k,0,hd-3,'الطابق الثاني · سيارات الأداء والعروض الخاصة','#e8edf5',18,.8,2.8,Math.PI);
+      if(k===2) SG(k,0,hd-3,'الطابق الثالث · صالة كبار العملاء والتسليم','#e8edf5',18,.8,2.8,Math.PI);
+    }
+    F(0,0,hd-4,12,1.4,1.1,0x202733,'s',1.1);
+    F(0,0,hd-4,12.2,1.45,.08,cols[branch],'e',2.2);
+    SG(0,0,-hd+.45,b.label||'The Squad Motors','#d9b66b',19,1.5,5.4,0);
+  };
   FURN.palace = function (F, NP, SG, SP, b) { const hw = b.hw, hd = b.hd, PK = 0xd9b66b, CY = 0x7ff6ff, DK = 0x101a2c, SO = 0x2b3447;
     /* الدور الأرضي: القاعة الكبرى */
     F(0, 0, 0, 16, 16, .03, 0xffffff, '', .02); F(0, 0, 0, 16.4, .2, .04, PK, 'e', .04); F(0, 0, 0, .2, 16.4, .04, CY, 'e', .04);
@@ -333,7 +424,13 @@
     F(0, -16, -9, 3.4, 2.2, 1.1, 0x111118, 's'); F(0, -16, -9, 3, .1, .05, 0xffffff, '', 1.15);
     F(0, 0, -hd + .8, 18, .6, 3.4, 0x1a6a9a, 'e', .4); F(0, 0, -hd + 1.2, 17, .1, 3, 0x7ff6ff, 'e', .6);
     [-18, 18].forEach(u => NP(0, u, 15, 'حارس شخصي', 0x111111, Math.PI)); [-5, 5].forEach(u => NP(0, u, 17, 'حارس شخصي', 0x111111, Math.PI)); NP(0, 10, -6, 'كبير الخدم', 0x111111, Math.PI);
-    SG(0, 0, -hd + .4, b.label || '👑 قصر The Squad', '#d9b66b', 13, 1.6, 4.8, 0); SG(0, 0, 11.4, '👑 الاستقبال', '#d9b66b', 4, .8, 2.7, Math.PI);
+    /* v124 royal finish: marble inlay, paired gold pilasters and a ceiling light rhythm. */
+    F(0, 0, 3.8, 12.5, .08, 7.8, 0x8b7659, 's', .08); F(0, 0, 3.8, 12.1, .035, 7.4, 0xe7ddc8, 'e', .14);
+    [-1,1].forEach(side=>{F(0, side*8.2, 2.4, .38, .38, 5.7, PK, 's');F(0, side*8.2, 2.4, .62, .62, .18, 0xf0dfb8, 'e', 5.7);F(0, side*8.2, 2.4, .62, .62, .18, 0xf0dfb8, 'e', .12)});
+    for(let j=0;j<5;j++){const u=-8+j*4;F(0,u,-6,.12,2.8,.12,PK,'e',2.2);F(0,u,-6,.08,.08,.5,0xffe7b0,'e',2.65)}
+    F(2, 0, -2.2, 7.8, .08, 5.2, 0x8c7558, 's', .08);F(2,0,-2.2,7.5,.035,4.9,0xe8dfce,'e',.14);
+    [-1,1].forEach(side=>{F(2,side*13,0,.35,.35,5.2,PK,'s');F(2,side*13,0,.55,.55,.16,0xf5e4bf,'e',5.2)});
+    SG(0, 0, -hd + .4, b.label || '👑 قصر The Squad', '#d9b66b', 13, 1.6, 4.8, 0); SG(0, 0, 11.4, '👑 الاستقبال الملكي', '#d9b66b', 4, .8, 2.7, Math.PI);
     /* الدور الأول: السينما والبار والألعاب */
     F(1, 0, -hd + .8, 18, .5, 4, 0x0a0a14, 's'); F(1, 0, -hd + 1.1, 17, .1, 3.6, 0x3a8cff, 'e', .3);
     [-4, 4].forEach(u => { F(1, u * 1.6, -9, 5, 2.4, .9, SO, 's'); F(1, u * 1.6, -10.3, 5, .4, 1.7, SO, 's') });
@@ -351,7 +448,7 @@
 
   /* ---------- الشوارع والبلوكات والمباني الفاضية ---------- */
   const XS = [-240, -180, -120, -60, 0, 60, 120, 180, 240], ZS = [-245, -185, -115, -45, 45, 115, 185, 245], RW = 5;
-  const roads = [{ cx: 0, cz: 0, hw: CITY, hd: 9 }, { cx: 0, cz: 350, hw: 280, hd: 8 }, { cx: 0, cz: 420, hw: 280, hd: 7 }];
+  const roads = [{ cx: 0, cz: 0, hw: CITY, hd: 9 }, { cx: 0, cz: 350, hw: 280, hd: 8 }, { cx: 0, cz: 420, hw: 280, hd: 7 }, { cx: 0, cz: 315, hw: 280, hd: 6 }];
   XS.forEach(x => roads.push({ cx: x, cz: 0, hw: RW, hd: x ? CITY : BOUND })); ZS.forEach(z => roads.push({ cx: 0, cz: z, hw: CITY, hd: RW }));
   const xi = [], zi = []; { let a = -CITY; XS.forEach(x => { xi.push([a, x - RW]); a = x + RW }); xi.push([a, CITY]); a = -CITY; ZS.forEach(z => { zi.push([a, z - RW]); a = z + RW }); zi.push([a, CITY]) }
   /* بلوكات z: ٣ جنب كل ناحية + صف المعالم (±9 → ±40) */
@@ -550,5 +647,5 @@
   };
   Net.prototype.stop = function () { this.stopped = true; this.active = false; this.status('offline'); this.un.forEach(u => { try { u() } catch (e) {} }); this.un = []; if (this.playerUn) { try { this.playerUn() } catch (e) {} this.playerUn = null; } this.playerQuerySeq++; this.rawPlayers = {}; this.o.db.doc('district/' + this.o.room + '/players/' + this.o.uid).delete().catch(() => {}) };
   function spawnCar(key, x, z, yaw) { if (!CS[key] || !Number.isFinite(x) || !Number.isFinite(z) || Math.abs(x)>BOUND || Math.abs(z)>BOUND) return null; return regCar(key, x, z, yaw||0, 0, 0, -1) }
-  return { MAP, BOUND, inside, cameraDistance, groundAt, blocked, newP, step, nearCoins, tick, near, gateOpen, CITY, carShape, CS, CAR_CATALOG, spawnCar, drive, carHold, parkDyn, Net, PH, STEP, DW, DH, T, SH, SR, LD, LT };
+  return { MAP, BOUND, inside, cameraDistance, groundAt, blocked, newP, step, nearCoins, tick, near, gateOpen, CITY, carShape, CS, CAR_CATALOG, SHOWROOM_BRANDS, spawnCar, drive, carHold, parkDyn, Net, PH, STEP, DW, DH, T, SH, SR, LD, LT };
 });
