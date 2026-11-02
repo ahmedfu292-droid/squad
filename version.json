@@ -1,4 +1,6 @@
 {
-  "version": "v148-full-audit-fix",
-  "build": 148
+  "version": "v159-elevator-controls-performance",
+  "build": 159,
+  "releaseDate": "2026-11-02",
+  "channel": "elevator-controls-performance"
 }
