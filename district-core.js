@@ -563,8 +563,32 @@
 
   /* ---------- الأسانسيرات: بتتحرك بالوقت (كل الأجهزة شايفاها بنفس الحركة) ---------- */
   const LD = 5, LT = 2.2, lifts = buildings.filter(b => b.lift).map(b => b.lift);
-  lifts.forEach(L => { const n = L.b.n, seq = []; for (let f = 0; f < n; f++) seq.push(f); for (let f = n - 2; f >= 1; f--) seq.push(f); L.seq = seq; L.tot = seq.length * (LD + LT) });
-  function tick(ms) { lifts.forEach(L => { const b = L.b, fh = b.fh, tt = (ms / 1000 + L.ph) % L.tot, i = Math.floor(tt / (LD + LT)), lo = tt - i * (LD + LT), a = L.seq[i], c = L.seq[(i + 1) % L.seq.length];
+  lifts.forEach(L => { const n = L.b.n, seq = []; for (let f = 0; f < n; f++) seq.push(f); for (let f = n - 2; f >= 1; f--) seq.push(f); L.seq = seq; L.tot = seq.length * (LD + LT); L.controlled = false; L.command = null });
+  /* User-controlled mode parks the car at a requested floor. It stays local to this client
+     so elevator use adds no Firestore writes and does not alter the existing presence schema. */
+  function requestLift(L, floor, ms) {
+    if (!L || !lifts.includes(L) || !Number.isInteger(floor) || floor < 0 || floor >= L.b.n) return false;
+    const now = Number.isFinite(ms) ? ms : Date.now(), toY = floor * L.b.fh, fromY = Number.isFinite(L.y) ? L.y : 0;
+    const distance = Math.abs(toY - fromY), duration = Math.max(1050, distance / L.b.fh * 1450);
+    L.controlled = true;
+    L.command = { phase: distance < .08 ? 'parked' : 'moving', floor, fromY, toY, startMs: now, duration };
+    L.at = distance < .08 ? floor : -1;
+    return true;
+  }
+  function tick(ms) { lifts.forEach(L => { const b = L.b, fh = b.fh;
+    if (L.controlled && L.command) {
+      const c = L.command;
+      if (c.phase === 'moving') {
+        const p = Math.max(0, Math.min(1, (ms - c.startMs) / c.duration)), e = p * p * (3 - 2 * p);
+        L.y = c.fromY + (c.toY - c.fromY) * e;
+        if (p >= 1) { L.y = c.toY; c.phase = 'parked' }
+      } else L.y = c.toY;
+      L.at = c.phase === 'parked' ? c.floor : -1;
+      L.cab.top = L.y; L.cab.bot = L.y - .25;
+      L.doors.forEach(d => { const open = c.phase === 'parked' && Math.abs(d.fy - c.toY) < .001; d.top = open ? -1000 : d.rt; d.bot = open ? -1000 : d.rb; d.open = open });
+      return;
+    }
+    const tt = (ms / 1000 + L.ph) % L.tot, i = Math.floor(tt / (LD + LT)), lo = tt - i * (LD + LT), a = L.seq[i], c = L.seq[(i + 1) % L.seq.length];
     let y = a * fh; if (lo >= LD) { const fr = (lo - LD) / LT, e = fr < .5 ? 2 * fr * fr : 1 - 2 * (1 - fr) * (1 - fr); y = (a + (c - a) * e) * fh }
     L.y = y; L.cab.top = y; L.cab.bot = y - .25; L.at = Math.abs(y - a * fh) < .001 && lo < LD ? a : -1;
     L.doors.forEach(d => { const open = Math.abs(y - d.fy) < .06; d.top = open ? -1000 : d.rt; d.bot = open ? -1000 : d.rb; d.open = open }) }) }
@@ -647,5 +671,5 @@
   };
   Net.prototype.stop = function () { this.stopped = true; this.active = false; this.status('offline'); this.un.forEach(u => { try { u() } catch (e) {} }); this.un = []; if (this.playerUn) { try { this.playerUn() } catch (e) {} this.playerUn = null; } this.playerQuerySeq++; this.rawPlayers = {}; this.o.db.doc('district/' + this.o.room + '/players/' + this.o.uid).delete().catch(() => {}) };
   function spawnCar(key, x, z, yaw) { if (!CS[key] || !Number.isFinite(x) || !Number.isFinite(z) || Math.abs(x)>BOUND || Math.abs(z)>BOUND) return null; return regCar(key, x, z, yaw||0, 0, 0, -1) }
-  return { MAP, BOUND, inside, cameraDistance, groundAt, blocked, newP, step, nearCoins, tick, near, gateOpen, CITY, carShape, CS, CAR_CATALOG, SHOWROOM_BRANDS, spawnCar, drive, carHold, parkDyn, Net, PH, STEP, DW, DH, T, SH, SR, LD, LT };
+  return { MAP, BOUND, inside, cameraDistance, groundAt, blocked, newP, step, nearCoins, tick, requestLift, near, gateOpen, CITY, carShape, CS, CAR_CATALOG, SHOWROOM_BRANDS, spawnCar, drive, carHold, parkDyn, Net, PH, STEP, DW, DH, T, SH, SR, LD, LT };
 });
