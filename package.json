@@ -1,12 +1,30 @@
 {
-  "name": "the-squad-economy-functions",
+  "name": "the-squad",
+  "version": "187.0.0",
   "private": true,
-  "description": "Server-authoritative economy endpoints for The Squad multiplayer world",
-  "engines": { "node": "20" },
-  "main": "index.js",
-  "scripts": { "lint": "node --check index.js", "emulate": "firebase emulators:start --only functions,firestore" },
-  "dependencies": {
-    "firebase-admin": "^12.7.0",
-    "firebase-functions": "^6.1.1"
+  "description": "The Squad v187 — reliable WebRTC relay credentials and ICE recovery",
+  "engines": {
+    "node": ">=20.19.0"
+  },
+  "scripts": {
+    "dev": "vite --host 0.0.0.0",
+    "build": "vite build",
+    "preview": "vite preview --host 0.0.0.0",
+    "audit:production": "node scripts/audit-production.mjs",
+    "test": "npm run audit:production && node scripts/smoke-tests.mjs && node scripts/localization-check.mjs && node scripts/owner-monitor-check.mjs && node scripts/account-monitor-check.mjs && node scripts/release-integrity-check.mjs && node scripts/v156-regression-check.mjs && node scripts/v157-zero-cost-messaging-check.mjs && node scripts/v158-visual-refresh-check.mjs && node scripts/v159-elevator-performance-check.mjs && node scripts/v160-aurora-check.mjs && node scripts/v161-startup-recovery-check.mjs && node scripts/v162-global-hub-check.mjs && node scripts/v163-community-evolution-check.mjs && node scripts/v164-platform-expansion-check.mjs && node scripts/v165-squad-universe-check.mjs && node scripts/v166-global-connect-check.mjs && node scripts/v167-conversation-digest-check.mjs && node scripts/v168-universe-integration-check.mjs && node scripts/v169-sync-conflict-guard-check.mjs && node scripts/v170-personal-vault-check.mjs && node scripts/v171-achievements-check.mjs && node scripts/v172-events-hub-check.mjs && node scripts/v173-shared-events-check.mjs && node scripts/v174-startup-recovery-check.mjs && node scripts/v175-startup-diagnostics-check.mjs && node scripts/v176-build-readiness-check.mjs && node scripts/v177-architecture-check.mjs && node scripts/v177-wallet-hardening-check.mjs && node scripts/v178-civilization-check.mjs && node scripts/v179-living-universe-check.mjs && node scripts/v180-city-life-check.mjs && node scripts/v181-world-systems-check.mjs && node scripts/v182-cloud-sync-check.mjs && node scripts/v183-shared-city-check.mjs && node scripts/v184-universe-suite-check.mjs && node scripts/v185-runtime-check.mjs && node scripts/v186-control-center-check.mjs && node scripts/v187-call-network-check.mjs",
+    "build:preflight": "node scripts/v176-build-preflight.mjs",
+    "audit:architecture": "node scripts/v177-architecture-check.mjs",
+    "audit:civilization": "node scripts/v178-civilization-check.mjs",
+    "audit:living-universe": "node scripts/v179-living-universe-check.mjs",
+    "audit:city-life": "node scripts/v180-city-life-check.mjs",
+    "audit:world-systems": "node scripts/v181-world-systems-check.mjs",
+    "audit:cloud-sync": "node scripts/v182-cloud-sync-check.mjs",
+    "audit:shared-city": "node scripts/v183-shared-city-check.mjs",
+    "audit:universe-suite": "node scripts/v185-runtime-check.mjs",
+    "audit:control-center": "node scripts/v186-control-center-check.mjs"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.12",
+    "vite": "^7.1.12"
   }
 }
