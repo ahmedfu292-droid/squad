@@ -1,14 +1,19 @@
 {
   "functions": [
     {
-      "source": "firebase-functions",
+      "source": "../../backend/firebase-functions",
       "codebase": "squad-primary"
     }
   ],
   "firestore": {
-    "rules": "../site/chanse1/firestore.rules"
+    "rules": "../chanse1/firestore.rules"
   },
   "storage": {
-    "rules": "../site/chanse3/storage.rules"
+    "rules": "../chanse3/storage.rules"
+  },
+  "emulators": {
+    "functions": { "port": 5001 },
+    "firestore": { "port": 8080 },
+    "ui": { "enabled": false }
   }
 }

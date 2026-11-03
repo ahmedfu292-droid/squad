@@ -97,11 +97,13 @@ const T={
 "حالات المعاينة: قائمة محادثات · خاص · جروبات · مثبتة · تحميل · فارغة · خطأ · فقاعات · صوت · صورة · إرسال":"Preview states: conversation list · private · groups · pinned · loading · empty · error · bubbles · voice · image · send"
 };
 const keys=Object.keys(T).sort((a,b)=>b.length-a.length);
-function translateTextNode(n){const raw=n.nodeValue;if(!raw||!/[\u0600-\u06ff]/.test(raw))return;const trimmed=raw.trim();if(T[trimmed]){n.nodeValue=raw.replace(trimmed,T[trimmed]);return;}let next=raw;for(const k of keys){if(next===k) {next=T[k];break;}}if(next!==raw)n.nodeValue=next;}
+const R=Object.fromEntries(Object.entries(T).map(([ar,en])=>[en,ar]));
+let activeLanguage=localStorage.getItem('squadLanguage')||'en';
+function translateTextNode(n){const raw=n.nodeValue;if(!raw)return;const trimmed=raw.trim();let next=raw;if(activeLanguage==='ar'){if(R[trimmed])next=raw.replace(trimmed,R[trimmed]);}else{if(!/[\u0600-\u06ff]/.test(raw))return;if(T[trimmed])next=raw.replace(trimmed,T[trimmed]);else for(const k of keys){if(next===k){next=T[k];break;}}}if(next!==raw)n.nodeValue=next;}
 function translateElement(el){if(!el||el.nodeType!==1)return;const attrs=['placeholder','title','aria-label','alt'];for(const a of attrs){const v=el.getAttribute(a);if(v&&T[v])el.setAttribute(a,T[v]);}if(el.matches('input[type="button"],input[type="submit"]')){const v=el.value;if(T[v])el.value=T[v];}for(const n of el.childNodes){if(n.nodeType===3)translateTextNode(n);else if(n.nodeType===1)translateElement(n);}}
-function run(){document.documentElement.lang='en';document.documentElement.dir='ltr';translateElement(document.body);}
+function run(){document.documentElement.lang=activeLanguage;document.documentElement.dir=activeLanguage==='ar'?'rtl':'ltr';translateElement(document.body);}
 run();
 const observer=new MutationObserver(records=>{for(const r of records){if(r.type==='characterData')translateTextNode(r.target);else for(const n of r.addedNodes){if(n.nodeType===3)translateTextNode(n);else if(n.nodeType===1)translateElement(n);}}});
 observer.observe(document.body,{subtree:true,childList:true,characterData:true});
-window.SquadEnglishUI={version:'152',translate:run,knownStrings:Object.keys(T).length};
+window.SquadEnglishUI={version:'164',translate:run,setLanguage(lang){activeLanguage=lang==='ar'?'ar':'en';localStorage.setItem('squadLanguage',activeLanguage);run()},knownStrings:Object.keys(T).length};
 })();
