@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<base href="../">
 <title>The Squad</title>
 <meta name="theme-color" content="#050505"><meta name="color-scheme" content="dark light">
 <script>try{var t=localStorage.theme||"dark";document.documentElement.dataset.theme=t=="auto"?(matchMedia("(prefers-color-scheme: light)").matches?"light":"dark"):t}catch(e){document.documentElement.dataset.theme="dark"}</script>
@@ -31,28 +32,8 @@
 <link rel="stylesheet" href="chanse3/admin-monitor.css">
 <link rel="stylesheet" href="chanse3/quality-polish-v120.css">
 <link rel="stylesheet" href="chanse3/social-expansion.css">
-<link rel="stylesheet" href="chanse3/performance-v144.css">
+<link rel="stylesheet" href="chanse2/performance-v144.css">
 <link rel="stylesheet" href="chanse4/platform-redesign-v151.css">
-<link rel="stylesheet" href="v149-scroll-repair.css">
-<link rel="stylesheet" href="visual-refresh-v158.css">
-<link rel="stylesheet" href="v160-aurora.css">
-<link rel="stylesheet" href="v162-global-hub.css">
-<link rel="stylesheet" href="v163-community-evolution.css">
-<link rel="stylesheet" href="v164-platform-expansion.css">
-<link rel="stylesheet" href="v165-squad-universe.css">
-<link rel="stylesheet" href="v166-global-connect.css">
-<link rel="stylesheet" href="v168-universe-integration.css">
-<link rel="stylesheet" href="v170-personal-vault.css">
-<link rel="stylesheet" href="v171-achievements.css">
-<link rel="stylesheet" href="v172-events-hub.css">
-<link rel="stylesheet" href="v173-shared-events.css">
-<link rel="stylesheet" href="v178-civilization.css">
-<link rel="stylesheet" href="v179-living-universe.css">
-<link rel="stylesheet" href="v180-city-life.css">
-<link rel="stylesheet" href="v181-world-systems.css">
-<link rel="stylesheet" href="v184-universe-suite.css">
-<link rel="stylesheet" href="v185-universe-stability.css">
-<link rel="stylesheet" href="v186-control-center.css">
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f3d77a"/><stop offset="1" stop-color="#b8860b"/></linearGradient></defs></svg>
@@ -171,7 +152,6 @@
 <div id="ts" hidden></div>
 
 <!-- v91: legacy WebGL login intro is intentionally not loaded; replaced by auth-scene.js (SVG/CSS). Original living-palace.js file is preserved. -->
-<script src="v175-startup-recovery.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
@@ -201,8 +181,8 @@
    el.onload=()=>{el.dataset.loaded='1';resolve()};el.onerror=()=>{pending.delete(src);reject(Error('تعذر تحميل '+src))};document.head.appendChild(el);
   }); pending.set(src,promise);return promise;
  }
- window.SQUAD_LOAD_WORLD=()=>load('chanse2/world.js');
- window.SQUAD_LOAD_DISTRICT=()=>load('chanse1/district-core.js').then(()=>load('chanse2/district.js'));
+ window.SQUAD_LOAD_WORLD=()=>load('world.js');
+ window.SQUAD_LOAD_DISTRICT=()=>load('district-core.js').then(()=>load('district.js'));
 })();
 </script><script src="chanse4/welcome.js"></script><script src="chanse1/luxe.js"></script>
 <script>
@@ -214,27 +194,6 @@
 (()=>{const h=document.getElementById('squadHub');if(!h)return;h.addEventListener('click',async e=>{const b=e.target.closest('[data-hub]');if(!b)return;const k=b.dataset.hub;try{if(k==='city'){await window.SQUAD_LOAD_DISTRICT();window.DISTRICT&&DISTRICT.enter({})}else if(k==='cafe'){await window.SQUAD_LOAD_WORLD();window.WORLD&&WORLD.enter()}else{const n=document.querySelector(`#nav [data-go=\"${k}\"]`);if(n)n.click()}}catch(err){console.error('lazy game load',err);window.toast&&toast('تعذر تحميل اللعبة. راجع اتصال الإنترنت وحاول مرة أخرى.')}})})();
 </script>
 <script src="chanse3/admin-monitor.js"></script>
-<script src="chanse4/english-ui-v152.js"></script>
 <script src="chanse2/auth-scene.js" defer></script>
-<script src="v160-aurora.js" defer></script>
-<script src="v162-global-hub.js" defer></script>
-<script src="v163-community-evolution.js" defer></script>
-<script src="v164-platform-expansion.js" defer></script>
-<script src="v165-squad-universe.js" defer></script>
-<script src="v166-global-connect.js" defer></script>
-<script src="v168-universe-integration.js" defer></script>
-<script src="v170-personal-vault.js" defer></script>
-<script src="v171-achievements.js" defer></script>
-<script src="v172-events-hub.js" defer></script>
-<script src="v173-shared-events.js" defer></script>
-<script src="v178-civilization.js" defer></script>
-<script src="v179-living-universe.js" defer></script>
-<script src="v180-city-life.js" defer></script>
-<script src="v181-world-systems.js" defer></script>
-<script src="v182-cloud-sync.js" defer></script>
-<script src="v184-universe-suite.js" defer></script>
-<script src="v185-universe-cloud-sync.js" defer></script>
-<script src="v186-control-center.js" defer></script>
-<script src="v187-call-network.js" defer></script>
 </body>
 </html>

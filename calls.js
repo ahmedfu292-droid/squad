@@ -1,5 +1,7 @@
 /* The Squad — مكالمات فردية (في الخاص) وجماعية (في الجروبات) بغرفة 3D. WebRTC + إشارات عبر Firestore */
-const ICE=typeof ICE_SERVERS!='undefined'?ICE_SERVERS:[{urls:'stun:stun.l.google.com:19302'}];
+let ICE=typeof ICE_SERVERS!='undefined'?ICE_SERVERS:[{urls:'stun:stun.l.google.com:19302'}];
+async function refreshCallIce(){try{const app=window.ACCT?.slot?firebase.app(window.ACCT.slot):firebase.app();const fn=app.functions('europe-west1').httpsCallable('getCallIceServers');const r=await fn({});const servers=r?.data?.iceServers;if(Array.isArray(servers)&&servers.length&&servers.every(x=>x&&typeof x==='object'&&x.urls))ICE=servers;return !!r?.data?.relayAvailable}catch(e){console.warn('[Squad calls] TURN credentials unavailable; using configured STUN servers.',e?.code||e);return false}}
+window.SquadCallNetwork={version:187,diagnostics:()=>({turnConfigured:ICE.some(x=>String(x.urls||'').startsWith('turn:')||String(x.urls||'').startsWith('turns:')),signaling:!!window.firebase?.apps?.length,rtc:typeof RTCPeerConnection==='function',media:!!navigator.mediaDevices?.getUserMedia}),refresh:refreshCallIce};
 IC.phone='M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.4 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z';
 IC.video='M23 7l-7 5 7 5zM1 5h15v14H1z';
 $('#cla').innerHTML=ic('phone');$('#clv').innerHTML=ic('video');
@@ -16,12 +18,14 @@ const media=()=>navigator.mediaDevices.getUserMedia({audio:{echoCancellation:tru
 async function startCall(vid){
  const c=C[cid];if(!c)return;if(CALL)return toast('انت في مكالمة بالفعل');
  const mic=await media();if(!mic)return toast('لازم تسمح للمايك');
+ await refreshCallIce();
  const id=db.collection('calls').doc().id,call={from:me.uid,fn:nm(),to:c.members.filter(x=>x!=me.uid),cid:c.id,gn:cname(c),g:c.type=='g',vid:!!vid,st:'ring',t:FV.serverTimestamp(),dec:{}};
  try{await db.doc('calls/'+id).set(call)}catch(e){mic.getTracks().forEach(t=>t.stop());return toast('مقدرتش أبدأ المكالمة')}
  window.pushNotify&&pushNotify('call',c.id,vid?'مكالمة فيديو':'مكالمة صوتية');
  await enter(id,mic,call);vid&&camOn();
  setTimeout(()=>{if(CALL&&CALL.id==id&&Object.keys(CALL.P).length<2){toast('مفيش رد');leave()}},45000)}
 async function accept(c){hideInc();if(CALL)return;const mic=await media();if(!mic)return toast('لازم تسمح للمايك');
+ await refreshCallIce();
  await db.doc('calls/'+c.id).update({st:'live'}).catch(()=>{});await enter(c.id,mic,c);c.vid&&camOn()}
 let decline=c=>{hideInc();db.doc('calls/'+c.id).update({['dec.'+me.uid]:true}).catch(()=>{})};
 function hideInc(){$('#inc').hidden=true;incId=null}
@@ -51,7 +55,8 @@ async function enter(id,mic,call){
   if(!d.g&&d.from==me.uid&&d.to.every(u=>(d.dec||{})[u])){toast('رفض المكالمة ❌');leave()}},()=>{});
  loadThree(init3d)}
 const sg=(id,o)=>{CALL.mine.push(id);return db.doc(`calls/${CALL.id}/sig/${id}`).set({u:me.uid,t:FV.serverTimestamp(),...o})};
-function mk(id){const pc=new RTCPeerConnection({iceServers:ICE});CALL.pcs[id]=pc;CALL.out.getTracks().forEach(t=>pc.addTrack(t,CALL.out));
+function mk(id){const pc=new RTCPeerConnection({iceServers:ICE});CALL.pcs[id]=pc;
+ pc.oniceconnectionstatechange=()=>{if(!CALL||!CALL.pcs[id])return;if(pc.iceConnectionState==='failed'){pc.restartIce?.();offer(id).catch(e=>console.warn('[Squad calls] ICE restart failed',e?.code||e));}else if(pc.iceConnectionState==='disconnected'){setTimeout(()=>{if(CALL?.pcs[id]===pc&&pc.iceConnectionState==='disconnected'){pc.restartIce?.();offer(id).catch(e=>console.warn('[Squad calls] reconnect negotiation failed',e?.code||e))}},2500)}};CALL.out.getTracks().forEach(t=>pc.addTrack(t,CALL.out));
  pc.onicecandidate=e=>e.candidate&&sg(`i_${me.uid}_${id}_${Math.random().toString(36).slice(2,7)}`,{to:id,k:'i',d:JSON.stringify(e.candidate)});
  pc.ontrack=e=>{if(!CALL)return;let v=$('#rv'+id);if(!v){v=document.createElement('video');v.id='rv'+id;v.autoplay=v.playsInline=true;$('#cvv').append(v)}
   const s=e.streams[0];v.srcObject=s;
