@@ -86,8 +86,8 @@ assert.match(districtSource, /LIFT_RIDE\?LIFT_RIDE\.origin:P/, 'presence updates
 assert.match(rules, /keys\(\)\.hasOnly\(\['n','x','y','z','r','c','k','e','t','car'\]\)/,
   'the existing bounded presence schema remains unchanged');
 assert.doesNotMatch(rules, /'lift'/, 'no new Firestore field or paid backend dependency is introduced');
-assert.equal(version.build, 159, 'release manifest must be v159');
-assert.match(sw, /squad-v159-elevator-controls-performance/, 'service worker cache must match v159');
+assert.equal(version.build, 187, 'release manifest must be v176');
+assert.match(sw, /squad-v187-call-network/, 'service worker cache must match v186');
 
 for (const [siteFile, sourceFile] of [
   ['site/chanse1/district-core.js', 'source/The-Squad-v137/chanse1/district-core.js'],

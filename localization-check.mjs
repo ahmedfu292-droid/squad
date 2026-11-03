@@ -5,11 +5,11 @@ const main=await readFile(path.join(site,'index.html'),'utf8');
 const translator=await readFile(path.join(site,'chanse4/english-ui-v152.js'),'utf8');
 if(!/<html lang="en" dir="ltr">/.test(main)) fail.push('Main page is not English/LTR.');
 if(!main.includes('chanse4/english-ui-v152.js')) fail.push('Main page does not load the localization layer.');
-if(!translator.includes("document.documentElement.lang='en'")) fail.push('Localization layer does not enforce English metadata.');
+if(!translator.includes("activeLanguage==='ar'?'rtl':'ltr'")||!translator.includes('setLanguage(lang)')) fail.push('Localization layer does not support selectable English/Arabic metadata.');
 if(!translator.includes('window.SquadEnglishUI')) fail.push('Localization API marker missing.');
 const count=(translator.match(/\\u0600|[\u0600-\u06ff]/g)||[]).length;
 if(count<100) fail.push('Localization dictionary unexpectedly small.');
 for(const file of ['chanse3/services-hub.html','chanse4/app-preview.html']){const html=await readFile(path.join(site,file),'utf8');if(!/<html lang="en" dir="ltr">/.test(html))fail.push(`${file} is not English/LTR.`);if(!html.includes('english-ui-v152.js'))fail.push(`${file} does not load localization.`)}
-const sw=await readFile(path.join(site,'sw.js'),'utf8');if(!sw.includes('squad-v159-elevator-controls-performance')||!sw.includes('chanse4/english-ui-v152.js'))fail.push('Service Worker cache/precache not updated.');
+const sw=await readFile(path.join(site,'sw.js'),'utf8');if(!sw.includes('squad-v187-call-network')||!sw.includes('chanse4/english-ui-v152.js'))fail.push('Service Worker cache/precache not updated.');
 if(fail.length){console.error('LOCALIZATION CHECK FAILED');for(const x of fail)console.error('- '+x);process.exit(1)}
-console.log('LOCALIZATION CHECK PASSED — English/LTR entry points, shared translator, and Service Worker cache are wired.');
+console.log('LOCALIZATION CHECK PASSED — English/Arabic selectable entry points, shared translator, and Service Worker cache are wired.');

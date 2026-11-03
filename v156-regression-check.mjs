@@ -21,7 +21,7 @@ check('Stage 4 filtering, conversation opening and management controls remain wi
 const imageRel=(authCss.match(/url\(['"]([^'"]*auth-login-v121\.png)['"]\)/)||[])[1];
 assert.ok(imageRel,'auth artwork URL must exist in the stylesheet');
 check('login artwork URL resolves from its CSS directory',fs.existsSync(path.resolve(path.dirname(path.join(site,'chanse3/auth-v121.css')),imageRel)));
-check('login artwork is included in the new service-worker precache',sw.includes('squad-v159-elevator-controls-performance')&&sw.includes('chanse2/assets/design/auth-login-v121.png'));
+check('login artwork is included in the new service-worker precache',sw.includes('squad-v187-call-network')&&sw.includes('chanse2/assets/design/auth-login-v121.png'));
 check('login controls and Firebase sign-in callables are retained',html.includes('id="lid"')&&html.includes('id="pw"')&&html.includes('id="go"')&&authJs.includes("httpsCallable('accountIdLogin')")&&authJs.includes("httpsCallable('usernameLogin')"));
 check('backend still exports both server-verified legacy sign-in callables',backend.includes('exports.accountIdLogin = onCall')&&backend.includes('exports.usernameLogin = onCall'));
 

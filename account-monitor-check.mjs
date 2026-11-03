@@ -11,7 +11,7 @@ const [ui,css,backend,packagedBackend,version,sw]=await Promise.all([
 ]);
 const v=JSON.parse(version);
 const checks=[
- ['release metadata is v159',v.build===159&&v.version==='v159-elevator-controls-performance'],
+ ['release metadata matches current release',v.build===187&&v.version==='v187-call-network'],
  ['account lookup accepts exact SID or username only',backend.includes('exports.searchAdminAccounts')&&backend.includes('ids/${sid}')&&backend.includes('usernames/${query}')&&backend.includes('20, 60 * 1000')],
  ['account endpoints require owner authorization',backend.includes('exports.searchAdminAccounts')&&backend.includes('exports.getAdminAccountActivity')&&backend.includes('await requireSquadAdmin(request)')],
  ['account result is privacy minimized',backend.includes('emailVerified: !!authUser.emailVerified')&&!backend.includes('email: authUser.email')&&!backend.includes('return {ok: true, found: true, email:')],
@@ -23,7 +23,7 @@ const checks=[
  ['dynamic account and report fields are escaped',ui.includes('esc(a.name')&&ui.includes('esc(r.reason')&&ui.includes('esc(a.city')],
  ['responsive account monitoring styling exists',css.includes('.am-account-facts')&&css.includes('@media(max-width:520px)')],
  ['deployment copy matches reviewed backend',backend===packagedBackend],
- ['service worker cache is v159',sw.includes('squad-v159-elevator-controls-performance')&&sw.includes('chanse3/admin-monitor.js')]
+ ['service worker cache matches current release',sw.includes('squad-v187-call-network')&&sw.includes('chanse3/admin-monitor.js')]
 ];
 let failures=0;for(const [name,ok] of checks){console.log(`${ok?'PASS':'FAIL'} ${name}`);if(!ok)failures++}
 if(failures){console.error(`${checks.length-failures}/${checks.length} checks passed`);process.exit(1)}

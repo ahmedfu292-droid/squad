@@ -6,7 +6,8 @@ const {getFirestore, FieldValue} = require('firebase-admin/firestore');
 const {getAuth} = require('firebase-admin/auth');
 const {onDocumentCreated, onDocumentDeleted} = require('firebase-functions/v2/firestore');
 const {getStorage} = require('firebase-admin/storage');
-const {createHash} = require('node:crypto');
+const {createHash, createHmac} = require('node:crypto');
+const {defineSecret} = require('firebase-functions/params');
 
 initializeApp();
 const db = getFirestore();
@@ -18,6 +19,27 @@ const MAX_RECENT_CLAIMS = 8;
 const MAX_COIN_ID_EXCLUSIVE = 115;
 const ECONOMY_ACTION_COOLDOWN_MS = 250;
 const MAX_ECONOMY_ACTIONS_PER_MINUTE = 40;
+
+// TURN credentials are generated server-side and expire after one hour.
+// Configure both secrets in Firebase before deploying this callable.
+const TURN_SERVER_URL = defineSecret('TURN_SERVER_URL');
+const TURN_SHARED_SECRET = defineSecret('TURN_SHARED_SECRET');
+exports.getCallIceServers = onCall({region: REGION, maxInstances: 10, secrets: [TURN_SERVER_URL, TURN_SHARED_SECRET]}, async (request) => {
+  if (!request.auth?.uid) throw new HttpsError('unauthenticated', 'Sign in before requesting call network settings.');
+  const urls = String(TURN_SERVER_URL.value() || '').split(',').map(x => x.trim()).filter(x => /^(turn|turns):/i.test(x)).slice(0, 6);
+  const sharedSecret = String(TURN_SHARED_SECRET.value() || '');
+  const iceServers = [
+    {urls: 'stun:stun.l.google.com:19302'},
+    {urls: 'stun:stun1.l.google.com:19302'}
+  ];
+  if (urls.length && sharedSecret.length >= 24) {
+    const expires = Math.floor(Date.now() / 1000) + 3600;
+    const username = `${expires}:${request.auth.uid}`;
+    const credential = createHmac('sha1', sharedSecret).update(username).digest('base64');
+    iceServers.push({urls, username, credential});
+  }
+  return {ok: true, iceServers, relayAvailable: iceServers.length > 2, expiresInSeconds: 3600};
+});
 
 
 
@@ -685,12 +707,27 @@ exports.economyAction = onCall({region: REGION, enforceAppCheck: false, maxInsta
 // v148: audited server-authorized platform wallet ledger. This is accounting/request tracking only;
 // it does not initiate real payouts or store payout phone numbers/payment credentials.
 const SQUAD_PLATFORM_WALLET_LABEL = '10000000000';
+const MAX_PLATFORM_MONEY_CENTS = 100000000000000; // 1,000,000,000,000.00 maximum stored amount.
+function moneyToCents(value, fieldName = 'amount') {
+  const n = Number(value ?? 0);
+  const scaled = n * 100;
+  if (!Number.isFinite(n) || n < 0 || n > 1000000000000 || !Number.isSafeInteger(Math.round(scaled)) || Math.abs(scaled - Math.round(scaled)) > 1e-7) {
+    throw new HttpsError('failed-precondition', `Stored wallet field is invalid: ${fieldName}.`);
+  }
+  return Math.round(scaled);
+}
+function moneyFromCents(cents) {
+  if (!Number.isSafeInteger(cents) || cents < 0 || cents > MAX_PLATFORM_MONEY_CENTS) {
+    throw new HttpsError('resource-exhausted', 'رصيد المحفظة تجاوز الحد الآمن.');
+  }
+  return cents / 100;
+}
 function validMoneyAmount(value) {
   const n = Number(value);
-  if (!Number.isFinite(n) || n <= 0 || n > 10000000 || Math.round(n * 100) !== n * 100) {
+  if (!Number.isFinite(n) || n <= 0 || n > 10000000 || Math.abs(n * 100 - Math.round(n * 100)) > 1e-7) {
     throw new HttpsError('invalid-argument', 'المبلغ غير صالح.');
   }
-  return Math.round(n * 100) / 100;
+  return moneyFromCents(Math.round(n * 100));
 }
 exports.getPlatformWallet = onCall({region: REGION, maxInstances: 5}, async (request) => {
   await requireSquadAdmin(request);
@@ -702,8 +739,9 @@ exports.getPlatformWallet = onCall({region: REGION, maxInstances: 5}, async (req
   const wallet = walletSnap.exists ? walletSnap.data() : {};
   return {
     ok: true, walletId: SQUAD_PLATFORM_WALLET_LABEL,
-    balance: Number(wallet.balance || 0), totalEarned: Number(wallet.totalEarned || 0),
-    totalWithdrawn: Number(wallet.totalWithdrawn || 0),
+    balance: moneyFromCents(moneyToCents(wallet.balance, 'balance')),
+    totalEarned: moneyFromCents(moneyToCents(wallet.totalEarned, 'totalEarned')),
+    totalWithdrawn: moneyFromCents(moneyToCents(wallet.totalWithdrawn, 'totalWithdrawn')),
     transactions: txSnap.docs.map(d => { const x=d.data(); return {id:d.id, type:String(x.type||''), amount:Number(x.amount||0), note:String(x.note||'').slice(0,160), status:String(x.status||''), createdAt:x.createdAt?.toDate?.().toISOString() || null}; }),
     withdrawals: payoutSnap.docs.map(d => { const x=d.data(); return {id:d.id, method:String(x.method||''), amount:Number(x.amount||0), status:String(x.status||'pending'), createdAt:x.createdAt?.toDate?.().toISOString() || null}; })
   };
@@ -717,7 +755,10 @@ exports.recordPlatformEarning = onCall({region: REGION, maxInstances: 5}, async 
   await db.runTransaction(async (tx) => {
     const snap = await tx.get(walletRef);
     const old = snap.exists ? snap.data() : {};
-    tx.set(walletRef, {balance: Number(old.balance||0)+amount, totalEarned: Number(old.totalEarned||0)+amount, updatedAt: FieldValue.serverTimestamp(), walletLabel:SQUAD_PLATFORM_WALLET_LABEL}, {merge:true});
+    const amountCents = moneyToCents(amount);
+    const nextBalance = moneyToCents(old.balance, 'balance') + amountCents;
+    const nextEarned = moneyToCents(old.totalEarned, 'totalEarned') + amountCents;
+    tx.set(walletRef, {balance: moneyFromCents(nextBalance), totalEarned: moneyFromCents(nextEarned), updatedAt: FieldValue.serverTimestamp(), walletLabel:SQUAD_PLATFORM_WALLET_LABEL}, {merge:true});
     tx.create(txRef, {type:'earning', amount, note, status:'recorded', createdAt:FieldValue.serverTimestamp(), actorUid:request.auth.uid});
   });
   return {ok:true};
@@ -733,9 +774,11 @@ exports.requestPlatformWithdrawal = onCall({region: REGION, maxInstances: 5}, as
   await db.runTransaction(async (tx) => {
     const snap = await tx.get(walletRef);
     const old = snap.exists ? snap.data() : {};
-    const balance = Number(old.balance||0);
-    if (amount > balance) throw new HttpsError('failed-precondition','الرصيد غير كافٍ.');
-    tx.set(walletRef, {balance:balance-amount, pendingWithdrawals: Number(old.pendingWithdrawals||0)+amount, updatedAt:FieldValue.serverTimestamp()}, {merge:true});
+    const balanceCents = moneyToCents(old.balance, 'balance');
+    const pendingCents = moneyToCents(old.pendingWithdrawals, 'pendingWithdrawals');
+    const amountCents = moneyToCents(amount);
+    if (amountCents > balanceCents) throw new HttpsError('failed-precondition','الرصيد غير كافٍ.');
+    tx.set(walletRef, {balance:moneyFromCents(balanceCents-amountCents), pendingWithdrawals:moneyFromCents(pendingCents+amountCents), updatedAt:FieldValue.serverTimestamp()}, {merge:true});
     tx.create(reqRef,{amount,method,status:'pending',createdAt:FieldValue.serverTimestamp(),actorUid:request.auth.uid, providerReference:null});
     tx.create(txRef,{type:'withdrawal_request',amount,note:`طلب سحب عبر ${method}`,status:'pending',createdAt:FieldValue.serverTimestamp(),actorUid:request.auth.uid,requestId:reqRef.id});
   });
@@ -753,16 +796,21 @@ exports.resolvePlatformWithdrawal = onCall({region: REGION, maxInstances: 5}, as
     if (!rSnap.exists || !['pending','approved_for_manual_payout'].includes(rSnap.data().status)) throw new HttpsError('failed-precondition','الطلب غير موجود أو تمت معالجته.');
     const w = wSnap.exists ? wSnap.data() : {};
     const r = rSnap.data();
+    const requestCents = moneyToCents(r.amount, 'withdrawal.amount');
+    const balanceCents = moneyToCents(w.balance, 'balance');
+    const pendingCents = moneyToCents(w.pendingWithdrawals, 'pendingWithdrawals');
+    if (requestCents <= 0 || requestCents > pendingCents) throw new HttpsError('failed-precondition','رصيد الطلب المعلّق غير متطابق؛ أوقفنا التسوية للمراجعة.');
     if (decision === 'reject') {
       if (r.status !== 'pending') throw new HttpsError('failed-precondition','لا يمكن رفض طلب تم اعتماده للتنفيذ اليدوي.');
-      tx.set(walletRef,{balance:Number(w.balance||0)+Number(r.amount||0),pendingWithdrawals:Math.max(0,Number(w.pendingWithdrawals||0)-Number(r.amount||0)),updatedAt:FieldValue.serverTimestamp()},{merge:true});
+      tx.set(walletRef,{balance:moneyFromCents(balanceCents+requestCents),pendingWithdrawals:moneyFromCents(pendingCents-requestCents),updatedAt:FieldValue.serverTimestamp()},{merge:true});
       tx.update(reqRef,{status:'rejected',resolvedAt:FieldValue.serverTimestamp(),resolvedBy:request.auth.uid});
     } else if (decision === 'approve') {
       if (r.status !== 'pending') throw new HttpsError('failed-precondition','الطلب ليس قيد الانتظار.');
       tx.update(reqRef,{status:'approved_for_manual_payout',approvedAt:FieldValue.serverTimestamp(),approvedBy:request.auth.uid});
     } else if (decision === 'mark_paid') {
       if (r.status !== 'approved_for_manual_payout') throw new HttpsError('failed-precondition','اعتمد الطلب أولاً قبل تسجيل التحويل.');
-      tx.set(walletRef,{totalWithdrawn:Number(w.totalWithdrawn||0)+Number(r.amount||0),pendingWithdrawals:Math.max(0,Number(w.pendingWithdrawals||0)-Number(r.amount||0)),updatedAt:FieldValue.serverTimestamp()},{merge:true});
+      const totalWithdrawnCents = moneyToCents(w.totalWithdrawn, 'totalWithdrawn') + requestCents;
+      tx.set(walletRef,{totalWithdrawn:moneyFromCents(totalWithdrawnCents),pendingWithdrawals:moneyFromCents(pendingCents-requestCents),updatedAt:FieldValue.serverTimestamp()},{merge:true});
       tx.update(reqRef,{status:'paid_manually_recorded',resolvedAt:FieldValue.serverTimestamp(),resolvedBy:request.auth.uid});
     }
   });
