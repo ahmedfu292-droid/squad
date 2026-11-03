@@ -1,7 +1,4 @@
 {
-  "version": "v187-call-network",
-  "build": 187,
-  "releaseDate": "2026-11-03",
-  "channel": "squad-call-network",
-  "date": "2026-11-03"
+  "version": "v148-full-audit-fix",
+  "build": 148
 }
