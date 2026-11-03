@@ -1,0 +1,10 @@
+THE SQUAD v188 — PATCH ONLY
+
+This package contains only the production file changed by the v188 safe repair.
+
+Upload/replace this file at the exact path in your existing project:
+site/chanse2/auth-scene.js
+
+Do not upload the archived copy under source/, and do not replace index.html or sw.js from files (41).zip. Those two files were intentionally not applied because their paths do not match the current v187 structure and the supplied sw.js removes existing cache/push behavior.
+
+Before replacing, keep a copy of your current auth-scene.js. Then deploy the site/ directory as usual. This is a targeted login observer-loop fix, not a complete live-site verification.
