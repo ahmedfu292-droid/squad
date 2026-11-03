@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Squad Diagnostics</title>
+<style>
+body{margin:0;background:#0b0905;color:#f3d77a;font:15px/1.7 system-ui,Segoe UI,Tahoma,sans-serif;padding:14px}
+h1{font-size:20px;margin:0 0 8px;color:#f1e3c4}
+pre{white-space:pre-wrap;direction:ltr;text-align:left;background:#14100a;border:1px solid #b8860b;border-radius:10px;padding:12px;font:13px/1.55 Consolas,monospace;margin:8px 0}
+.ok{color:#8fe388}.bad{color:#ff8a80}
+iframe{width:360px;height:200px;border:1px solid #444;border-radius:8px;background:#000}
+button{padding:8px 16px;border:1px solid #d9b76d;border-radius:8px;background:#d9b76d;color:#17130b;font-weight:700;cursor:pointer}
+</style></head><body>
+<h1>فحص The Squad (سيب الصفحة 20 ثانية وبعدين صوّر الشاشة كلها)</h1>
+<div id="status">⏳ جاري الفحص…</div>
+<pre id="out"></pre>
+<iframe id="f" title="app"></iframe>
+<p><button onclick="navigator.clipboard&&navigator.clipboard.writeText(document.getElementById('out').textContent)">نسخ النتيجة</button></p>
+<script>
+(async function(){
+ var L=[],out=document.getElementById('out'),st=document.getElementById('status');
+ function P(t,c){L.push((c==='bad'?'[X] ':c==='ok'?'[OK] ':'    ')+t);out.textContent=L.join('\n')}
+ var errs=[];
+ // ---- 1) تشغيل الموقع جوه iframe ومراقبة الأخطاء
+ var f=document.getElementById('f'),seen=null;
+ var poll=setInterval(function(){try{var cw=f.contentWindow;if(cw&&cw!==seen&&cw.location.href.indexOf('index.html')>-1||cw&&cw!==seen&&cw.location.pathname.slice(-6)==='/squad'){}}catch(e){}
+  try{var w=f.contentWindow;if(w&&w!==seen&&w.document&&w.location.href!=='about:blank'){seen=w;
+   w.addEventListener('error',function(e){var t=e.target;errs.push(t&&(t.src||t.href)&&t!==w?'LOAD FAIL '+(t.src||t.href):'ERR '+e.message+' @ '+String(e.filename||'').split('/').pop()+':'+e.lineno)},true);
+   w.addEventListener('unhandledrejection',function(e){errs.push('PROMISE '+((e.reason&&(e.reason.code||e.reason.message))||e.reason))});
+  }}catch(e){}},20);
+ f.src='index.html?diag='+Date.now();
+ // ---- 2) فحص الملفات
+ try{
+  var r=await fetch('index.html',{cache:'no-store'});var h=await r.text();
+  P('index.html: '+r.status+' ('+h.length+' bytes)',r.ok?'ok':'bad');
+  P('index فيه كود التشخيص (squadDiag): '+(h.indexOf('squadDiag')>-1?'نعم':'لا'));
+  P('index بيشاور على مجلد site/ أو chanse: '+(/chanse[1-4]\/|site\//.test(h)?'نعم (غلط)':'لا (صح)'),/chanse[1-4]\/|site\//.test(h)?'bad':'ok');
+  var refs=[],m,re=/(?:src|href)="([^"#]+)"/g;
+  while((m=re.exec(h)))if(!/^https?:|^data:/.test(m[1])&&refs.indexOf(m[1])<0)refs.push(m[1]);
+  var miss=[],i=0;
+  await Promise.all(refs.map(async function(u){try{var x=await fetch(u,{cache:'no-store'});if(!x.ok)miss.push(u+' ('+x.status+')')}catch(e){miss.push(u+' (fail)')}}));
+  P('ملفات index.html: '+refs.length+' | ناقصة: '+miss.length,miss.length?'bad':'ok');
+  miss.forEach(function(x){P('   ناقص: '+x,'bad')});
+ }catch(e){P('تعذر فحص index.html: '+e,'bad')}
+ try{if(navigator.serviceWorker){var rg=await navigator.serviceWorker.getRegistrations();P('Service Workers مسجلة: '+rg.length+' '+rg.map(function(x){return x.scope}).join(','))}}catch(e){}
+ try{var fr=await fetch('firebase-config.js',{cache:'no-store'});var ft=await fr.text();P('firebase-config.js: '+fr.status+' | فيه projectId: '+(/projectId:\s*"([^"]+)"/.exec(ft)||[0,'؟'])[1])}catch(e){}
+ // ---- 3) حالة الموقع بعد 15 ثانية
+ setTimeout(function(){
+  clearInterval(poll);
+  try{
+   var w=f.contentWindow,d=w.document;
+   function g(id){return d.getElementById(id)}
+   P('--- حالة الصفحة بعد 15 ثانية ---');
+   P('splash class: "'+(g('splash')&&g('splash').className)+'"');
+   P('auth hidden: '+(g('auth')&&g('auth').hidden)+' | app hidden: '+(g('app')&&g('app').hidden));
+   P('__squadBootReady: '+w.__squadBootReady,w.__squadBootReady?'ok':'bad');
+   P('firebase SDK: '+(w.firebase?('v'+w.firebase.SDK_VERSION+' apps='+(w.firebase.apps||[]).length):'NOT LOADED'),w.firebase?'ok':'bad');
+   var ar='?';try{ar=w.eval('typeof auth')}catch(e){}P('app.js شغال (typeof auth): '+ar,ar==='object'?'ok':'bad');
+   try{P('auth.currentUser: '+(w.eval('auth.currentUser')?'مسجّل دخول':'لا يوجد'))}catch(e){}
+   var a=g('auth');if(a){var cs=w.getComputedStyle(a);P('#auth display='+cs.display+' opacity='+cs.opacity+' visibility='+cs.visibility+' size='+a.offsetWidth+'x'+a.offsetHeight)}
+   var ap=g('app');if(ap){var c2=w.getComputedStyle(ap);P('#app display='+c2.display+' opacity='+c2.opacity+' size='+ap.offsetWidth+'x'+ap.offsetHeight)}
+   var sp=g('splash');if(sp){var c3=w.getComputedStyle(sp);P('#splash opacity='+c3.opacity+' visibility='+c3.visibility+' display='+c3.display)}
+   var lp=g('lampPull');if(lp){var b=lp.getBoundingClientRect();P('زرار حبل المصباح: x='+Math.round(b.x)+' y='+Math.round(b.y)+' '+Math.round(b.width)+'x'+Math.round(b.height))}
+   var dg=g('squadDiag');if(dg)P('صندوق index: '+dg.textContent.replace(/\n/g,' | '));
+  }catch(e){P('تعذر قراءة الصفحة: '+e,'bad')}
+  P('--- أخطاء اتسجلت ('+errs.length+') ---');
+  errs.slice(0,12).forEach(function(x){P(x,'bad')});
+  if(!errs.length)P('لا أخطاء','ok');
+  st.textContent='✅ خلص الفحص — صوّر الشاشة كلها وابعتها';
+ },15000);
+})();
+</script></body></html>
