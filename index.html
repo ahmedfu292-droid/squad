@@ -171,6 +171,28 @@
 <div id="ts" hidden></div>
 
 <!-- v91: legacy WebGL login intro is intentionally not loaded; replaced by auth-scene.js (SVG/CSS). Original living-palace.js file is preserved. -->
+<script>
+/* Squad boot diagnostics: يسجّل أي خطأ على الشاشة، وبعد 10 ثواني لو لسه علّق يفتح شاشة الدخول ويعرض السبب */
+(function(){
+ var errs=[];
+ function add(s){s=String(s||'').slice(0,220);if(errs.indexOf(s)<0&&errs.length<8)errs.push(s);if(window.__squadDiagShown)paint()}
+ window.addEventListener('error',function(e){var t=e.target;if(t&&(t.src||t.href)&&t!==window)add('LOAD FAIL: '+(t.src||t.href));else add('ERR: '+(e.message||'')+' @ '+String(e.filename||'').split('/').pop()+':'+(e.lineno||''))},true);
+ window.addEventListener('unhandledrejection',function(e){add('PROMISE: '+((e.reason&&(e.reason.code||e.reason.message))||e.reason))});
+ var ce=console.error;console.error=function(){try{add('console.error: '+[].slice.call(arguments).map(function(x){return x&&x.message||x}).join(' '))}catch(_){}return ce.apply(console,arguments)};
+ function box(){var b=document.getElementById('squadDiag');if(!b){b=document.createElement('pre');b.id='squadDiag';b.style.cssText='position:fixed;z-index:2147483647;left:8px;right:8px;bottom:8px;max-height:45vh;overflow:auto;margin:0;padding:10px 12px;background:#120e05;color:#f3d77a;border:1px solid #b8860b;border-radius:10px;font:12px/1.5 monospace;white-space:pre-wrap;direction:ltr;text-align:left';document.body.appendChild(b)}return b}
+ function paint(){var st=[];try{st.push('firebase SDK: '+(window.firebase?'loaded v'+firebase.SDK_VERSION:'NOT loaded'));st.push('firebase apps: '+(window.firebase&&firebase.apps?firebase.apps.length:'-'));}catch(e){}
+  try{st.push('app.js ran: '+(typeof auth!=='undefined'?'yes':'NO'))}catch(e){st.push('app.js ran: NO')}
+  st.push('online: '+navigator.onLine);
+  box().textContent='STARTUP PROBLEM (ابعت صورة من الصندوق ده)\n'+st.join(' | ')+'\n'+(errs.length?errs.join('\n'):'(no errors captured)')}
+ setTimeout(function(){
+  if(window.__squadBootReady)return;
+  window.__squadDiagShown=1;
+  var s=document.getElementById('splash'),a=document.getElementById('auth');
+  if(s)s.classList.add('off');if(a)a.hidden=false;paint();
+  fetch('https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js',{mode:'no-cors'}).then(function(){add('gstatic reachable: yes')},function(){add('gstatic reachable: NO (محجوب أو مفيش نت)')});
+ },10000);
+})();
+</script>
 <script src="v175-startup-recovery.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
