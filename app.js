@@ -49,9 +49,7 @@ const AE={'auth/invalid-credential':'الرقم أو كلمة السر غلط','
 const err=m=>{const e=$('#aerr');e&&(e.textContent=m)};
 
 auth.onAuthStateChanged(u=>{
- clearTimeout(window.__squadBootFallbackTimer);document.getElementById('squadBootFallback')?.remove();
  $('#splash').classList.add('off');
- window.__squadBootReady=true;
  [unU,unC,unM].forEach(f=>f&&f());unU=unC=unM=null;booted=0;cid=null;C={};M={};closeSh();
  $('#app').classList.remove('in');$('#chat').classList.remove('open');
  me=u;$('#auth').hidden=!!u;$('#app').hidden=!u;if(!u)return;
@@ -78,7 +76,7 @@ function renderHome(){
  if(flt=='p')l=l.filter(x=>x.c.type=='p');if(flt=='g')l=l.filter(x=>x.c.type=='g');if(flt=='pin')l=l.filter(x=>pins.includes(x.c.id));
  if(q)l=l.map(x=>({...x,s:x.n.toLowerCase().startsWith(q)?2:x.n.toLowerCase().includes(q)?1:0})).filter(x=>x.s);
  l.sort((a,b)=>b.s-a.s||pins.includes(b.c.id)-pins.includes(a.c.id)||ms(b.c.lt)-ms(a.c.lt));
- $('#list').innerHTML=l.map(({c,n})=>{const storedUnread=Number((c.un||{})[me.uid])||0,seenAt=c.seen&&c.seen[me.uid]?ms(c.seen[me.uid]):0,lastAt=c.lt?ms(c.lt):0,derivedUnread=c.last&&c.last.u!==me.uid&&lastAt>seenAt?1:0,u=Math.max(storedUnread,derivedUnread),ls=c.last;
+ $('#list').innerHTML=l.map(({c,n})=>{const u=(c.un||{})[me.uid]||0,ls=c.last;
   return `<div class="wi${c.id==cid?' on':''}" data-id="${c.id}">${avc(c,n)}<div><b>${pins.includes(c.id)?'📌 ':''}${esc(n)}</b><span>${ls?esc((ls.u==me.uid?'أنت: ':c.type=='g'?ls.n+': ':'')+ls.tx):'ابدأ المحادثة'}</span></div><em>${ls?fmt(c.lt):''}${u?`<i>${u>99?'99+':u}</i>`:''}</em></div>`}).join('')||'<p class="es">لسه مفيش محادثات.<br>دوّر على صاحبك برقمه من تبويب استكشاف.</p>';
  $('#recent').innerHTML=Object.values(C).filter(c=>c.type=='p'&&!(U.hiddenChats||[]).includes(c.id)).sort((a,b)=>ms(b.lt)-ms(a.lt)).slice(0,8).map(c=>`<div data-id="${c.id}">${avc(c,cname(c))}<span>${esc(cname(c))}</span></div>`).join('')}
 $('#list').onclick=$('#recent').onclick=e=>{const w=e.target.closest('[data-id]');w&&openChat(w.dataset.id)};
@@ -180,44 +178,15 @@ $('#in').oninput=e=>{autosize();const v=e.target.value;v?localStorage['d_'+cid]=
  if(cid&&Date.now()-tt>2500){tt=Date.now();db.doc('chats/'+cid).update({['ty.'+me.uid]:FV.serverTimestamp()}).catch(()=>{})}};
 $('#in').onkeydown=e=>{if(e.key=='Enter'&&!e.shiftKey&&innerWidth>899&&localStorage.es!='0'){e.preventDefault();$('#snd').click()}};
 
-/* صور وصوت وإيموجي — Spark-safe: المرفقات الجديدة مضغوطة داخل مستند الرسالة،
-   فلا تعتمد على Firebase Storage الذي يتطلب Blaze. حد القواعد الحالي 200,000 حرف. */
-const CHAT_MEDIA_DATAURL_LIMIT=180000;
-const blobToDataURL=blob=>new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(String(r.result||''));r.onerror=()=>reject(r.error||Error('file-read-failed'));r.readAsDataURL(blob)});
-async function compactChatImage(file){
- if(!/^image\/(jpeg|png|webp)$/.test(file.type)||file.size>5*1024*1024)throw Error('الصورة لازم تكون JPEG أو PNG أو WebP وأقل من 5 ميجا');
- const url=URL.createObjectURL(file),img=new Image();
- try{
-  await new Promise((resolve,reject)=>{img.onload=resolve;img.onerror=()=>reject(Error('image-decode-failed'));img.src=url});
-  const dims=[1440,1200,1024,900,760,640,520,420];
-  for(const maxDim of dims){
-   const scale=Math.min(1,maxDim/Math.max(img.naturalWidth||img.width,img.naturalHeight||img.height));
-   const canvas=document.createElement('canvas');canvas.width=Math.max(1,Math.round(img.width*scale));canvas.height=Math.max(1,Math.round(img.height*scale));
-   const ctx=canvas.getContext('2d',{alpha:false});if(!ctx)continue;ctx.drawImage(img,0,0,canvas.width,canvas.height);
-   for(const mime of ['image/webp','image/jpeg'])for(const quality of [.82,.72,.62,.52,.42]){
-    const blob=await new Promise(resolve=>canvas.toBlob(resolve,mime,quality));
-    if(!blob||!['image/webp','image/jpeg'].includes(blob.type)||blob.size>135*1024)continue;
-    const data=await blobToDataURL(blob);if(data.length<=CHAT_MEDIA_DATAURL_LIMIT)return data;
-   }
-  }
-  throw Error('image-too-large-after-compression');
- }finally{URL.revokeObjectURL(url)}
-}
+/* صور وصوت وإيموجي */
 $('#ph').onclick=()=>cid&&$('#pf').click();
-$('#pf').onchange=async e=>{const chatId=cid,files=[...e.target.files].slice(0,5);e.target.value='';if(!chatId||!files.length)return;
- for(const f of files){try{const im=await compactChatImage(f);const ok=await send({im,cid:chatId});if(!ok)break}catch(err){console.warn('chat image compression',err);toast(err.message==='image-too-large-after-compression'?'الصورة كبيرة بعد الضغط؛ جرّب صورة أصغر':'تعذر تجهيز الصورة')}}};
+$('#pf').onchange=e=>{const chatId=cid;[...e.target.files].slice(0,5).forEach(f=>{if(!/^image\/(jpeg|png|webp)$/.test(f.type)||f.size>5*1024*1024)return toast('الصورة لازم تكون JPEG أو PNG أو WebP وأقل من 5 ميجا');const i=new Image();i.onload=async()=>{const c=document.createElement('canvas'),sc=Math.min(1,1600/Math.max(i.width,i.height));c.width=i.width*sc;c.height=i.height*sc;c.getContext('2d').drawImage(i,0,0,c.width,c.height);c.toBlob(async blob=>{if(!blob)return toast('تعذر تجهيز الصورة');const id=db.collection('chats/'+chatId+'/messages').doc().id,path=`chat-media/${chatId}/${me.uid}/${id}.jpg`;try{await storage.ref(path).put(blob,{contentType:'image/jpeg'});await send({imPath:path,cid:chatId})}catch(err){toast('تعذر رفع الصورة أو إرسالها')}} ,'image/jpeg',.84)};i.onerror=()=>toast('تعذر قراءة الصورة');i.src=URL.createObjectURL(f)});e.target.value=''};
 let rec,ch,rt;
-$('#vn').onclick=async()=>{if(!cid)return;if(rec&&rec.state=='recording')return rec.stop();
- if(!navigator.mediaDevices?.getUserMedia||!window.MediaRecorder)return toast('تسجيل الصوت غير مدعوم في المتصفح ده');const chatId=cid;
- const stream=await navigator.mediaDevices.getUserMedia({audio:true}).catch(()=>0);if(!stream)return toast('المايك مش متاح');
- try{
-  const codec=['audio/webm;codecs=opus','audio/ogg;codecs=opus','audio/webm'].find(t=>MediaRecorder.isTypeSupported?.(t));
-  const opts={audioBitsPerSecond:16000};if(codec)opts.mimeType=codec;ch=[];rec=new MediaRecorder(stream,opts);rec.ondataavailable=e=>{if(e.data&&e.data.size)ch.push(e.data)};
-  rec.onstop=async()=>{stream.getTracks().forEach(t=>t.stop());$('#vn').classList.remove('rec');clearTimeout(rt);const blob=new Blob(ch,{type:rec.mimeType||'audio/webm'});
-   try{if(blob.size>125*1024)return toast('التسجيل أكبر من الحد المجاني؛ سجّل مقطعًا أقصر');const au=await blobToDataURL(blob);if(au.length>CHAT_MEDIA_DATAURL_LIMIT)return toast('التسجيل أكبر من الحد المجاني؛ سجّل مقطعًا أقصر');await send({au,cid:chatId})}catch(err){console.warn('chat voice encoding',err);toast('تعذر تجهيز الرسالة الصوتية')}};
-  rec.start();$('#vn').classList.add('rec');rt=setTimeout(()=>{if(rec&&rec.state==='recording')rec.stop()},30000);toast('بيسجّل... الحد الأقصى 30 ثانية؛ اضغط تاني للإرسال');
- }catch(err){stream.getTracks().forEach(t=>t.stop());console.warn('MediaRecorder init',err);toast('تعذر بدء تسجيل الصوت')}
-};
+$('#vn').onclick=async()=>{if(!cid)return;if(rec&&rec.state=='recording')return rec.stop();const chatId=cid;
+ const s=await navigator.mediaDevices.getUserMedia({audio:true}).catch(()=>0);if(!s)return toast('المايك مش متاح');
+ ch=[];rec=new MediaRecorder(s,{audioBitsPerSecond:24000});rec.ondataavailable=e=>ch.push(e.data);
+ rec.onstop=async()=>{s.getTracks().forEach(t=>t.stop());$('#vn').classList.remove('rec');clearTimeout(rt);const blob=new Blob(ch,{type:rec.mimeType});if(blob.size>5*1024*1024)return toast('التسجيل كبير جدًا');const id=db.collection('chats/'+chatId+'/messages').doc().id,ext=rec.mimeType.includes('ogg')?'ogg':'webm',path=`chat-media/${chatId}/${me.uid}/${id}.${ext}`;try{await storage.ref(path).put(blob,{contentType:rec.mimeType});await send({auPath:path,cid:chatId})}catch(e){toast('تعذر رفع الرسالة الصوتية')}};
+ rec.start();$('#vn').classList.add('rec');rt=setTimeout(()=>rec.stop(),30000);toast('بيسجّل... اضغط تاني للإرسال')};
 const EM='😂 🤣 😍 🥰 😎 🤩 😭 😡 🥶 🤯 🙄 😏 🤝 👏 🙏 💪 🔥 💯 ✨ 🎉 ❤️ 💔 👀 😴 🤡 💀 👑 🍕 ☕ ⚽ 🎮 🚀 🌹 😅 🤔 🫡 👍 😮 🥳 😇'.split(' ');
 $('#em').onclick=()=>cid&&sheet('<div class="gr">'+EM.map(e=>`<i data-e="${e}">${e}</i>`).join('')+'</div>');
 
