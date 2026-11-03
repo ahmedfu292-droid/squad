@@ -1,58 +1,66 @@
 <!doctype html>
 <html lang="en" dir="ltr">
 <head>
+<script>
+/* v187 clean-start: امسح أي Service Worker وكاش قديم مرة واحدة، وبعدين أعد التحميل */
+(function(){try{var K='squad_clean_20261103a';if(localStorage.getItem(K))return;
+ var jobs=[];if(navigator.serviceWorker)jobs.push(navigator.serviceWorker.getRegistrations().then(function(r){return Promise.all(r.map(function(x){return x.unregister()}))}));
+ if(window.caches)jobs.push(caches.keys().then(function(k){return Promise.all(k.map(function(x){return caches.delete(x)}))}));
+ Promise.all(jobs).catch(function(){}).then(function(){localStorage.setItem(K,'1');location.reload()});
+ }catch(e){}})();
+</script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>The Squad</title>
 <meta name="theme-color" content="#050505"><meta name="color-scheme" content="dark light">
 <script>try{var t=localStorage.theme||"dark";document.documentElement.dataset.theme=t=="auto"?(matchMedia("(prefers-color-scheme: light)").matches?"light":"dark"):t}catch(e){document.documentElement.dataset.theme="dark"}</script>
 <script>/* v144: detect constrained devices before styles render. */(()=>{try{const c=navigator.hardwareConcurrency||8,m=navigator.deviceMemory||8,d=navigator.connection&&navigator.connection.saveData; if(c<=4||m<=4||d)document.documentElement.classList.add("squad-lite");}catch(e){}})();</script>
-<link rel="manifest" href="manifest.json">
-<link rel="icon" type="image/svg+xml" href="icon.svg">
-<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
-<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest.json?v=20261103a">
+<link rel="icon" type="image/svg+xml" href="icon.svg?v=20261103a">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png?v=20261103a">
+<link rel="apple-touch-icon" href="apple-touch-icon.png?v=20261103a">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://www.gstatic.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Sora:wght@500;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="tokens.css">
-<link rel="stylesheet" href="squad.css">
-<link rel="stylesheet" href="ui2.css">
-<link rel="stylesheet" href="gold.css">
-<link rel="stylesheet" href="v27.css">
-<link rel="stylesheet" href="luxe.css">
-<link rel="stylesheet" href="living-palace.css">
-<link rel="stylesheet" href="living-palace-premium.css">
-<link rel="stylesheet" href="premium-refinement-v89.css">
-<link rel="stylesheet" href="auth.css">
-<link rel="stylesheet" href="auth-v119.css">
-<link rel="stylesheet" href="auth-v121.css">
-<link rel="stylesheet" href="stage4-chat-ui.css">
-<link rel="stylesheet" href="admin-monitor.css">
-<link rel="stylesheet" href="quality-polish-v120.css">
-<link rel="stylesheet" href="social-expansion.css">
-<link rel="stylesheet" href="performance-v144.css">
-<link rel="stylesheet" href="platform-redesign-v151.css">
-<link rel="stylesheet" href="v149-scroll-repair.css">
-<link rel="stylesheet" href="visual-refresh-v158.css">
-<link rel="stylesheet" href="v160-aurora.css">
-<link rel="stylesheet" href="v162-global-hub.css">
-<link rel="stylesheet" href="v163-community-evolution.css">
-<link rel="stylesheet" href="v164-platform-expansion.css">
-<link rel="stylesheet" href="v165-squad-universe.css">
-<link rel="stylesheet" href="v166-global-connect.css">
-<link rel="stylesheet" href="v168-universe-integration.css">
-<link rel="stylesheet" href="v170-personal-vault.css">
-<link rel="stylesheet" href="v171-achievements.css">
-<link rel="stylesheet" href="v172-events-hub.css">
-<link rel="stylesheet" href="v173-shared-events.css">
-<link rel="stylesheet" href="v178-civilization.css">
-<link rel="stylesheet" href="v179-living-universe.css">
-<link rel="stylesheet" href="v180-city-life.css">
-<link rel="stylesheet" href="v181-world-systems.css">
-<link rel="stylesheet" href="v184-universe-suite.css">
-<link rel="stylesheet" href="v185-universe-stability.css">
-<link rel="stylesheet" href="v186-control-center.css">
+<link rel="stylesheet" href="tokens.css?v=20261103a">
+<link rel="stylesheet" href="squad.css?v=20261103a">
+<link rel="stylesheet" href="ui2.css?v=20261103a">
+<link rel="stylesheet" href="gold.css?v=20261103a">
+<link rel="stylesheet" href="v27.css?v=20261103a">
+<link rel="stylesheet" href="luxe.css?v=20261103a">
+<link rel="stylesheet" href="living-palace.css?v=20261103a">
+<link rel="stylesheet" href="living-palace-premium.css?v=20261103a">
+<link rel="stylesheet" href="premium-refinement-v89.css?v=20261103a">
+<link rel="stylesheet" href="auth.css?v=20261103a">
+<link rel="stylesheet" href="auth-v119.css?v=20261103a">
+<link rel="stylesheet" href="auth-v121.css?v=20261103a">
+<link rel="stylesheet" href="stage4-chat-ui.css?v=20261103a">
+<link rel="stylesheet" href="admin-monitor.css?v=20261103a">
+<link rel="stylesheet" href="quality-polish-v120.css?v=20261103a">
+<link rel="stylesheet" href="social-expansion.css?v=20261103a">
+<link rel="stylesheet" href="performance-v144.css?v=20261103a">
+<link rel="stylesheet" href="platform-redesign-v151.css?v=20261103a">
+<link rel="stylesheet" href="v149-scroll-repair.css?v=20261103a">
+<link rel="stylesheet" href="visual-refresh-v158.css?v=20261103a">
+<link rel="stylesheet" href="v160-aurora.css?v=20261103a">
+<link rel="stylesheet" href="v162-global-hub.css?v=20261103a">
+<link rel="stylesheet" href="v163-community-evolution.css?v=20261103a">
+<link rel="stylesheet" href="v164-platform-expansion.css?v=20261103a">
+<link rel="stylesheet" href="v165-squad-universe.css?v=20261103a">
+<link rel="stylesheet" href="v166-global-connect.css?v=20261103a">
+<link rel="stylesheet" href="v168-universe-integration.css?v=20261103a">
+<link rel="stylesheet" href="v170-personal-vault.css?v=20261103a">
+<link rel="stylesheet" href="v171-achievements.css?v=20261103a">
+<link rel="stylesheet" href="v172-events-hub.css?v=20261103a">
+<link rel="stylesheet" href="v173-shared-events.css?v=20261103a">
+<link rel="stylesheet" href="v178-civilization.css?v=20261103a">
+<link rel="stylesheet" href="v179-living-universe.css?v=20261103a">
+<link rel="stylesheet" href="v180-city-life.css?v=20261103a">
+<link rel="stylesheet" href="v181-world-systems.css?v=20261103a">
+<link rel="stylesheet" href="v184-universe-suite.css?v=20261103a">
+<link rel="stylesheet" href="v185-universe-stability.css?v=20261103a">
+<link rel="stylesheet" href="v186-control-center.css?v=20261103a">
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f3d77a"/><stop offset="1" stop-color="#b8860b"/></linearGradient></defs></svg>
@@ -193,21 +201,21 @@
  },10000);
 })();
 </script>
-<script src="v175-startup-recovery.js"></script>
+<script src="v175-startup-recovery.js?v=20261103a"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-functions-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
-<script src="firebase-config.js"></script>
-<script src="acct.js"></script>
-<script src="time.js"></script><script src="app.js"></script>
-<script src="auth.js"></script>
-<script src="stories.js"></script>
-<script src="calls.js"></script><script src="cafe.js"></script><script src="extras.js"></script><script src="games.js"></script>
-<script src="push.js"></script>
-<script src="bot.js"></script><script src="channel.js"></script><script src="cafe2.js"></script><script src="cafe3.js"></script><script src="community.js"></script><script src="plus.js"></script><script src="theme.js"></script><script src="look.js"></script><script src="chatx.js"></script><script src="settings.js"></script><script src="ads.js"></script><script src="accounts.js"></script><script src="social-feed.js"></script><script src="social-expansion.js"></script><script src="ui2.js"></script><script src="profile.js"></script><script src="stage4-chat-ui.js"></script><link rel="stylesheet" href="stage4-extras.css"><script src="stage4-extras.js"></script><script src="living-palace-engine.js"></script><script src="cinema.js"></script>
+<script src="firebase-config.js?v=20261103a"></script>
+<script src="acct.js?v=20261103a"></script>
+<script src="time.js?v=20261103a"></script><script src="app.js?v=20261103a"></script>
+<script src="auth.js?v=20261103a"></script>
+<script src="stories.js?v=20261103a"></script>
+<script src="calls.js?v=20261103a"></script><script src="cafe.js?v=20261103a"></script><script src="extras.js?v=20261103a"></script><script src="games.js?v=20261103a"></script>
+<script src="push.js?v=20261103a"></script>
+<script src="bot.js?v=20261103a"></script><script src="channel.js?v=20261103a"></script><script src="cafe2.js?v=20261103a"></script><script src="cafe3.js?v=20261103a"></script><script src="community.js?v=20261103a"></script><script src="plus.js?v=20261103a"></script><script src="theme.js?v=20261103a"></script><script src="look.js?v=20261103a"></script><script src="chatx.js?v=20261103a"></script><script src="settings.js?v=20261103a"></script><script src="ads.js?v=20261103a"></script><script src="accounts.js?v=20261103a"></script><script src="social-feed.js?v=20261103a"></script><script src="social-expansion.js?v=20261103a"></script><script src="ui2.js?v=20261103a"></script><script src="profile.js?v=20261103a"></script><script src="stage4-chat-ui.js?v=20261103a"></script><link rel="stylesheet" href="stage4-extras.css?v=20261103a"><script src="stage4-extras.js?v=20261103a"></script><script src="living-palace-engine.js?v=20261103a"></script><script src="cinema.js?v=20261103a"></script>
 <style>#squadOffline{position:fixed;z-index:99999;inset-inline:12px;top:calc(8px + env(safe-area-inset-top,0px));margin:auto;width:max-content;max-width:calc(100% - 24px);padding:8px 14px;border:1px solid #d9b76d;border-radius:999px;background:#171717;color:#f5d98e;font:600 12px Cairo,sans-serif;box-shadow:0 5px 22px #0008}#squadOffline[hidden]{display:none}</style><div id="squadOffline" role="status" aria-live="polite" hidden>You are offline — saved content is available; messaging and multiplayer are temporarily paused.</div>
 <script>/* v112: مؤشر اتصال واضح، مع استمرار فتح الواجهة المحفوظة دون إنترنت. */(()=>{const el=document.getElementById('squadOffline');function sync(){if(el)el.hidden=navigator.onLine}addEventListener('online',sync);addEventListener('offline',sync);sync()})();</script>
 <script>
@@ -219,14 +227,14 @@
   const promise=new Promise((resolve,reject)=>{
    const existing=[...document.scripts].find(x=>x.dataset.squadLazy===src);
    if(existing){if(existing.dataset.loaded==='1')return resolve();existing.addEventListener('load',resolve,{once:true});existing.addEventListener('error',()=>reject(Error('تعذر تحميل '+src)),{once:true});return}
-   const el=document.createElement('script');el.src=src;el.dataset.squadLazy=src;
+   const el=document.createElement('script');el.src=src+'?v=20261103a';el.dataset.squadLazy=src;
    el.onload=()=>{el.dataset.loaded='1';resolve()};el.onerror=()=>{pending.delete(src);reject(Error('تعذر تحميل '+src))};document.head.appendChild(el);
   }); pending.set(src,promise);return promise;
  }
  window.SQUAD_LOAD_WORLD=()=>load('world.js');
  window.SQUAD_LOAD_DISTRICT=()=>load('district-core.js').then(()=>load('district.js'));
 })();
-</script><script src="welcome.js"></script><script src="luxe.js"></script>
+</script><script src="welcome.js?v=20261103a"></script><script src="luxe.js?v=20261103a"></script>
 <script>
 /* تحديث تلقائي خفيف: ملف manifest واحد بدل تنزيل عشرات الملفات دوريًا. حدّث version.json مع كل نشر. */
 (()=>{let base=null,pending=false;const safeToReload=()=>{const chat=document.getElementById('chat'),city=document.getElementById('dst');const typing=document.activeElement&&(document.activeElement.matches('input,textarea,[contenteditable=true]'));return !(chat&&chat.classList.contains('open'))&&!(city&&!city.hidden)&&!typing&&!window.SQUAD_CALL_ACTIVE&&!window.DISTRICT_SESSION_ACTIVE};const chk=async()=>{try{const r=await fetch('version.json',{cache:'no-store'});if(!r.ok)return;const t=await r.text();if(base===null)base=t;else if(t!==base){pending=true;const e=document.getElementById('ts');if(e){e.textContent='A new update is ready. It will install when your call, city session, or chat is safe to close.';e.hidden=false;if(safeToReload())setTimeout(()=>{if(safeToReload())location.reload()},1200)}}}catch(e){}};setTimeout(chk,10000);setInterval(()=>{if(pending&&safeToReload())location.reload();else chk()},480000);document.addEventListener('visibilitychange',()=>{if(document.hidden)return;if(pending&&safeToReload())location.reload();else chk()})})();
@@ -235,28 +243,28 @@
 /* v90: real home-hub shortcuts connected to existing destinations */
 (()=>{const h=document.getElementById('squadHub');if(!h)return;h.addEventListener('click',async e=>{const b=e.target.closest('[data-hub]');if(!b)return;const k=b.dataset.hub;try{if(k==='city'){await window.SQUAD_LOAD_DISTRICT();window.DISTRICT&&DISTRICT.enter({})}else if(k==='cafe'){await window.SQUAD_LOAD_WORLD();window.WORLD&&WORLD.enter()}else{const n=document.querySelector(`#nav [data-go=\"${k}\"]`);if(n)n.click()}}catch(err){console.error('lazy game load',err);window.toast&&toast('تعذر تحميل اللعبة. راجع اتصال الإنترنت وحاول مرة أخرى.')}})})();
 </script>
-<script src="admin-monitor.js"></script>
-<script src="english-ui-v152.js"></script>
-<script src="auth-scene.js" defer></script>
-<script src="v160-aurora.js" defer></script>
-<script src="v162-global-hub.js" defer></script>
-<script src="v163-community-evolution.js" defer></script>
-<script src="v164-platform-expansion.js" defer></script>
-<script src="v165-squad-universe.js" defer></script>
-<script src="v166-global-connect.js" defer></script>
-<script src="v168-universe-integration.js" defer></script>
-<script src="v170-personal-vault.js" defer></script>
-<script src="v171-achievements.js" defer></script>
-<script src="v172-events-hub.js" defer></script>
-<script src="v173-shared-events.js" defer></script>
-<script src="v178-civilization.js" defer></script>
-<script src="v179-living-universe.js" defer></script>
-<script src="v180-city-life.js" defer></script>
-<script src="v181-world-systems.js" defer></script>
-<script src="v182-cloud-sync.js" defer></script>
-<script src="v184-universe-suite.js" defer></script>
-<script src="v185-universe-cloud-sync.js" defer></script>
-<script src="v186-control-center.js" defer></script>
-<script src="v187-call-network.js" defer></script>
+<script src="admin-monitor.js?v=20261103a"></script>
+<script src="english-ui-v152.js?v=20261103a"></script>
+<script src="auth-scene.js?v=20261103a" defer></script>
+<script src="v160-aurora.js?v=20261103a" defer></script>
+<script src="v162-global-hub.js?v=20261103a" defer></script>
+<script src="v163-community-evolution.js?v=20261103a" defer></script>
+<script src="v164-platform-expansion.js?v=20261103a" defer></script>
+<script src="v165-squad-universe.js?v=20261103a" defer></script>
+<script src="v166-global-connect.js?v=20261103a" defer></script>
+<script src="v168-universe-integration.js?v=20261103a" defer></script>
+<script src="v170-personal-vault.js?v=20261103a" defer></script>
+<script src="v171-achievements.js?v=20261103a" defer></script>
+<script src="v172-events-hub.js?v=20261103a" defer></script>
+<script src="v173-shared-events.js?v=20261103a" defer></script>
+<script src="v178-civilization.js?v=20261103a" defer></script>
+<script src="v179-living-universe.js?v=20261103a" defer></script>
+<script src="v180-city-life.js?v=20261103a" defer></script>
+<script src="v181-world-systems.js?v=20261103a" defer></script>
+<script src="v182-cloud-sync.js?v=20261103a" defer></script>
+<script src="v184-universe-suite.js?v=20261103a" defer></script>
+<script src="v185-universe-cloud-sync.js?v=20261103a" defer></script>
+<script src="v186-control-center.js?v=20261103a" defer></script>
+<script src="v187-call-network.js?v=20261103a" defer></script>
 </body>
 </html>
