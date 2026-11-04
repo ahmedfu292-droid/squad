@@ -19,3 +19,7 @@ const ICE_SERVERS = [
   { urls: 'stun:stun1.l.google.com:19302' }
   // { urls: 'turn:YOUR-TURN-HOST:443', username: 'USER', credential: 'PASS' }
 ];
+
+// v193: expose the same Web App config to startup diagnostics and recovery.
+window.firebaseConfig = firebaseConfig;
+window.firebaseConfigWeb = firebaseConfig;

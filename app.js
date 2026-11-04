@@ -1,6 +1,16 @@
 /* The Squad — الدفعة 1: الدخول بالرقم، القايمة، الشات الخاص والجروبات */
 /* v26: كل حساب محفوظ ليه نسخة Firebase باسم خانته (acct.js). الخانة الأساسية '' = النسخة الافتراضية القديمة، فحسابك الحالي ما بيتأثرش. */
-const fbApp=firebase.initializeApp(firebaseConfig,(window.ACCT&&ACCT.slot)||undefined);
+// v193 startup repair: reuse the app if another loaded module already initialized it.
+const squadFirebaseConfig = window.firebaseConfig || firebaseConfig;
+if (!squadFirebaseConfig || !squadFirebaseConfig.apiKey || !squadFirebaseConfig.projectId || !squadFirebaseConfig.appId) {
+  const startupError = new Error('Firebase Web App configuration is missing required fields.');
+  window.__squadStartupError = startupError;
+  window.__squadBootShowRecovery && window.__squadBootShowRecovery(startupError.message);
+  throw startupError;
+}
+const squadFirebaseAppName = (window.ACCT && ACCT.slot) || '[DEFAULT]';
+const squadExistingApp = (firebase.apps || []).find(app => app.name === squadFirebaseAppName);
+const fbApp = squadExistingApp || firebase.initializeApp(squadFirebaseConfig, squadFirebaseAppName === '[DEFAULT]' ? undefined : squadFirebaseAppName);
 const auth=fbApp.auth(),db=fbApp.firestore(),FV=firebase.firestore.FieldValue,callables=fbApp.functions('europe-west1'),storage=fbApp.storage();
 // v134: enable Firestore local cache/offline queue where the browser supports it.
 // Multi-tab mode avoids the common failed-precondition when the app is open in more than one tab.
