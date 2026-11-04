@@ -1,66 +1,59 @@
 <!doctype html>
 <html lang="en" dir="ltr">
 <head>
-<script>
-/* v187 clean-start: امسح أي Service Worker وكاش قديم مرة واحدة، وبعدين أعد التحميل */
-(function(){try{var K='squad_clean_20261103a';if(localStorage.getItem(K))return;
- var jobs=[];if(navigator.serviceWorker)jobs.push(navigator.serviceWorker.getRegistrations().then(function(r){return Promise.all(r.map(function(x){return x.unregister()}))}));
- if(window.caches)jobs.push(caches.keys().then(function(k){return Promise.all(k.map(function(x){return caches.delete(x)}))}));
- Promise.all(jobs).catch(function(){}).then(function(){localStorage.setItem(K,'1');location.reload()});
- }catch(e){}})();
-</script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>The Squad</title>
+<meta name="squad-startup-fix" content="v188-cinema-universe-init">
 <meta name="theme-color" content="#050505"><meta name="color-scheme" content="dark light">
 <script>try{var t=localStorage.theme||"dark";document.documentElement.dataset.theme=t=="auto"?(matchMedia("(prefers-color-scheme: light)").matches?"light":"dark"):t}catch(e){document.documentElement.dataset.theme="dark"}</script>
 <script>/* v144: detect constrained devices before styles render. */(()=>{try{const c=navigator.hardwareConcurrency||8,m=navigator.deviceMemory||8,d=navigator.connection&&navigator.connection.saveData; if(c<=4||m<=4||d)document.documentElement.classList.add("squad-lite");}catch(e){}})();</script>
-<link rel="manifest" href="manifest.json?v=20261103a">
-<link rel="icon" type="image/svg+xml" href="icon.svg?v=20261103a">
-<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png?v=20261103a">
-<link rel="apple-touch-icon" href="apple-touch-icon.png?v=20261103a">
+<link rel="manifest" href="chanse1/manifest.json">
+<link rel="icon" type="image/svg+xml" href="chanse4/icon.svg">
+<link rel="icon" type="image/png" sizes="192x192" href="chanse3/icon-192.png">
+<link rel="apple-touch-icon" href="chanse2/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://www.gstatic.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Sora:wght@500;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="tokens.css?v=20261103a">
-<link rel="stylesheet" href="squad.css?v=20261103a">
-<link rel="stylesheet" href="ui2.css?v=20261103a">
-<link rel="stylesheet" href="gold.css?v=20261103a">
-<link rel="stylesheet" href="v27.css?v=20261103a">
-<link rel="stylesheet" href="luxe.css?v=20261103a">
-<link rel="stylesheet" href="living-palace.css?v=20261103a">
-<link rel="stylesheet" href="living-palace-premium.css?v=20261103a">
-<link rel="stylesheet" href="premium-refinement-v89.css?v=20261103a">
-<link rel="stylesheet" href="auth.css?v=20261103a">
-<link rel="stylesheet" href="auth-v119.css?v=20261103a">
-<link rel="stylesheet" href="auth-v121.css?v=20261103a">
-<link rel="stylesheet" href="stage4-chat-ui.css?v=20261103a">
-<link rel="stylesheet" href="admin-monitor.css?v=20261103a">
-<link rel="stylesheet" href="quality-polish-v120.css?v=20261103a">
-<link rel="stylesheet" href="social-expansion.css?v=20261103a">
-<link rel="stylesheet" href="performance-v144.css?v=20261103a">
-<link rel="stylesheet" href="platform-redesign-v151.css?v=20261103a">
-<link rel="stylesheet" href="v149-scroll-repair.css?v=20261103a">
-<link rel="stylesheet" href="visual-refresh-v158.css?v=20261103a">
-<link rel="stylesheet" href="v160-aurora.css?v=20261103a">
-<link rel="stylesheet" href="v162-global-hub.css?v=20261103a">
-<link rel="stylesheet" href="v163-community-evolution.css?v=20261103a">
-<link rel="stylesheet" href="v164-platform-expansion.css?v=20261103a">
-<link rel="stylesheet" href="v165-squad-universe.css?v=20261103a">
-<link rel="stylesheet" href="v166-global-connect.css?v=20261103a">
-<link rel="stylesheet" href="v168-universe-integration.css?v=20261103a">
-<link rel="stylesheet" href="v170-personal-vault.css?v=20261103a">
-<link rel="stylesheet" href="v171-achievements.css?v=20261103a">
-<link rel="stylesheet" href="v172-events-hub.css?v=20261103a">
-<link rel="stylesheet" href="v173-shared-events.css?v=20261103a">
-<link rel="stylesheet" href="v178-civilization.css?v=20261103a">
-<link rel="stylesheet" href="v179-living-universe.css?v=20261103a">
-<link rel="stylesheet" href="v180-city-life.css?v=20261103a">
-<link rel="stylesheet" href="v181-world-systems.css?v=20261103a">
-<link rel="stylesheet" href="v184-universe-suite.css?v=20261103a">
-<link rel="stylesheet" href="v185-universe-stability.css?v=20261103a">
-<link rel="stylesheet" href="v186-control-center.css?v=20261103a">
+<link rel="stylesheet" href="chanse4/tokens.css">
+<link rel="stylesheet" href="chanse1/squad.css">
+<link rel="stylesheet" href="chanse4/ui2.css">
+<link rel="stylesheet" href="chanse1/gold.css">
+<link rel="stylesheet" href="chanse1/v27.css">
+<link rel="stylesheet" href="chanse3/luxe.css">
+<link rel="stylesheet" href="chanse2/living-palace.css">
+<link rel="stylesheet" href="chanse1/living-palace-premium.css">
+<link rel="stylesheet" href="chanse2/premium-refinement-v89.css">
+<link rel="stylesheet" href="chanse1/auth.css">
+<link rel="stylesheet" href="chanse4/auth-v119.css">
+<link rel="stylesheet" href="chanse3/auth-v121.css">
+<link rel="stylesheet" href="chanse2/stage4-chat-ui.css">
+<link rel="stylesheet" href="chanse3/admin-monitor.css">
+<link rel="stylesheet" href="chanse3/quality-polish-v120.css">
+<link rel="stylesheet" href="chanse3/social-expansion.css">
+<link rel="stylesheet" href="chanse3/performance-v144.css">
+<link rel="stylesheet" href="chanse4/platform-redesign-v151.css">
+<link rel="stylesheet" href="v149-scroll-repair.css">
+<link rel="stylesheet" href="visual-refresh-v158.css">
+<link rel="stylesheet" href="v160-aurora.css">
+<link rel="stylesheet" href="v162-global-hub.css">
+<link rel="stylesheet" href="v163-community-evolution.css">
+<link rel="stylesheet" href="v164-platform-expansion.css">
+<link rel="stylesheet" href="v165-squad-universe.css">
+<link rel="stylesheet" href="v166-global-connect.css">
+<link rel="stylesheet" href="v168-universe-integration.css">
+<link rel="stylesheet" href="v170-personal-vault.css">
+<link rel="stylesheet" href="v171-achievements.css">
+<link rel="stylesheet" href="v172-events-hub.css">
+<link rel="stylesheet" href="v173-shared-events.css">
+<link rel="stylesheet" href="v178-civilization.css">
+<link rel="stylesheet" href="v179-living-universe.css">
+<link rel="stylesheet" href="v180-city-life.css">
+<link rel="stylesheet" href="v181-world-systems.css">
+<link rel="stylesheet" href="v184-universe-suite.css">
+<link rel="stylesheet" href="v185-universe-stability.css">
+<link rel="stylesheet" href="v186-control-center.css">
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f3d77a"/><stop offset="1" stop-color="#b8860b"/></linearGradient></defs></svg>
@@ -133,7 +126,7 @@
    <a class="dr-shortcut" href="#" data-hub="cafe"><i>◈</i><span>The Café<small>Meet your friends</small></span></a>
    <a class="dr-shortcut" href="#" data-hub="cinema"><i>▣</i><span>Cinema<small>Watch together</small></span></a>
    <a class="dr-shortcut" href="#" data-social="messages"><i>✉</i><span>Conversations<small>Your messages and calls</small></span></a>
-   <a class="dr-shortcut" href="services-hub.html"><i>✧</i><span>Services Hub<small>Assistants, stores and games</small></span></a>
+   <a class="dr-shortcut" href="chanse3/services-hub.html"><i>✧</i><span>Services Hub<small>Assistants, stores and games</small></span></a>
   </div><div class="dr-side-card"><h3>Suggested for You</h3><div class="dr-empty"><strong>Discover Your Community</strong>Suggestions will appear here when platform data is connected.</div></div></aside>
   <nav class="dr-mobile-nav" aria-label="Mobile navigation">
    <button class="active" data-social="feed"><svg viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5V21h-6v-6H9v6H3z"/></svg>Home</button>
@@ -141,7 +134,7 @@
    <button class="create" data-social="create" aria-label="Create"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
    <button data-social="explore"><svg viewBox="0 0 24 24"><circle cx="10.8" cy="10.8" r="7.3"/><path d="m16.2 16.2 4.3 4.3M13.5 8.5l-1.8 4.8-4.8 1.8 1.8-4.8z"/></svg>Explore</button>
    <button data-social="profile"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M4.5 21c.5-4.2 3-6.3 7.5-6.3s7 2.1 7.5 6.3"/></svg>My Profile</button>
-   <a class="dr-shortcut" href="services-hub.html">Services Hub</a>
+   <a class="dr-shortcut" href="chanse3/services-hub.html">Services Hub</a>
   </nav>
  </div>
  <aside id="side">
@@ -179,43 +172,147 @@
 <div id="ts" hidden></div>
 
 <!-- v91: legacy WebGL login intro is intentionally not loaded; replaced by auth-scene.js (SVG/CSS). Original living-palace.js file is preserved. -->
-<script>
-/* Squad boot diagnostics: يسجّل أي خطأ على الشاشة، وبعد 10 ثواني لو لسه علّق يفتح شاشة الدخول ويعرض السبب */
-(function(){
- var errs=[];
- function add(s){s=String(s||'').slice(0,220);if(errs.indexOf(s)<0&&errs.length<8)errs.push(s);if(window.__squadDiagShown)paint()}
- window.addEventListener('error',function(e){var t=e.target;if(t&&(t.src||t.href)&&t!==window)add('LOAD FAIL: '+(t.src||t.href));else add('ERR: '+(e.message||'')+' @ '+String(e.filename||'').split('/').pop()+':'+(e.lineno||''))},true);
- window.addEventListener('unhandledrejection',function(e){add('PROMISE: '+((e.reason&&(e.reason.code||e.reason.message))||e.reason))});
- var ce=console.error;console.error=function(){try{add('console.error: '+[].slice.call(arguments).map(function(x){return x&&x.message||x}).join(' '))}catch(_){}return ce.apply(console,arguments)};
- function box(){var b=document.getElementById('squadDiag');if(!b){b=document.createElement('pre');b.id='squadDiag';b.style.cssText='position:fixed;z-index:2147483647;left:8px;right:8px;bottom:8px;max-height:45vh;overflow:auto;margin:0;padding:10px 12px;background:#120e05;color:#f3d77a;border:1px solid #b8860b;border-radius:10px;font:12px/1.5 monospace;white-space:pre-wrap;direction:ltr;text-align:left';document.body.appendChild(b)}return b}
- function paint(){var st=[];try{st.push('firebase SDK: '+(window.firebase?'loaded v'+firebase.SDK_VERSION:'NOT loaded'));st.push('firebase apps: '+(window.firebase&&firebase.apps?firebase.apps.length:'-'));}catch(e){}
-  try{st.push('app.js ran: '+(typeof auth!=='undefined'?'yes':'NO'))}catch(e){st.push('app.js ran: NO')}
-  st.push('online: '+navigator.onLine);
-  box().textContent='STARTUP PROBLEM (ابعت صورة من الصندوق ده)\n'+st.join(' | ')+'\n'+(errs.length?errs.join('\n'):'(no errors captured)')}
- setTimeout(function(){
-  if(window.__squadBootReady)return;
-  window.__squadDiagShown=1;
-  var s=document.getElementById('splash'),a=document.getElementById('auth');
-  if(s)s.classList.add('off');if(a)a.hidden=false;paint();
-  fetch('https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js',{mode:'no-cors'}).then(function(){add('gstatic reachable: yes')},function(){add('gstatic reachable: NO (محجوب أو مفيش نت)')});
- },10000);
-})();
-</script>
-<script src="v175-startup-recovery.js?v=20261103a"></script>
+<script src="v175-startup-recovery.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-functions-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
-<script src="firebase-config.js?v=20261103a"></script>
-<script src="acct.js?v=20261103a"></script>
-<script src="time.js?v=20261103a"></script><script src="app.js?v=20261103a"></script>
-<script src="auth.js?v=20261103a"></script>
-<script src="stories.js?v=20261103a"></script>
-<script src="calls.js?v=20261103a"></script><script src="cafe.js?v=20261103a"></script><script src="extras.js?v=20261103a"></script><script src="games.js?v=20261103a"></script>
-<script src="push.js?v=20261103a"></script>
-<script src="bot.js?v=20261103a"></script><script src="channel.js?v=20261103a"></script><script src="cafe2.js?v=20261103a"></script><script src="cafe3.js?v=20261103a"></script><script src="community.js?v=20261103a"></script><script src="plus.js?v=20261103a"></script><script src="theme.js?v=20261103a"></script><script src="look.js?v=20261103a"></script><script src="chatx.js?v=20261103a"></script><script src="settings.js?v=20261103a"></script><script src="ads.js?v=20261103a"></script><script src="accounts.js?v=20261103a"></script><script src="social-feed.js?v=20261103a"></script><script src="social-expansion.js?v=20261103a"></script><script src="ui2.js?v=20261103a"></script><script src="profile.js?v=20261103a"></script><script src="stage4-chat-ui.js?v=20261103a"></script><link rel="stylesheet" href="stage4-extras.css?v=20261103a"><script src="stage4-extras.js?v=20261103a"></script><script src="living-palace-engine.js?v=20261103a"></script><script src="cinema.js?v=20261103a"></script>
+<script src="chanse4/firebase-config.js"></script>
+<script src="chanse3/acct.js"></script>
+<script src="chanse1/time.js"></script><script src="chanse1/app.js"></script>
+<script src="chanse1/auth.js"></script>
+<script src="chanse2/stories.js"></script>
+<script src="chanse3/calls.js"></script><script src="chanse3/cafe.js"></script><script src="chanse2/extras.js"></script><script src="chanse4/games.js"></script>
+<script src="chanse1/push.js"></script>
+<script src="chanse3/bot.js"></script><script src="chanse4/channel.js"></script><script src="chanse2/cafe2.js"></script><script src="chanse3/cafe3.js"></script><script src="chanse1/community.js"></script><script src="chanse3/plus.js"></script><script src="chanse1/theme.js"></script><script src="chanse1/look.js"></script><script src="chanse3/chatx.js"></script><script src="chanse3/settings.js"></script><script src="chanse1/ads.js"></script><script src="chanse3/accounts.js"></script><script src="chanse3/social-feed.js"></script><script src="chanse3/social-expansion.js"></script><script src="chanse1/ui2.js"></script><script src="chanse2/profile.js"></script><script src="chanse3/stage4-chat-ui.js"></script><link rel="stylesheet" href="chanse4/stage4-extras.css"><link rel="stylesheet" href="v190-final-polish.css"><script src="chanse2/stage4-extras.js"></script><script src="chanse3/living-palace-engine.js"></script><script>
+/* v188 hotfix: delayed Cinema initialization; source retained at chanse4/cinema.js. */
+/* cinema.js is intentionally inlined here to keep the single-file startup repair deployable. */
+/* The Squad v29 — سينما الدور الثالث: فيلم متزامن للكل، مكتبة أفلام محفوظة، رفع فيلم، و«شغّل لنفسي».
+   الحالة في world/{room}/cinema/state، المكتبة في world/{room}/movies، والملفات في Firebase Storage (cinema/{room}/{uid}/...).
+   الفيديو بيتعرض على شاشة السينما في الغرفة 3D (VideoTexture)، ولو الجهاز/السيرفر مش مسمّح بكده بيتحوّل تلقائي لملء الشاشة. */
+(()=>{
+const $c=s=>document.querySelector(s),MOBC=/Android|iPhone|iPad|Mobi/i.test(navigator.userAgent);
+let ROOM='main',on=0,lvl=0,S=null,mode='sync',solo=null,vid=null,vtex=null,skew=0,cur='',full=0,texOK=1,retried=0,unS=null,unM=null,movies=[],lastChk=0,busy=0,hint='';
+const FULL='position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#000;z-index:4;',HIDE='position:absolute;left:0;top:0;width:2px;height:2px;opacity:0;pointer-events:none;';
+document.head.insertAdjacentHTML('beforeend',`<style>
+#wcinb{position:absolute;bottom:calc(34% + 52px);left:50%;transform:translateX(-50%);z-index:3;padding:10px 18px;border-radius:14px;border:1px solid rgba(255,58,90,.5);background:rgba(40,8,16,.82);backdrop-filter:blur(10px);color:#fff;font:800 14px Cairo,sans-serif;cursor:pointer}#wcinb[hidden]{display:none}
+#wcin{position:absolute;top:calc(58px + env(safe-area-inset-top,0px));inset-inline-end:10px;width:min(370px,calc(100% - 20px));max-height:calc(100% - 130px);overflow:auto;z-index:8;padding:12px;border-radius:18px;background:rgba(14,8,18,.93);backdrop-filter:blur(14px);border:1px solid rgba(255,58,90,.35);color:#eaf6ff;font-family:Cairo,sans-serif;direction:rtl;display:flex;flex-direction:column;gap:8px}#wcin[hidden]{display:none}
+#wcin h4{margin:0;display:flex;justify-content:space-between;align-items:center;font-size:16px}
+#wcin button{padding:8px 11px;border-radius:11px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.09);color:#fff;font:700 13px Cairo,sans-serif;cursor:pointer}
+#wcin input[type=text],#wcin input:not([type]){border-radius:10px;padding:8px 10px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);color:#fff;font:13px Cairo,sans-serif;width:100%;box-sizing:border-box}
+#wcin .row{display:flex;gap:6px;flex-wrap:wrap;align-items:center}#wcin .sec{display:flex;flex-direction:column;gap:6px;padding:8px;border-radius:12px;background:rgba(255,255,255,.05)}
+#wcnow{font-size:13.5px;line-height:1.6;color:#ffd9de}#wce{color:#ff8a8a;font-size:12.5px;min-height:15px}#wcpr{height:6px;border-radius:4px;background:rgba(255,255,255,.12);overflow:hidden}#wcpr i{display:block;height:100%;width:0;background:linear-gradient(90deg,#ff3a5a,#ffb870)}
+#wcl .mv{display:flex;flex-direction:column;gap:5px;padding:8px;border-radius:10px;background:rgba(255,255,255,.06);margin-top:6px}#wcl .mv b{font-size:13.5px}#wcl .mv small{color:#9fb0d8}
+#wcinv{position:absolute;top:calc(10px + env(safe-area-inset-top,0px));inset-inline:10px;z-index:7;display:flex;gap:8px;justify-content:center}#wcinv[hidden]{display:none}#wcinv button{padding:9px 14px;border-radius:14px;border:1px solid rgba(255,255,255,.2);background:rgba(10,14,30,.78);color:#fff;font:700 14px Cairo,sans-serif}
+</style>`);
+/* The 3D world is loaded on demand. Wait for its host instead of crashing at page startup. */
+function initCinema(root){
+if(window.CINEMA&&window.CINEMA.__initialized)return;
+root.insertAdjacentHTML('beforeend',`<button id="wcinb" hidden>🎬 السينما</button>
+<div id="wcinv" hidden><button id="wcvp">⏯</button><button id="wcvx">✕ رجوع للغرفة</button></div>
+<div id="wcin" hidden>
+ <h4><span>🍿 سينما The Squad</span><button id="wcx">✕</button></h4>
+ <div id="wcnow">مفيش فيلم شغّال دلوقتي</div>
+ <div class="row"><button id="wcb1">⏪ 10</button><button id="wcpp">⏯ شغّل / وقّف</button><button id="wcb2">10 ⏩</button><button id="wcfs">⛶ ملء الشاشة</button><button id="wcst">⏹ إيقاف للكل</button><button id="wcmd" hidden>👥 ارجع أتفرج مع الكل</button></div>
+ <div class="row">🔊 <input id="wcvol" type="range" min="0" max="1" step="0.05" value="1" style="flex:1"></div>
+ <div class="sec"><b>➕ أضف فيلم برابط مباشر (https)</b><input id="wct" maxlength="80" placeholder="اسم الفيلم"><input id="wcurl" dir="ltr" maxlength="1500" placeholder="https://.../film.mp4"><div class="row"><button id="wcua">إضافة للمكتبة</button></div></div>
+ <div class="sec"><b>⬆️ ارفع فيلم من جهازك</b><input id="wcf" type="file" accept="video/*"><div class="row"><button id="wcu">ارفع للمكتبة (للكل)</button><button id="wclo">شغّله لنفسي بس (من غير رفع)</button></div><div id="wcpr" hidden><i></i></div></div>
+ <div id="wce"></div>
+ <div class="sec"><b>🎞 مكتبة الأفلام</b><div id="wcl"></div></div>
+</div>`);
+const path=d=>`world/${ROOM}/${d}`,sDoc=()=>db.doc(path('cinema/state'));
+const err=m=>{$c('#wce').textContent=m||'';if(m&&typeof toast=='function'&&0)toast(m)};
+const fmt=s=>{s=Math.max(0,Math.round(s));return Math.floor(s/60)+':'+String(s%60).padStart(2,'0')};
+const sMs=d=>d&&d.t&&d.t.toMillis?d.t.toMillis():Date.now();
+function expPos(){if(!S)return 0;return S.pl?S.pos+Math.max(0,(Date.now()+skew-sMs(S))/1000):S.pos}
+function wantPlay(){return on&&(lvl==2||full)}
+/* ---------- الفيديو والتكستشر ---------- */
+function ensureVid(){if(vid)return vid;vid=document.createElement('video');vid.playsInline=true;vid.setAttribute('playsinline','');vid.preload='auto';vid.style.cssText=HIDE;vid.volume=+$c('#wcvol').value;
+ vid.addEventListener('loadeddata',()=>{bindTex();sync(1)});
+ vid.addEventListener('error',()=>{if(!cur)return;if(vid.crossOrigin&&!retried){retried=1;texOK=0;const u=cur;vid.removeAttribute('crossorigin');vid.src=u;vid.load();return}err('مقدرتش أشغّل الفيلم ده (الرابط مش فيديو أو مش بيسمح بالتشغيل).')});
+ vid.addEventListener('ended',()=>{if(mode=='sync'&&S&&S.u==me.uid&&S.pl)writeState({ti:S.ti,url:S.url,pl:false,pos:0})});
+ root.append(vid);return vid}
+function bindTex(){const SQ=window.SQ3;if(!SQ||!SQ.screen||!texOK||!vid)return;try{if(!vtex){vtex=new SQ.THREE.VideoTexture(vid);vtex.minFilter=SQ.THREE.LinearFilter;vtex.magFilter=SQ.THREE.LinearFilter;vtex.format=SQ.THREE.RGBFormat}SQ.screen.material.map=vtex;SQ.screen.material.needsUpdate=true}catch(e){texOK=0;console.error(e)}}
+function unbindTex(){const SQ=window.SQ3;if(SQ&&SQ.screen&&SQ.idle){try{SQ.screen.material.map=SQ.idle;SQ.screen.material.needsUpdate=true}catch(e){}}}
+function setFull(o){full=o;$c('#wcinv').hidden=!o;if(vid)vid.style.cssText=o?FULL:HIDE;if(!o)render();else sync(1)}
+function load(url){const v=ensureVid();if(cur==url)return;cur=url;retried=0;texOK=!/^blob:/.test(url)?texOK:texOK;if(!/^blob:/.test(url))v.crossOrigin='anonymous';else v.removeAttribute('crossorigin');v.src=url;v.load();if(vtex){vtex.dispose&&vtex.dispose();vtex=null}}
+function unload(){if(!vid||!cur)return;try{vid.pause()}catch(e){}vid.removeAttribute('src');vid.load();cur='';unbindTex();if(vtex){vtex.dispose&&vtex.dispose();vtex=null}}
+function curTarget(){return mode=='solo'&&solo?{url:solo.url,pl:true,pos:0,solo:1}:S&&S.url?S:null}
+/* مزامنة الفيديو مع الحالة */
+function sync(force){if(!on)return;const T=curTarget();if(!T||!wantPlay()){if(vid&&cur&&!vid.paused)vid.pause();if(!T)unload();return}
+ load(T.url);if(!vid||vid.readyState<1)return;
+ if(T.solo){if(vid.paused&&!vid.ended)vid.play().catch(()=>{hint='اضغط «شغّل» عشان الفيلم يبدأ';render()});return}
+ const e=expPos();if(T.pl){if(Math.abs(vid.currentTime-e)>(force?.4:1.5))try{vid.currentTime=e}catch(_){}if(vid.paused)vid.play().then(()=>{hint='';render()}).catch(()=>{hint='المتصفح منع التشغيل التلقائي: اضغط «شغّل / وقّف»';render()})}
+ else{if(!vid.paused)vid.pause();if(Math.abs(vid.currentTime-S.pos)>.4)try{vid.currentTime=S.pos}catch(_){}}}
+/* ---------- الكتابة ---------- */
+function writeState(o){return sDoc().set({u:me.uid,n:nm().slice(0,40),ti:String(o.ti||'').slice(0,80),url:o.url||'',pl:!!o.pl,pos:Math.max(0,Math.min(99999,+o.pos||0)),t:FV.serverTimestamp()}).catch(()=>err('مقدرتش أغيّر حالة السينما. انشر قواعد Firebase الجديدة (v29).'))}
+function measureSkew(){const a=Date.now();db.doc(path('cinema/clk_'+me.uid)).set({t:FV.serverTimestamp()}).then(()=>db.doc(path('cinema/clk_'+me.uid)).get()).then(d=>{const x=d.data(),b=Date.now();if(x&&x.t&&x.t.toMillis)skew=x.t.toMillis()-(a+b)/2}).catch(()=>{})}
+/* ---------- الواجهة ---------- */
+function render(){if(!on)return;const nowEl=$c('#wcnow');let h='';
+ if(mode=='solo'&&solo)h=`👤 بتتفرج لنفسك: <b>${esc(solo.ti)}</b>`;else if(S&&S.url)h=`${S.pl?'▶':'⏸'} <b>${esc(S.ti||'فيلم')}</b> — شغّله ${esc(S.n||'عضو')} · ${fmt(expPos())}`;else h='مفيش فيلم شغّال دلوقتي';
+ nowEl.innerHTML=h+(hint?`<br><small>${esc(hint)}</small>`:'');$c('#wcmd').hidden=mode!='solo';
+ const mine=m=>m.u==me.uid;$c('#wcl').innerHTML=movies.length?movies.map(m=>`<div class="mv"><b>${esc(m.ti)}</b><small>رفعه ${esc(m.n||'عضو')}${m.sz?' · '+(m.sz/1048576).toFixed(0)+' MB':''}</small><div class="row"><button data-a="all" data-id="${m.id}">▶ شغّل للكل</button><button data-a="me" data-id="${m.id}">👤 لنفسي</button>${mine(m)?`<button data-a="del" data-id="${m.id}">🗑 حذف</button>`:''}</div></div>`).join(''):'<small>المكتبة فاضية. أضف رابط أو ارفع فيلم.</small>'}
+function sub(){unS=sDoc().onSnapshot(d=>{S=d.exists?d.data():null;render();sync(1)},()=>{});
+ unM=db.collection(path('movies')).onSnapshot(s=>{const a=[];s.forEach(d=>a.push({id:d.id,...d.data()}));a.sort((x,y)=>sMs(y)-sMs(x));movies=a;render()},()=>{})}
+function playAll(m){writeState({ti:m.ti,url:m.url,pl:true,pos:0});mode='sync';solo=null;render()}
+function playMe(url,ti){mode='solo';solo={url,ti};load(url);hint='';render();sync(1)}
+function stopLocal(){mode='sync';solo=null;hint='';if(S&&S.url)load(S.url);else unload();render();sync(1)}
+$c('#wcl').addEventListener('click',async e=>{const b=e.target.closest('button[data-a]');if(!b)return;const m=movies.find(x=>x.id==b.dataset.id);if(!m)return;err('');
+ if(b.dataset.a=='all')playAll(m);else if(b.dataset.a=='me')playMe(m.url,m.ti);else if(b.dataset.a=='del'){if(!await SquadDialog.confirm('تحذف «'+m.ti+'» من المكتبة؟'))return;
+  db.doc(path('movies/'+m.id)).delete().then(()=>{if(m.sp&&window.firebase&&firebase.storage){try{firebase.storage().ref(m.sp).delete().catch(()=>{})}catch(_){}}}).catch(()=>err('مقدرتش أحذف الفيلم'))}});
+function openP(o){$c('#wcin').hidden=!o;if(o){render();err('')}}
+$c('#wcinb').onclick=()=>openP($c('#wcin').hidden);$c('#wcx').onclick=()=>openP(0);
+$c('#wcvx').onclick=()=>setFull(0);$c('#wcfs').onclick=()=>{openP(0);setFull(1)};
+$c('#wcvp').onclick=()=>ctlPlay();
+function ctlPlay(){if(!vid)return;if(mode=='solo'){vid.paused?vid.play():vid.pause();return}
+ if(!S||!S.url)return;if(S.pl&&vid.paused){vid.play().then(()=>{hint='';render()}).catch(()=>{});return}
+ const p=expPos();writeState({ti:S.ti,url:S.url,pl:!S.pl,pos:p})}
+$c('#wcpp').onclick=ctlPlay;
+function seek(d){if(mode=='solo'&&vid){vid.currentTime=Math.max(0,vid.currentTime+d);return}if(!S||!S.url)return;writeState({ti:S.ti,url:S.url,pl:S.pl,pos:Math.max(0,expPos()+d)})}
+$c('#wcb1').onclick=()=>seek(-10);$c('#wcb2').onclick=()=>seek(10);
+$c('#wcst').onclick=()=>{if(mode=='solo'){stopLocal();return}if(S&&S.url)writeState({ti:'',url:'',pl:false,pos:0})};
+$c('#wcmd').onclick=()=>{if(mode=='solo')stopLocal()};
+$c('#wcvol').oninput=e=>{if(vid)vid.volume=+e.target.value};
+$c('#wcua').onclick=()=>{err('');const ti=$c('#wct').value.trim(),url=$c('#wcurl').value.trim();
+ if(!/^https:\/\//i.test(url)){err('الرابط لازم يبدأ بـ https:// (فيديو مباشر مثل mp4). روابط يوتيوب مش بتشتغل هنا.');return}
+ const t2=ti||decodeURIComponent((url.split('?')[0].split('/').pop()||'فيلم').replace(/\.[^.]+$/,'')).slice(0,80)||'فيلم';
+ db.collection(path('movies')).add({u:me.uid,n:nm().slice(0,40),ti:t2.slice(0,80),url:url.slice(0,1500),t:FV.serverTimestamp()}).then(()=>{$c('#wct').value='';$c('#wcurl').value=''}).catch(()=>err('مقدرتش أضيف الفيلم. انشر قواعد Firebase الجديدة (v29).'))};
+function fileOK(){const f=$c('#wcf').files&&$c('#wcf').files[0];if(!f){err('اختار ملف فيديو الأول');return null}if(!/^video\//.test(f.type||'')){err('الملف لازم يكون فيديو (mp4 مثلًا)');return null}return f}
+$c('#wclo').onclick=()=>{err('');const f=fileOK();if(!f)return;playMe(URL.createObjectURL(f),f.name.replace(/\.[^.]+$/,''))};
+function ensureStorage(cb){if(window.firebase&&firebase.storage)return cb(1);const s=document.createElement('script');s.src='https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js';s.onload=()=>cb(!!(firebase.storage));s.onerror=()=>cb(0);document.head.append(s)}
+$c('#wcu').onclick=()=>{err('');if(busy)return;const f=fileOK();if(!f)return;if(f.size>1500*1024*1024){err('الملف أكبر من 1.5 جيجا');return}
+ const ti=($c('#wct').value.trim()||f.name.replace(/\.[^.]+$/,'')).slice(0,80);busy=1;$c('#wcu').disabled=true;const pr=$c('#wcpr');pr.hidden=false;pr.firstElementChild.style.width='0';
+ const done=m=>{busy=0;$c('#wcu').disabled=false;pr.hidden=true;if(m)err(m)};
+ ensureStorage(ok=>{if(!ok)return done('مقدرتش أحمّل Firebase Storage. اتأكد من النت.');
+  const p=`cinema/${ROOM}/${me.uid}/${Date.now()}_${f.name.replace(/[^\w.\-]+/g,'_').slice(-60)}`;let task;try{task=firebase.storage().ref(p).put(f,{contentType:f.type})}catch(e){return done('Storage مش متفعّل في مشروعك: '+(e&&e.message||e))}
+  task.on('state_changed',s=>{pr.firstElementChild.style.width=Math.round(s.bytesTransferred/s.totalBytes*100)+'%'},e=>done('فشل الرفع: '+((e&&e.code)||e)+' (اتأكد من تفعيل Storage ونشر storage.rules)'),()=>{
+   task.snapshot.ref.getDownloadURL().then(url=>db.collection(path('movies')).add({u:me.uid,n:nm().slice(0,40),ti,url,sp:p,sz:f.size,t:FV.serverTimestamp()})).then(()=>{done();$c('#wct').value='';$c('#wcf').value=''}).catch(e=>done('الملف اترفع بس مقدرتش أسجّله في المكتبة: '+((e&&e.code)||e)))})})};
+/* ---------- دورة الحياة ---------- */
+window.CINEMA={
+ enter(room){ROOM=room||'main';on=1;S=null;mode='sync';solo=null;movies=[];skew=0;full=0;hint='';ensureVid();measureSkew();sub();render()},
+ leave(){on=0;unS&&unS();unM&&unM();unS=unM=null;openP(0);setFull(0);$c('#wcinb').hidden=true;try{unload()}catch(e){}if(vid){vid.remove();vid=null}cur='';S=null;solo=null;mode='sync';lvl=0},
+ tick(P,t){if(!on)return;const nl=P.lv;if(nl!=lvl){const was=lvl;lvl=nl;$c('#wcinb').hidden=lvl!=2;if(lvl==2){if(S&&S.url&&S.pl)hint='فيه فيلم شغّال — بيتعرض على الشاشة الكبيرة';render();sync(1)}else if(was==2){openP(0);if(vid&&!vid.paused&&!full)vid.pause()}}
+  if(t-lastChk>1500){lastChk=t;if(lvl==2||full){sync(0);if(!$c('#wcin').hidden)render()}}
+  if(vtex&&vid&&vid.readyState>=2)vtex.needsUpdate=true},
+ dbg(){return{on,mode,cur,exp:expPos(),lvl,full,tex:texOK,S}},
+ __initialized:true
+};
+}
+let cinemaObserver=null;
+function findWorld(){
+ const world=$c('#world');
+ if(world){if(cinemaObserver){cinemaObserver.disconnect();cinemaObserver=null;}initCinema(world);return true;}
+ return false;
+}
+if(!findWorld()){
+ cinemaObserver=new MutationObserver(()=>findWorld());
+ cinemaObserver.observe(document.documentElement,{childList:true,subtree:true});
+}
+})();
+
+</script>
 <style>#squadOffline{position:fixed;z-index:99999;inset-inline:12px;top:calc(8px + env(safe-area-inset-top,0px));margin:auto;width:max-content;max-width:calc(100% - 24px);padding:8px 14px;border:1px solid #d9b76d;border-radius:999px;background:#171717;color:#f5d98e;font:600 12px Cairo,sans-serif;box-shadow:0 5px 22px #0008}#squadOffline[hidden]{display:none}</style><div id="squadOffline" role="status" aria-live="polite" hidden>You are offline — saved content is available; messaging and multiplayer are temporarily paused.</div>
 <script>/* v112: مؤشر اتصال واضح، مع استمرار فتح الواجهة المحفوظة دون إنترنت. */(()=>{const el=document.getElementById('squadOffline');function sync(){if(el)el.hidden=navigator.onLine}addEventListener('online',sync);addEventListener('offline',sync);sync()})();</script>
 <script>
@@ -227,14 +324,14 @@
   const promise=new Promise((resolve,reject)=>{
    const existing=[...document.scripts].find(x=>x.dataset.squadLazy===src);
    if(existing){if(existing.dataset.loaded==='1')return resolve();existing.addEventListener('load',resolve,{once:true});existing.addEventListener('error',()=>reject(Error('تعذر تحميل '+src)),{once:true});return}
-   const el=document.createElement('script');el.src=src+'?v=20261103a';el.dataset.squadLazy=src;
+   const el=document.createElement('script');el.src=src;el.dataset.squadLazy=src;
    el.onload=()=>{el.dataset.loaded='1';resolve()};el.onerror=()=>{pending.delete(src);reject(Error('تعذر تحميل '+src))};document.head.appendChild(el);
   }); pending.set(src,promise);return promise;
  }
- window.SQUAD_LOAD_WORLD=()=>load('world.js');
- window.SQUAD_LOAD_DISTRICT=()=>load('district-core.js').then(()=>load('district.js'));
+ window.SQUAD_LOAD_WORLD=()=>load('chanse2/world.js');
+ window.SQUAD_LOAD_DISTRICT=()=>load('chanse1/district-core.js').then(()=>load('chanse2/district.js'));
 })();
-</script><script src="welcome.js?v=20261103a"></script><script src="luxe.js?v=20261103a"></script>
+</script><script src="chanse4/welcome.js"></script><script src="chanse1/luxe.js"></script>
 <script>
 /* تحديث تلقائي خفيف: ملف manifest واحد بدل تنزيل عشرات الملفات دوريًا. حدّث version.json مع كل نشر. */
 (()=>{let base=null,pending=false;const safeToReload=()=>{const chat=document.getElementById('chat'),city=document.getElementById('dst');const typing=document.activeElement&&(document.activeElement.matches('input,textarea,[contenteditable=true]'));return !(chat&&chat.classList.contains('open'))&&!(city&&!city.hidden)&&!typing&&!window.SQUAD_CALL_ACTIVE&&!window.DISTRICT_SESSION_ACTIVE};const chk=async()=>{try{const r=await fetch('version.json',{cache:'no-store'});if(!r.ok)return;const t=await r.text();if(base===null)base=t;else if(t!==base){pending=true;const e=document.getElementById('ts');if(e){e.textContent='A new update is ready. It will install when your call, city session, or chat is safe to close.';e.hidden=false;if(safeToReload())setTimeout(()=>{if(safeToReload())location.reload()},1200)}}}catch(e){}};setTimeout(chk,10000);setInterval(()=>{if(pending&&safeToReload())location.reload();else chk()},480000);document.addEventListener('visibilitychange',()=>{if(document.hidden)return;if(pending&&safeToReload())location.reload();else chk()})})();
@@ -243,28 +340,68 @@
 /* v90: real home-hub shortcuts connected to existing destinations */
 (()=>{const h=document.getElementById('squadHub');if(!h)return;h.addEventListener('click',async e=>{const b=e.target.closest('[data-hub]');if(!b)return;const k=b.dataset.hub;try{if(k==='city'){await window.SQUAD_LOAD_DISTRICT();window.DISTRICT&&DISTRICT.enter({})}else if(k==='cafe'){await window.SQUAD_LOAD_WORLD();window.WORLD&&WORLD.enter()}else{const n=document.querySelector(`#nav [data-go=\"${k}\"]`);if(n)n.click()}}catch(err){console.error('lazy game load',err);window.toast&&toast('تعذر تحميل اللعبة. راجع اتصال الإنترنت وحاول مرة أخرى.')}})})();
 </script>
-<script src="admin-monitor.js?v=20261103a"></script>
-<script src="english-ui-v152.js?v=20261103a"></script>
-<script src="auth-scene.js?v=20261103a" defer></script>
-<script src="v160-aurora.js?v=20261103a" defer></script>
-<script src="v162-global-hub.js?v=20261103a" defer></script>
-<script src="v163-community-evolution.js?v=20261103a" defer></script>
-<script src="v164-platform-expansion.js?v=20261103a" defer></script>
-<script src="v165-squad-universe.js?v=20261103a" defer></script>
-<script src="v166-global-connect.js?v=20261103a" defer></script>
-<script src="v168-universe-integration.js?v=20261103a" defer></script>
-<script src="v170-personal-vault.js?v=20261103a" defer></script>
-<script src="v171-achievements.js?v=20261103a" defer></script>
-<script src="v172-events-hub.js?v=20261103a" defer></script>
-<script src="v173-shared-events.js?v=20261103a" defer></script>
-<script src="v178-civilization.js?v=20261103a" defer></script>
-<script src="v179-living-universe.js?v=20261103a" defer></script>
-<script src="v180-city-life.js?v=20261103a" defer></script>
-<script src="v181-world-systems.js?v=20261103a" defer></script>
-<script src="v182-cloud-sync.js?v=20261103a" defer></script>
-<script src="v184-universe-suite.js?v=20261103a" defer></script>
-<script src="v185-universe-cloud-sync.js?v=20261103a" defer></script>
-<script src="v186-control-center.js?v=20261103a" defer></script>
-<script src="v187-call-network.js?v=20261103a" defer></script>
+<script src="chanse3/admin-monitor.js"></script>
+<script src="chanse4/english-ui-v152.js"></script>
+<script src="chanse2/auth-scene.js" defer></script>
+<script src="v160-aurora.js" defer></script>
+<script src="v162-global-hub.js" defer></script>
+<script src="v163-community-evolution.js" defer></script>
+<script src="v164-platform-expansion.js" defer></script>
+<script>
+/* v188 hotfix: create Universe event handlers only after its root exists. */
+/* v165-squad-universe.js is intentionally inlined here for this single-file repair. */
+/* The Squad v165 — Squad Universe. Additive, local-first companion layer.
+   No existing Firebase schema, auth, chat, rooms, rules, or legacy feature is replaced. */
+(()=>{'use strict';
+if(window.SquadV165)return;
+const $=(s,r=document)=>r.querySelector(s), esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const userKey=()=>{try{return window.firebase?.auth?.().currentUser?.uid||'guest'}catch(_){return'guest'}};
+const key=k=>`squad.v165.${userKey()}.${k}`;
+const read=(k,fallback=[])=>{try{const v=JSON.parse(localStorage.getItem(key(k)));return v??fallback}catch(_){return fallback}};
+const write=(k,v)=>{try{localStorage.setItem(key(k),JSON.stringify(v));return true}catch(_){notify('مساحة التخزين ممتلئة؛ احذف بعض العناصر القديمة.');return false}};
+const notify=m=>window.toast?window.toast(m):console.info('[Squad]',m);
+let root=null,tab='overview';
+const nav=[['overview','✦','الرئيسية'],['workspace','▤','مساحة العمل'],['avatar','◉','استوديو الشخصية'],['home','⌂','بيتي الافتراضي'],['memories','◷','ذكرياتي'],['map','⌖','خريطة العالم'],['circles','◎','دوائري'],['ai','✧','مساعداتي']];
+const defaults={avatar:{style:'neon',color:'#c7a45b',accessory:'تاج ضوئي'},home:{name:'منزلي الأول',style:'skyline',items:['أريكة فاخرة','شاشة سينما','نبات مضيء']},wallet:{coins:250,history:[]}};
+const get=(k)=>read(k,defaults[k]||[]);
+function open(t){tab=t||'overview';if(!root){root=document.createElement('section');root.id='sq165';root.className='sq165-backdrop';root.hidden=true;root.innerHTML=`<div class="sq165-window" role="dialog" aria-modal="true" aria-labelledby="sq165-title"><header class="sq165-head"><div><small>THE SQUAD ∞ · UNIVERSE</small><h2 id="sq165-title">عالمك… بطريقتك</h2><p>مساحتك الاجتماعية والإبداعية والافتراضية</p></div><button data-close aria-label="إغلاق">×</button></header><nav class="sq165-nav">${nav.map(([id,icon,label])=>`<button data-tab="${id}"><i>${icon}</i><span>${label}</span></button>`).join('')}</nav><main id="sq165-content"></main><footer>v165 · البيانات الشخصية الجديدة محفوظة على هذا الجهاز حتى يتم ربطها بخدمة متزامنة</footer></div>`;root.addEventListener('click',handle);
+root.addEventListener('submit',e=>{const f=e.target.closest('form[data-form]');if(!f)return;e.preventDefault();const d=new FormData(f),type=f.dataset.form,title=String(d.get('title')||'').trim(),body=String(d.get('body')||'').trim();if(type==='task'){const a=get('tasks');a.unshift({title,priority:d.get('priority'),done:false,at:Date.now()});write('tasks',a)}if(type==='note'){const a=get('notes');a.unshift({title,body,at:Date.now()});write('notes',a)}if(type==='memory'){const a=get('memories');a.unshift({title,body,at:Date.now()});write('memories',a)}notify('تم الحفظ');render()});
+root.addEventListener('change',e=>{if(e.target.matches('[data-item]')){const h=get('home');h.items=[...root.querySelectorAll('[data-item]:checked')].map(x=>x.dataset.item);write('home',h)}});
+
+document.body.append(root)}root.hidden=false;render();}
+function close(){if(root)root.hidden=true}
+function card(title,body,extra=''){return `<section class="sq165-card ${extra}"><h3>${title}</h3>${body}</section>`}
+function overview(){const tasks=get('tasks'),mem=get('memories'),home=get('home'),wallet=get('wallet');return `<section class="sq165-hero"><span>YOUR PERSONAL UNIVERSE</span><h3>أهلاً بك في The Squad ∞</h3><p>مش مجرد شات أو شبكة اجتماعية؛ دي مساحة تجمع أصحابك وإبداعك وعالمك الافتراضي.</p><div class="sq165-stats"><b>${tasks.length}<small>مهام</small></b><b>${mem.length}<small>ذكريات</small></b><b>${wallet.coins}<small>نقاط تجريبية</small></b></div></section><div class="sq165-grid">${nav.slice(1).map(([id,ic,n])=>`<button class="sq165-tile" data-tab="${id}"><i>${ic}</i><b>${n}</b><small>${({workspace:'ملاحظات ومهام ومشاريع',avatar:'صمّم مظهرك الافتراضي',home:'منزل وأثاث ومقتنيات',memories:'احتفظ بلحظاتك المهمة',map:'أماكن افتراضية داخل اللعبة',circles:'انتقل إلى مجتمعاتك',ai:'اختصارات المساعدات الذكية'})[id]}</small><span>افتح ←</span></button>`).join('')}</div><div class="sq165-note">بيتك الحالي: <b>${esc(home.name||'منزلي')}</b> · النقاط تجريبية داخل هذا الجهاز وليست أموالًا حقيقية.</div>`}
+function workspace(){const tasks=get('tasks');return `<section class="sq165-hero"><span>SQUAD WORKSPACE</span><h3>غرفة أفكارك ومشاريعك</h3><p>أنشئ مهامًا وملاحظات وخططًا صغيرة. الحفظ محلي على هذا الجهاز.</p></section>${card('مهمة جديدة',`<form data-form="task"><input name="title" maxlength="100" placeholder="مثلاً: تجهيز فكرة فعالية" required><select name="priority"><option>عادية</option><option>مهمة</option><option>عاجلة</option></select><button class="primary">إضافة المهمة</button></form>`)}${card('ملاحظة سريعة',`<form data-form="note"><input name="title" maxlength="80" placeholder="عنوان الملاحظة" required><textarea name="body" maxlength="1500" placeholder="اكتب فكرتك هنا…"></textarea><button class="primary">حفظ الملاحظة</button></form>`)}<div class="sq165-list">${tasks.map((x,i)=>`<article class="sq165-item"><label><input type="checkbox" data-done="${i}" ${x.done?'checked':''}> <span class="${x.done?'done':''}">${esc(x.title)}</span></label><small>${esc(x.priority||'ملاحظة')}</small><button data-delete-task="${i}">حذف</button></article>`).join('')||'<p class="sq165-muted">لا توجد مهام بعد.</p>'}</div><div class="sq165-list">${get('notes').map((x,i)=>`<article class="sq165-item"><div><b>${esc(x.title)}</b><p>${esc(x.body)}</p></div><button data-delete-note="${i}">حذف</button></article>`).join('')}</div>`}
+function avatar(){const a=get('avatar');return `<section class="sq165-hero"><span>AVATAR STUDIO</span><h3>اصنع هويتك الافتراضية</h3><p>اختيارات شكلية محفوظة محليًا كتصميم أولي؛ لا تغيّر صورة حسابك العامة.</p></section><div class="sq165-avatar-preview" style="--avatar:${esc(a.color)}"><div class="sq165-orb">${a.style==='cyber'?'◈':a.style==='classic'?'♙':'✦'}</div><b>${esc(a.accessory)}</b><small>معاينة رمزية للشخصية</small></div>${card('نمط الشخصية',`<div class="sq165-choice">${[['neon','نيون مستقبلي'],['cyber','سايبربانك'],['classic','كلاسيكي']].map(([v,n])=>`<button data-avatar-style="${v}" class="${a.style===v?'selected':''}">${n}</button>`).join('')}</div><label>اللون الأساسي</label><input type="color" id="sq165-color" value="${esc(a.color)}"><label>الإكسسوار</label><select id="sq165-accessory">${['تاج ضوئي','نظارة مستقبلية','هالة نيون','بدون إكسسوار'].map(v=>`<option ${a.accessory===v?'selected':''}>${v}</option>`).join('')}</select><button class="primary" data-save-avatar>حفظ التصميم</button>`)}`}
+function home(){const h=get('home'),w=get('wallet');return `<section class="sq165-hero"><span>MY DIGITAL HOME</span><h3>مساحتك الخاصة في العالم الافتراضي</h3><p>رتّب منزلك واختر طابعه. هذا نموذج محلي وليس عقارًا أو شراءً حقيقيًا داخل السيرفر.</p></section><div class="sq165-home-preview"><span>⌂</span><b>${esc(h.name)}</b><small>${esc(h.style)}</small></div>${card('تخصيص المنزل',`<input id="sq165-home-name" maxlength="45" value="${esc(h.name)}" placeholder="اسم المنزل"><select id="sq165-home-style"><option value="skyline" ${h.style==='skyline'?'selected':''}>برج المدينة</option><option value="villa" ${h.style==='villa'?'selected':''}>فيلا هادئة</option><option value="palace" ${h.style==='palace'?'selected':''}>قصر فاخر</option></select><button class="primary" data-save-home>حفظ المنزل</button>`)}${card('المقتنيات',`<div class="sq165-inventory">${['أريكة فاخرة','شاشة سينما','نبات مضيء','لوحة فنية','مصباح نيون','طاولة ألعاب'].map(x=>`<label><input type="checkbox" data-item="${esc(x)}" ${(h.items||[]).includes(x)?'checked':''}> ${x}</label>`).join('')}</div>`)}<div class="sq165-note">رصيد تجريبي: <b>${w.coins} نقطة</b>. لا توجد مدفوعات أو تحويلات أو قيمة نقدية.</div>`}
+function memories(){const rows=get('memories');return `<section class="sq165-hero"><span>SQUAD MEMORIES</span><h3>أرشيف لحظاتك</h3><p>احفظ ذكرى أو إنجازًا أو فكرة تريد الرجوع إليها.</p></section>${card('إضافة ذكرى',`<form data-form="memory"><input name="title" maxlength="90" placeholder="عنوان الذكرى" required><textarea name="body" maxlength="1200" placeholder="اكتب ما تريد تذكره…"></textarea><button class="primary">حفظ الذكرى</button></form>`)}<div class="sq165-list">${rows.map((x,i)=>`<article class="sq165-item"><div><b>${esc(x.title)}</b><p>${esc(x.body)}</p><small>${new Date(x.at).toLocaleString()}</small></div><button data-delete-memory="${i}">حذف</button></article>`).join('')||'<p class="sq165-muted">لسه مفيش ذكريات محفوظة.</p>'}</div>`}
+function map(){const places=[['الساحة المركزية','تجمع الأصدقاء والفعاليات','🏙️'],['حيّ المبدعين','ورش ومكاتب افتراضية','🎨'],['منطقة الألعاب','تحديات وألعاب جماعية','🎮'],['شارع المتاجر','معارض ومقتنيات افتراضية','🛍️'],['شاطئ السكون','مكان هادئ للقاءات','🌅'],['مركز السينما','مشاهدة جماعية للمحتوى المسموح','🎬']];return `<section class="sq165-hero"><span>VIRTUAL WORLD MAP</span><h3>خريطة أماكن The Squad</h3><p>أماكن افتراضية مقترحة داخل اللعبة فقط. لا نستخدم GPS ولا نعرض موقعك الحقيقي.</p></section><div class="sq165-map">${places.map(([n,d,i])=>`<button data-virtual-place="${esc(n)}"><i>${i}</i><b>${n}</b><small>${d}</small><span>استكشف ←</span></button>`).join('')}</div><p class="sq165-muted">الأماكن هنا دليل تصميمي؛ ربطها بمناطق ثلاثية الأبعاد فعلية يحتاج توصيلها بمحرك المدينة الموجود.</p>`}
+function circles(){return `<section class="sq165-hero"><span>SOCIAL CIRCLES</span><h3>دوائرك ومجتمعاتك</h3><p>استخدم المجتمعات والأصدقاء الموجودة بالفعل بدل إنشاء نظام مكرر.</p></section><div class="sq165-grid"><button class="sq165-tile" data-legacy="communities"><i>🌐</i><b>المجتمعات</b><small>اكتشف وانضم للمجموعات</small><span>افتح ←</span></button><button class="sq165-tile" data-legacy="friends"><i>🤝</i><b>الأصدقاء</b><small>إدارة علاقاتك داخل المنصة</small><span>افتح ←</span></button><button class="sq165-tile" data-legacy="feed"><i>✦</i><b>المنشورات</b><small>تابع جديد مجتمعك</small><span>افتح ←</span></button></div><p class="sq165-muted">قوائم الأصدقاء والمجتمعات الفعلية تظل تحت إدارة الأنظمة الأصلية في The Squad.</p>`}
+function ai(){return `<section class="sq165-hero"><span>AI TOOLBOX</span><h3>مساعداتك الذكية</h3><p>اختصارات تفتح المواقع الرسمية في تبويب جديد؛ لا نرسل بيانات حسابك إليها.</p></section><div class="sq165-grid">${[['ChatGPT','https://chatgpt.com','🤖'],['Claude','https://claude.ai','✧'],['Gemini','https://gemini.google.com','◇']].map(([n,u,i])=>`<a class="sq165-tile" href="${u}" target="_blank" rel="noopener noreferrer"><i>${i}</i><b>${n}</b><small>افتح المساعد في موقعه الرسمي</small><span>فتح ↗</span></a>`).join('')}</div><p class="sq165-muted">هذه اختصارات فقط، وليست تكامل API أو مساعدًا مدمجًا داخل المحادثات.</p>`}
+function render(){if(!root)return;root.querySelectorAll('[data-tab]').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));const views={overview,workspace,avatar,home,memories,map,circles,ai};$('#sq165-content',root).innerHTML=(views[tab]||overview)()}
+function handle(e){const b=e.target.closest('button');if(b){if(b.hasAttribute('data-close'))return close();if(b.dataset.tab){tab=b.dataset.tab;return render()}if(b.dataset.avatarStyle){const a=get('avatar');a.style=b.dataset.avatarStyle;write('avatar',a);return render()}if(b.hasAttribute('data-save-avatar')){const a=get('avatar');a.color=$('#sq165-color',root).value;a.accessory=$('#sq165-accessory',root).value;write('avatar',a);notify('تم حفظ تصميم الشخصية على هذا الجهاز');return render()}if(b.hasAttribute('data-save-home')){const h=get('home');h.name=$('#sq165-home-name',root).value.trim()||'منزلي';h.style=$('#sq165-home-style',root).value;h.items=[...root.querySelectorAll('[data-item]:checked')].map(x=>x.dataset.item);write('home',h);notify('تم حفظ المنزل الافتراضي');return render()}if(b.dataset.deleteTask!==undefined){const a=get('tasks');a.splice(+b.dataset.deleteTask,1);write('tasks',a);return render()}if(b.dataset.deleteNote!==undefined){const a=get('notes');a.splice(+b.dataset.deleteNote,1);write('notes',a);return render()}if(b.dataset.deleteMemory!==undefined){const a=get('memories');a.splice(+b.dataset.deleteMemory,1);write('memories',a);return render()}if(b.dataset.virtualPlace){notify(`تم اختيار ${b.dataset.virtualPlace} — ربط المنطقة بمحرك العالم خطوة لاحقة.`);return}if(b.dataset.legacy){close();const k=b.dataset.legacy;document.querySelector(`[data-social="${k==='communities'?'explore':k}"]`)?.click();if(k==='communities')document.querySelector('#nav [data-go="find"]')?.click();return}}
+if(e.target.matches('[data-done]')){const a=get('tasks');a[+e.target.dataset.done].done=e.target.checked;write('tasks',a);return render()}}
+function launcher(){const host=$('#social-main .dr-actions');if(!host||host.querySelector('[data-sq165-open]'))return;const b=document.createElement('button');b.type='button';b.className='dr-icon-btn sq165-launch';b.dataset.sq165Open='1';b.textContent='∞ Universe';b.addEventListener('click',()=>open());host.append(b)}
+const observer=new MutationObserver(launcher);if(document.body)observer.observe(document.body,{childList:true,subtree:true});launcher();document.addEventListener('keydown',e=>{if(e.key==='Escape'&&root&&!root.hidden)close()});window.SquadV165={open,close,version:165};
+})();
+
+</script>
+<script src="v166-global-connect.js" defer></script>
+<script src="v168-universe-integration.js" defer></script>
+<script src="v170-personal-vault.js" defer></script>
+<script src="v171-achievements.js" defer></script>
+<script src="v172-events-hub.js" defer></script>
+<script src="v173-shared-events.js" defer></script>
+<script src="v178-civilization.js" defer></script>
+<script src="v179-living-universe.js" defer></script>
+<script src="v180-city-life.js" defer></script>
+<script src="v181-world-systems.js" defer></script>
+<script src="v182-cloud-sync.js" defer></script>
+<script src="v184-universe-suite.js" defer></script>
+<script src="v185-universe-cloud-sync.js" defer></script>
+<script src="v186-control-center.js" defer></script>
+<script src="v187-call-network.js" defer></script>
+<div class="squad-credit" aria-label="Design credit">Designed by Ahmed Fouad — The Devil Behind the Code 😈</div>
 </body>
 </html>

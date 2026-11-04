@@ -5,6 +5,7 @@
 const AU=$('#auth'),CARD=AU.querySelector('.card');
 /* ---------- بيانات ثابتة ---------- */
 const flag=iso=>String.fromCodePoint(...[...iso].map(c=>127397+c.charCodeAt(0)));
+// [iso, الاسم, مفتاح الدولة, أقل طول, أكبر طول] (الطول بدون صفر البداية)
 const CTR=[['EG','مصر','20',10,10],['SA','السعودية','966',9,9],['AE','الإمارات','971',9,9],['KW','الكويت','965',8,8],['QA','قطر','974',8,8],['BH','البحرين','973',8,8],['OM','عُمان','968',8,8],['JO','الأردن','962',9,9],['LB','لبنان','961',7,8],['IQ','العراق','964',10,10],['SY','سوريا','963',9,9],['PS','فلسطين','970',9,9],['YE','اليمن','967',9,9],['LY','ليبيا','218',9,10],['TN','تونس','216',8,8],['DZ','الجزائر','213',9,9],['MA','المغرب','212',9,9],['SD','السودان','249',9,9],['SO','الصومال','252',7,9],['MR','موريتانيا','222',8,8],['TR','تركيا','90',10,10],['US','أمريكا وكندا','1',10,10],['GB','بريطانيا','44',10,10],['DE','ألمانيا','49',10,11],['FR','فرنسا','33',9,9],['IT','إيطاليا','39',9,10],['ES','إسبانيا','34',9,9],['NL','هولندا','31',9,9],['SE','السويد','46',7,10],['GR','اليونان','30',10,10],['CY','قبرص','357',8,8],['RU','روسيا','7',10,10],['AU','أستراليا','61',9,9],['BR','البرازيل','55',10,11],['IN','الهند','91',10,10],['PK','باكستان','92',10,10],['MY','ماليزيا','60',9,10],['ID','إندونيسيا','62',9,12],['CN','الصين','86',11,11],['JP','اليابان','81',9,10],['KR','كوريا الجنوبية','82',9,10]];
 const RESERVED=['admin','administrator','squad','thesquad','support','official','root','system','moderator','help'];
 const MONTHS=['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
@@ -12,6 +13,7 @@ const MINAGE=13,UNRE=/^[a-z][a-z0-9_.]{2,19}$/;
 const PVL=[['none','محدش'],['contacts','جهات الاتصال'],['all','الكل']];
 Object.assign(AE,{'x-rules':'مقدرتش أحفظ بيانات الحساب. غالباً لازم تنشر ملف firestore.rules الجديد في Firebase الأول','x-un':'اسم المستخدم محجوز، اختار اسم تاني','x-nouser':'مفيش حساب بالاسم ده','x-net':'مفيش نت، حاول تاني'});
 
+/* ---------- حالة الخطوات ---------- */
 const W={step:0,name:'',un:'',email:'',ph:null,cc:'20',phone:'',d:'',m:'',y:'',bio:'',city:'',pvPhone:'none',pvBday:'none',sid:'',pw:'',pw2:''};
 const STEPS=[['اسمك واسم المستخدم','ده اللي هيظهر لأصحابك'],['صورتك الشخصية','اختياري'],['الدولة ورقم الهاتف','اختار بلدك ورقمك المحلي'],['تاريخ ميلادك','وعمرك بيتحسب لوحده'],['نبذة عنك','وبيانات اختيارية'],['بيانات تسجيل الدخول','بريدك الإلكتروني وكلمة مروره ورقمك الرسمي']];
 let unState='',unTimer=0;
@@ -22,8 +24,10 @@ const ctry=cc=>CTR.find(c=>c[2]==cc)||CTR[0];
 const natPhone=(cc,raw)=>{let s=String(raw||'').replace(/[^\d]/g,'');s=s.replace(/^0+/,'');return s};
 const strength=p=>Math.min(4,(p.length>=6)+(p.length>=10)+(/[A-Za-z]/.test(p)&&/\d/.test(p))+(/[^A-Za-z0-9]/.test(p)));
 const rndSid=()=>{const a=new Uint32Array(1);crypto.getRandomValues(a);return String(1e9+Math.floor(a[0]/4294967296*9e9))};
+// Fail closed: network/rules errors must never make a reserved ID appear available.
 const freeId=async n=>{try{const r=await callables.httpsCallable('checkAccountIdAvailability')({id:n});return !!r.data.available}catch(e){return false}};
 
+/* ---------- التبديل بين دخول / حساب جديد ---------- */
 function setM(m){mode=m;CARD.classList.toggle('signup',m=='up');
  $('#vin').hidden=m!='in';$('#vup').hidden=m!='up';
  document.querySelectorAll('.tb button').forEach(b=>b.classList.toggle('on',b.dataset.m==m));err('');
@@ -31,6 +35,7 @@ function setM(m){mode=m;CARD.classList.toggle('signup',m=='up');
 $('.tb').onclick=e=>{const b=e.target.closest('[data-m]');b&&setM(b.dataset.m)};
 $('#eye').onclick=()=>$('#pw').type=$('#pw').type=='password'?'text':'password';
 
+/* ---------- الدخول ---------- */
 let loginBusy=false;
 async function doLogin(){if(loginBusy)return;err('');const raw=$('#lid').value.trim().replace(/^@/,'').toLowerCase(),pw=$('#pw').value;
  if(!raw)return err('اكتب رقمك الخاص أو اسم المستخدم');
@@ -39,6 +44,7 @@ async function doLogin(){if(loginBusy)return;err('');const raw=$('#lid').value.t
  try{
   if(/^\d+$/.test(raw)){
    if(!OK(raw))throw{code:'x-fmt',m:'الرقم الخاص 10 أرقام وأول رقم مش صفر'};
+   // تسجيل الدخول للحسابات القديمة عبر البريد الداخلي المرتبط بالرقم، بدون Cloud Function.
    await auth.signInWithEmailAndPassword(raw+'@squad.id',pw);
   }else if(raw.includes('@')){
    await auth.signInWithEmailAndPassword(raw,pw);
@@ -49,7 +55,40 @@ async function doLogin(){if(loginBusy)return;err('');const raw=$('#lid').value.t
   }}
  catch(e){err(e.m||AE[e.code]||'حصلت مشكلة، حاول تاني')}
  finally{loginBusy=false;go.disabled=false;go.removeAttribute('aria-busy')}}
-$('#go').onclick=doLogin;/* ---------- واجهة الخطوات ---------- */
+$('#go').onclick=doLogin;
+// Password recovery is available only for real email accounts; legacy synthetic IDs need manual recovery.
+const resetBtn=document.getElementById('resetPassword');
+if(resetBtn)resetBtn.onclick=async()=>{
+ const email=String(document.getElementById('lid')?.value||'').trim().toLowerCase();
+ if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))return err('اكتب البريد الإلكتروني الحقيقي المرتبط بالحساب لاستلام رابط الاسترجاع. الحسابات القديمة التي تستخدم @squad.id تحتاج مسار استرجاع منفصل.');
+ resetBtn.disabled=true;
+ try{await auth.sendPasswordResetEmail(email);err('لو البريد مسجل، هيوصلك رابط استرجاع كلمة السر. راجع صندوق الوارد والرسائل غير المرغوب فيها.');}
+ catch(e){err('تعذر إرسال الرابط حاليًا. لو البريد مرتبط بحساب، راجع إعدادات البريد وحاول تاني بعد شوية.');}
+ finally{resetBtn.disabled=false;}
+};
+$('#pw').onkeydown=$('#lid').onkeydown=e=>{if(e.key=='Enter')doLogin()};
+
+/* ---------- إنشاء الحساب (الكتابة الفعلية في قاعدة البيانات) ---------- */
+window.signup=async function signup(n,pw,name,x){x=x||{};
+ const loginEmail=String(x.email||'').trim().toLowerCase();
+ const cr=await auth.createUserWithEmailAndPassword(loginEmail||MAIL(n),pw),u=cr.user,b=db.batch();
+ const doc={sid:n,name,bio:x.bio||'',pins:[],created:FV.serverTimestamp(),pv:{phone:x.pvPhone||'none',bday:x.pvBday||'none'}};
+ if(x.un)doc.un=x.un;if(x.city)doc.city=x.city;
+ b.set(db.doc('users/'+u.uid),doc);
+ b.set(db.doc('publicProfiles/'+u.uid),{name,bio:x.bio||'',...(x.un?{un:x.un}:{}),...(x.city?{city:x.city}:{})});
+ b.set(db.doc('ids/'+n),{u:u.uid});
+ if(x.un)b.set(db.doc('usernames/'+x.un),{u:u.uid});
+ if(x.ph)b.set(db.doc('photos/'+u.uid),{ph:x.ph});
+ if(x.phone)b.set(db.doc('phones/'+u.uid),{v:x.phone});
+ if(x.bday)b.set(db.doc('bdays/'+u.uid),{v:x.bday});
+ try{await b.commit()}catch(e){await u.delete().catch(()=>{});throw{code:e&&e.code=='permission-denied'?'x-rules':'x-taken'}}
+ try{await u.updateProfile({displayName:name})}catch(e){}
+ // Send verification for new real-email accounts. Signup remains usable while the user verifies;
+ // enforcement is deferred until legacy-account migration and recovery are designed.
+ if(loginEmail){try{await u.sendEmailVerification()}catch(e){console.warn('Email verification could not be sent',e)}}
+ if(x.ph)PH[u.uid]=x.ph};
+
+/* ---------- واجهة الخطوات ---------- */
 const E=s=>document.getElementById(s);
 function grab(){const g=id=>{const e=E(id);return e?e.value:undefined};
  const set=(k,v)=>{if(v!==undefined)W[k]=v};
@@ -154,7 +193,9 @@ async function checkUn(){const el=E('sust'),u=(E('su')?E('su').value:W.un).trim(
 async function checkSid(){const el=E('ssst'),n=E('ssid')?E('ssid').value:'';if(!el)return;el.className='';el.textContent='';if(!n)return;
  if(!OK(n))return el.textContent='10 أرقام وأول رقم مش صفر';
  const f=await freeId(n);if(!E('ssid')||E('ssid').value!=n)return;el.textContent=f?'✅ الرقم متاح':'❌ الرقم محجوز';el.className=f?'ok':'bad'}
-async function suggest(){for(let i=0;i<12;i++){const n=rndSid();if(await freeId(n)){W.sid=n;const e=E('ssid');if(e){e.value=n;checkSid()}return}}err('مقدرتش ألاقي رقم متاح، جرب تاني')}/* ---------- الصورة: اختيار + قص + معاينة ---------- */
+async function suggest(){for(let i=0;i<12;i++){const n=rndSid();if(await freeId(n)){W.sid=n;const e=E('ssid');if(e){e.value=n;checkSid()}return}}err('مقدرتش ألاقي رقم متاح، جرب تاني')}
+
+/* ---------- الصورة: اختيار + قص + معاينة ---------- */
 const CV={img:null,z:1,x:0,y:0,base:1,S:280};
 const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
 function cvDraw(){const c=E('cv');if(!c)return;const g=c.getContext('2d'),S=CV.S;g.fillStyle='#15130c';g.fillRect(0,0,S,S);
