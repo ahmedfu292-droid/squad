@@ -3,6 +3,25 @@ service cloud.firestore {
   match /databases/{database}/documents {
 
     function signed() { return request.auth != null; }
+    function validWorldState(s) {
+      return s is map
+        && s.keys().hasOnly(['schema','xp','rep','contribution','memories','proposals','votes','challenges','projects','radio','designs','visits','journal','coins','updatedAt'])
+        && s.get('schema', 0) == 1
+        && s.get('xp', 0) is number && s.get('xp', 0) >= 0 && s.get('xp', 0) <= 10000000
+        && s.get('rep', 0) is number && s.get('rep', 0) >= 0 && s.get('rep', 0) <= 10000000
+        && s.get('contribution', 0) is number && s.get('contribution', 0) >= 0 && s.get('contribution', 0) <= 10000000
+        && s.get('coins', 0) is number && s.get('coins', 0) >= 0 && s.get('coins', 0) <= 10000000
+        && s.get('memories', []) is list && s.get('memories', []).size() <= 80
+        && s.get('proposals', []) is list && s.get('proposals', []).size() <= 100
+        && s.get('challenges', []) is list && s.get('challenges', []).size() <= 100
+        && s.get('projects', []) is list && s.get('projects', []).size() <= 100
+        && s.get('designs', []) is list && s.get('designs', []).size() <= 100
+        && s.get('visits', []) is list && s.get('visits', []).size() <= 200
+        && s.get('journal', []) is list && s.get('journal', []).size() <= 100
+        && s.get('votes', {}) is map && s.get('votes', {}).size() <= 100
+        && s.get('radio', '') is string && s.get('radio', '').size() <= 60
+        && s.get('updatedAt', 0) is number;
+    }
     function isMember(c) {
       return signed() && request.auth.uid in get(/databases/$(database)/documents/chats/$(c)).data.members;
     }
@@ -736,18 +755,20 @@ service cloud.firestore {
     match /events/{eventId} {
       allow read: if signed();
       allow create: if signed()
-        && request.resource.data.keys().hasOnly(['ownerUid','ownerName','title','place','description','eventAt','createdAt','status'])
+        && request.resource.data.keys().hasOnly(['ownerUid','ownerName','title','type','place','description','eventAt','createdAt','status'])
         && request.resource.data.ownerUid == request.auth.uid
         && request.resource.data.ownerName is string && request.resource.data.ownerName.size() <= 50
         && request.resource.data.title is string && request.resource.data.title.size() > 0 && request.resource.data.title.size() <= 70
+        && (!('type' in request.resource.data) || request.resource.data.type in ['social','game','city','creative','watch'])
         && request.resource.data.place is string && request.resource.data.place.size() <= 100
         && request.resource.data.description is string && request.resource.data.description.size() <= 400
         && request.resource.data.eventAt is timestamp && request.resource.data.eventAt > request.time
         && request.resource.data.createdAt == request.time
         && request.resource.data.status == 'published';
       allow update: if signed() && resource.data.ownerUid == request.auth.uid
-        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['title','place','description','eventAt','status'])
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['title','type','place','description','eventAt','status'])
         && request.resource.data.title is string && request.resource.data.title.size() > 0 && request.resource.data.title.size() <= 70
+        && (!('type' in request.resource.data) || request.resource.data.type in ['social','game','city','creative','watch'])
         && request.resource.data.place is string && request.resource.data.place.size() <= 100
         && request.resource.data.description is string && request.resource.data.description.size() <= 400
         && request.resource.data.eventAt is timestamp
@@ -755,13 +776,92 @@ service cloud.firestore {
       allow delete: if signed() && resource.data.ownerUid == request.auth.uid;
       match /attendees/{attendeeUid} {
         allow read: if signed();
+        // Only the member themselves can confirm attendance, and only after accepting an invite (or as host).
         allow create: if signed() && request.auth.uid == attendeeUid
           && request.resource.data.keys().hasOnly(['uid','createdAt'])
           && request.resource.data.uid == request.auth.uid
-          && request.resource.data.createdAt == request.time;
+          && request.resource.data.createdAt == request.time
+          && get(/databases/$(database)/documents/events/$(eventId)).data.status == 'published'
+          && (get(/databases/$(database)/documents/events/$(eventId)).data.ownerUid == request.auth.uid
+            || getAfter(/databases/$(database)/documents/events/$(eventId)/invitations/$(attendeeUid)).data.status == 'accepted');
         allow delete: if signed() && request.auth.uid == attendeeUid;
         allow update: if false;
       }
+      match /invitations/{inviteeUid} {
+        allow get, list: if signed() && (resource.data.inviteeUid == request.auth.uid
+          || request.auth.uid == get(/databases/$(database)/documents/events/$(eventId)).data.ownerUid);
+        allow create: if signed()
+          && request.auth.uid == get(/databases/$(database)/documents/events/$(eventId)).data.ownerUid
+          && inviteeUid != request.auth.uid
+          && exists(/databases/$(database)/documents/users/$(request.auth.uid)/friends/$(inviteeUid))
+          && request.resource.data.keys().hasOnly(['inviteeUid','invitedBy','invitedByName','status','createdAt'])
+          && request.resource.data.inviteeUid == inviteeUid
+          && request.resource.data.invitedBy == request.auth.uid
+          && request.resource.data.invitedByName is string && request.resource.data.invitedByName.size() <= 50
+          && request.resource.data.status == 'pending'
+          && request.resource.data.createdAt == request.time;
+        allow update: if signed() && request.auth.uid == inviteeUid
+          && resource.data.inviteeUid == request.auth.uid
+          && resource.data.status == 'pending'
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status','updatedAt'])
+          && request.resource.data.status in ['accepted','rejected']
+          && request.resource.data.updatedAt == request.time;
+        allow delete: if signed() && (request.auth.uid == inviteeUid
+          || request.auth.uid == get(/databases/$(database)/documents/events/$(eventId)).data.ownerUid);
+      }
+    }
+
+
+    // v182: private per-account World Systems backup. No client can read or alter another UID's state.
+    match /worldState/{ownerUid} {
+      allow read: if signed() && request.auth.uid == ownerUid;
+      allow create, update: if signed() && request.auth.uid == ownerUid
+        && request.resource.data.keys().hasOnly(['uid','schema','state','updatedAt'])
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.schema == 1
+        && validWorldState(request.resource.data.state)
+        && request.resource.data.updatedAt == request.time;
+      allow delete: if false;
+    }
+
+    // v185: private account-scoped Universe Suite state. Never readable by other accounts.
+    match /universeSuiteState/{ownerUid} {
+      allow read: if signed() && request.auth.uid == ownerUid;
+      allow create, update: if signed() && request.auth.uid == ownerUid
+        && request.resource.data.keys().hasOnly(['uid','schema','state','updatedAt'])
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.schema == 1
+        && request.resource.data.updatedAt == request.time
+        && request.resource.data.state is map
+        && request.resource.data.state.keys().hasOnly(['schema','entries','profile','home','season','time','activeWorld','tasks','search','group','updatedAt'])
+        && request.resource.data.state.schema == 1
+        && request.resource.data.state.entries is list
+        && request.resource.data.state.entries.size() <= 250
+        && request.resource.data.state.tasks is list
+        && request.resource.data.state.tasks.size() <= 100
+        && request.resource.data.state.profile is map
+        && request.resource.data.state.profile.keys().hasOnly(['name','interest'])
+        && request.resource.data.state.home is map
+        && request.resource.data.state.home.keys().hasOnly(['style','upgrades'])
+        && request.resource.data.state.home.upgrades is list
+        && request.resource.data.state.home.upgrades.size() <= 40
+        && request.resource.data.state.updatedAt is number
+        && request.resource.data.state.updatedAt >= 0;
+      allow delete: if false;
+    }
+
+    // v183: public, sanitized city activity board. Private journals/memories never enter this collection.
+    match /worldCommunity/{ownerUid} {
+      allow read: if signed();
+      allow create, update: if signed() && request.auth.uid == ownerUid
+        && request.resource.data.keys().hasOnly(['uid','displayName','activity','updatedAt'])
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.displayName is string
+        && request.resource.data.displayName.size() <= 40
+        && request.resource.data.activity is string
+        && request.resource.data.activity.size() <= 5000
+        && request.resource.data.updatedAt == request.time;
+      allow delete: if signed() && request.auth.uid == ownerUid;
     }
 
   }
