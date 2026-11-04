@@ -57,7 +57,7 @@ function actions(){
  go.push({g:'Go to',label:'Open City',hint:'3D world',kw:'مدينه عالم سيارات city',icon:'🏙',run:async()=>{try{await window.SQUAD_LOAD_DISTRICT();window.DISTRICT&&DISTRICT.enter({})}catch(_){say('Could not load the city. Check your connection.')}}},
   {g:'Go to',label:'The Café',hint:'3D lounge',kw:'كافيه قهوه cafe',icon:'☕',run:async()=>{try{await window.SQUAD_LOAD_WORLD();window.WORLD&&WORLD.enter()}catch(_){say('Could not load the café. Check your connection.')}}},
   {g:'Go to',label:'Cinema',hint:'Watch together',kw:'سينما فيلم cinema',icon:'▣',run:press('#social-aside [data-hub="cinema"]')},
-  {g:'Go to',label:'Services Hub',kw:'خدمات مساعد متجر العاب',icon:'✧',run:()=>{location.href='services-hub.html'}});
+  {g:'Go to',label:'Services Hub',kw:'خدمات مساعد متجر العاب',icon:'✧',run:()=>{location.href='chanse3/services-hub.html'}});
  const chats=$$('#list .wi,#dr-chat-list>*').slice(0,80).map(n=>{const t=(($('b,strong,.nm,.n,h4',n)||n).textContent||'').replace(/\s+/g,' ').trim().slice(0,60);return t&&{g:'Conversations',label:t,icon:'💬',kw:'',run:()=>n.click()}}).filter(Boolean);
  const sys=[
   {g:'System',label:'Toggle light / dark theme',kw:'مظهر ثيم داكن فاتح theme',icon:'◐',run:()=>{const b=$('#thm');if(!b)return;d.startViewTransition&&!reduced()?d.startViewTransition(()=>b.click()):b.click()}},
