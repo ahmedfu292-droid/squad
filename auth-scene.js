@@ -56,7 +56,7 @@
  const showHint=()=>{if(!lit&&!reduced)root.classList.add('hint-ready');};
  window.setTimeout(showHint,2000);
  document.addEventListener('visibilitychange',()=>root.classList.toggle('is-paused',document.hidden));
- const syncStateInner=()=>{
+ const syncState=()=>{
   if(root.hidden){if(root.dataset.everShown==='1'){setState('success');const wash=document.createElement('div');wash.className='scene-exit-wash';wash.setAttribute('aria-hidden','true');document.body.appendChild(wash);window.setTimeout(()=>wash.remove(),reduced?220:820);}return;}
   root.classList.add('auth-active');
   if(root.querySelector('#vup:not([hidden])')){root.classList.add('is-new-account');root.classList.remove('is-account-switch');setState('new-account');}
@@ -67,10 +67,7 @@
   else if(!lit)setState('before-pull');
   root.dataset.everShown='1';
  };
- /* FIX: syncState بيعدّل class على نفس العنصر المراقَب، فكان بيشغّل المراقب من جديد في حلقة لا نهائية وبيجمّد الصفحة. بنفضّي السجلات الناتجة عن تعديلاته هو. */
- let authObserver=null;
- const syncState=()=>{syncStateInner();try{authObserver&&authObserver.takeRecords()}catch(e){}};
- authObserver=new MutationObserver(syncState);
+ const authObserver=new MutationObserver(syncState);
  authObserver.observe(root,{attributes:true,attributeFilter:['hidden','class'],childList:true,subtree:true});
  if(!root.hidden){root.dataset.everShown='1';setState('before-pull');}
  if(error){const errorObserver=new MutationObserver(()=>{const has=!!error.textContent.trim();root.classList.toggle('is-error',has);card.classList.toggle('is-error',has);if(has){setState('error');window.clearTimeout(errorTimer);errorTimer=window.setTimeout(()=>{root.classList.remove('is-error');card.classList.remove('is-error');syncState();},reduced?100:1800);}else syncState();});errorObserver.observe(error,{childList:true,subtree:true,characterData:true});}
