@@ -16,8 +16,10 @@ document.head.insertAdjacentHTML('beforeend',`<style>
 #wcl .mv{display:flex;flex-direction:column;gap:5px;padding:8px;border-radius:10px;background:rgba(255,255,255,.06);margin-top:6px}#wcl .mv b{font-size:13.5px}#wcl .mv small{color:#9fb0d8}
 #wcinv{position:absolute;top:calc(10px + env(safe-area-inset-top,0px));inset-inline:10px;z-index:7;display:flex;gap:8px;justify-content:center}#wcinv[hidden]{display:none}#wcinv button{padding:9px 14px;border-radius:14px;border:1px solid rgba(255,255,255,.2);background:rgba(10,14,30,.78);color:#fff;font:700 14px Cairo,sans-serif}
 </style>`);
-document.body.insertAdjacentHTML('beforeend','');
-const root=$c('#world');
+/* The 3D world is loaded on demand. Wait for its host instead of crashing at page startup. */
+function initCinema(root){
+if(!root || typeof root.insertAdjacentHTML!=='function')return;
+if(window.CINEMA&&window.CINEMA.__initialized)return;
 root.insertAdjacentHTML('beforeend',`<button id="wcinb" hidden>🎬 السينما</button>
 <div id="wcinv" hidden><button id="wcvp">⏯</button><button id="wcvx">✕ رجوع للغرفة</button></div>
 <div id="wcin" hidden>
@@ -104,5 +106,18 @@ window.CINEMA={
  tick(P,t){if(!on)return;const nl=P.lv;if(nl!=lvl){const was=lvl;lvl=nl;$c('#wcinb').hidden=lvl!=2;if(lvl==2){if(S&&S.url&&S.pl)hint='فيه فيلم شغّال — بيتعرض على الشاشة الكبيرة';render();sync(1)}else if(was==2){openP(0);if(vid&&!vid.paused&&!full)vid.pause()}}
   if(t-lastChk>1500){lastChk=t;if(lvl==2||full){sync(0);if(!$c('#wcin').hidden)render()}}
   if(vtex&&vid&&vid.readyState>=2)vtex.needsUpdate=true},
- dbg(){return{on,mode,cur,exp:expPos(),lvl,full,tex:texOK,S}}};
+ dbg(){return{on,mode,cur,exp:expPos(),lvl,full,tex:texOK,S}},
+ __initialized:true
+};
+}
+let cinemaObserver=null;
+function findWorld(){
+ const world=$c('#world');
+ if(world && world.isConnected){if(cinemaObserver){cinemaObserver.disconnect();cinemaObserver=null;}initCinema(world);return true;}
+ return false;
+}
+if(!findWorld()){
+ cinemaObserver=new MutationObserver(()=>findWorld());
+ cinemaObserver.observe(document.documentElement,{childList:true,subtree:true});
+}
 })();

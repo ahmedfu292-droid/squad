@@ -4,7 +4,7 @@
  const byId=id=>document.getElementById(id);
  let shown=false,lastReason='';
  const text={local:'أنت فاتح index.html مباشرة من الجهاز. افتح المشروع من سيرفر محلي: شغّل npm run dev داخل مجلد المشروع ثم افتح الرابط الذي يظهر في الطرفية. لا تستخدم file://.',offline:'الجهاز غير متصل بالإنترنت. يمكنك رؤية شاشة الدخول، لكن تسجيل الدخول والمزامنة والخدمات السحابية تحتاج اتصالًا.',sdk:'مكتبات Firebase لم تُحمّل. تأكد من الإنترنت، وعدم حجب gstatic.com، ثم أعد المحاولة.',config:'مكتبات Firebase موجودة لكن التطبيق لم يبدأ. راجع إعدادات Web App في chanse4/firebase-config.js.',generic:'تعذر إكمال بدء The Squad. راجع اتصال الإنترنت وإعداد Firebase، ثم اضغط «إعادة المحاولة».',online:'عاد الاتصال بالإنترنت. اضغط «إعادة المحاولة» لإعادة تحميل التطبيق.'};
- function diagnose(){if(location.protocol==='file:')return text.local;if(navigator.onLine===false)return text.offline;if(!window.firebase)return text.sdk;if(!window.firebase.apps||!window.firebase.apps.length)return text.config;return text.generic}
+ function diagnose(){if(location.protocol==='file:')return text.local;if(navigator.onLine===false)return text.offline;if(!window.firebase)return text.sdk;const c=window.firebaseConfig||window.firebaseConfigWeb||null;if(c&&(!c.apiKey||!c.projectId||!c.appId))return text.config;if(!window.firebase.apps||!window.firebase.apps.length)return text.generic;return text.generic}
  function recover(reason){
   if(shown||window.__squadBootReady)return;
   const splash=byId('splash'),auth=byId('auth'),app=byId('app');if(!splash||!auth)return;
