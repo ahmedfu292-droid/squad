@@ -1,31 +1,46 @@
-/* The Squad v148 — audited admin monitor */
-#sqAdminLaunch{position:fixed;z-index:9900;bottom:calc(86px + env(safe-area-inset-bottom,0px));inset-inline-end:14px;border:1px solid #b9954d;background:linear-gradient(135deg,#201b12,#090b10);color:#f4d78c;border-radius:999px;padding:11px 15px;font:700 13px Cairo, sans-serif;box-shadow:0 8px 28px #0008;display:none;cursor:pointer}
-#sqAdminLaunch.show{display:block}
-#sqAdmin{position:fixed;z-index:100000;inset:0;background:#07090df2;color:#edf2f8;display:none;overflow:auto;font:14px/1.6 Cairo,system-ui,sans-serif;padding:16px;box-sizing:border-box}
-#sqAdmin.open{display:block}
-#sqAdmin *{box-sizing:border-box}
-#sqAdmin .am-wrap{max-width:1180px;margin:0 auto}
-#sqAdmin .am-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;border-bottom:1px solid #ffffff18;padding:8px 0 16px;margin-bottom:18px}
-#sqAdmin .am-brand{font-size:22px;font-weight:900;color:#f2d28a}
-#sqAdmin .am-sub{color:#9ca8b7;font-size:12px}
-#sqAdmin button{border:1px solid #ffffff20;background:#171d27;color:#eef2f7;border-radius:10px;padding:9px 13px;font:700 13px Cairo, sans-serif;cursor:pointer}
-#sqAdmin button.primary{background:#b38b42;color:#17120a;border-color:#d7b76d}
-#sqAdmin button:disabled{opacity:.5;cursor:wait}
-#sqAdmin .am-status{padding:10px 13px;border-radius:10px;background:#111923;border:1px solid #ffffff16;margin-bottom:14px;color:#b9c5d3}
-#sqAdmin .am-status.ok{border-color:#287c59;color:#9ce2bd}#sqAdmin .am-status.bad{border-color:#9a4545;color:#ffb2b2}
-#sqAdmin .am-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:10px;margin:14px 0 20px}
-#sqAdmin .am-card{background:linear-gradient(145deg,#151d29,#0e131b);border:1px solid #ffffff16;border-radius:14px;padding:14px;min-height:94px}
-#sqAdmin .am-card small{color:#9ba9b9;display:block}.am-card strong{font-size:25px;display:block;color:#f1d28d;font-variant-numeric:tabular-nums}
-#sqAdmin .am-section{margin:18px 0}.am-section h3{font-size:16px;margin:0 0 10px;color:#e9d6ad}
-#sqAdmin .am-list{display:grid;gap:8px}.am-row{display:flex;justify-content:space-between;gap:12px;padding:10px 12px;background:#111821;border:1px solid #ffffff12;border-radius:10px}.am-row span:last-child{color:#c6d0dc;text-align:left;overflow-wrap:anywhere}
-#sqAdmin .am-foot{color:#8190a2;font-size:11px;margin:18px 0 8px}
-#sqAdmin .am-actions{display:flex;gap:8px;flex-wrap:wrap}
-@media(max-width:520px){#sqAdmin{padding:10px}.am-card strong{font-size:22px}#sqAdmin .am-brand{font-size:18px}}
+/* The Squad v153 — premium owner monitoring interface */
+#sqAdminLaunch{position:fixed;z-index:9900;bottom:calc(86px + env(safe-area-inset-bottom,0px));inset-inline-end:16px;border:1px solid #b9954d;background:linear-gradient(135deg,#282014,#090c12);color:#f4d78c;border-radius:999px;padding:12px 17px;font:800 12px/1.2 Inter,system-ui,sans-serif;letter-spacing:.04em;box-shadow:0 10px 34px #0009;display:none;cursor:pointer}
+#sqAdminLaunch.show{display:block}#sqAdminLaunch:focus-visible,#sqAdmin button:focus-visible,#sqAdmin a:focus-visible{outline:2px solid #e7c77e;outline-offset:3px}
+#sqAdmin{position:fixed;z-index:100000;inset:0;background:radial-gradient(ellipse at 15% 0%,#252116 0%,#0b1018 42%,#07090e 100%);color:#edf2f8;display:none;overflow:auto;overscroll-behavior:contain;font:14px/1.55 Inter,ui-sans-serif,system-ui,sans-serif;padding:clamp(12px,2.4vw,28px);box-sizing:border-box;direction:ltr;text-align:left}
+#sqAdmin.open{display:block}body.sq-admin-open{overflow:hidden}#sqAdmin *{box-sizing:border-box}#sqAdmin .am-wrap{max-width:1320px;margin:0 auto}
+#sqAdmin .am-head{display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap;border-bottom:1px solid #ffffff18;padding:7px 0 20px;margin-bottom:17px}
+#sqAdmin .am-brand{display:flex;align-items:center;gap:10px;font-size:19px;font-weight:900;letter-spacing:.12em;color:#f5dfae}.am-brand i{font-style:normal;color:#c29a52;font-size:10px;letter-spacing:.2em;margin-left:7px}.am-brand-mark{display:grid;place-items:center;width:36px;height:36px;border:1px solid #b9954d88;border-radius:11px;color:#f0d18c;background:#b9954d14}.am-sub{color:#93a0b1;font-size:12px;margin-top:5px}
+#sqAdmin .am-actions{display:flex;align-items:center;gap:9px;flex-wrap:wrap}#sqAdmin button{border:1px solid #ffffff20;background:#171f2b;color:#eef2f7;border-radius:10px;padding:10px 13px;font:700 12px Inter,system-ui,sans-serif;cursor:pointer;transition:background .18s,border-color .18s}#sqAdmin button:hover{background:#222d3b;border-color:#c39e5d88}#sqAdmin button.primary{background:linear-gradient(135deg,#d5b36d,#a77c36);color:#17130c;border-color:#e5c986}#sqAdmin button:disabled{opacity:.5;cursor:wait}#sqAdmin .am-close{font-size:23px;line-height:1;padding:6px 12px}
+#sqAdmin .am-live{display:flex;align-items:center;gap:7px;color:#9bd9b5;font-size:10px;font-weight:800;letter-spacing:.12em}.am-live i{width:7px;height:7px;border-radius:50%;background:#62d99a;box-shadow:0 0 12px #62d99a}
+#sqAdmin .am-status{padding:11px 14px;border-radius:11px;background:#111a25;border:1px solid #ffffff16;margin:0 0 14px;color:#bac7d5;font-size:12px}.am-status.ok{border-color:#287c5966;color:#9ce2bd}.am-status.bad{border-color:#9a454566;color:#ffb2b2}
+#sqAdmin .am-nav{position:sticky;top:-1px;z-index:4;display:flex;gap:7px;flex-wrap:wrap;padding:9px 0 13px;background:#0b1018eF;backdrop-filter:blur(14px)}#sqAdmin .am-nav a{color:#b7c1cf;text-decoration:none;border:1px solid #ffffff18;border-radius:999px;padding:7px 12px;font-size:11px;font-weight:700}#sqAdmin .am-nav a:hover{color:#f3d99e;border-color:#b9954d88}
+#sqAdmin .am-section{margin:24px 0;scroll-margin-top:70px}#sqAdmin .am-section-head{display:flex;align-items:end;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:12px}#sqAdmin .am-section h2{font-size:21px;line-height:1.2;margin:3px 0 5px;color:#f1e5cb;letter-spacing:-.02em}#sqAdmin .am-section-head p{margin:0;color:#8997a8;font-size:11px}.am-kicker{color:#c29a52;font-size:9px;font-weight:900;letter-spacing:.2em}.am-chip{border:1px solid #b9954d44;border-radius:999px;color:#d9bd82;padding:6px 10px;font-size:10px;white-space:nowrap}
+#sqAdmin .am-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr));gap:11px;margin:13px 0 19px}#sqAdmin .am-card{background:linear-gradient(145deg,#151e2a,#0e141d);border:1px solid #ffffff16;border-radius:15px;padding:15px;min-height:105px;box-shadow:0 8px 25px #0002}#sqAdmin .am-card-top{display:flex;align-items:center;justify-content:space-between;gap:10px}#sqAdmin .am-card small{color:#9ba9b9;display:block;font-size:11px}#sqAdmin .am-card strong{font-size:27px;line-height:1.25;display:block;color:#f1d28d;font-variant-numeric:tabular-nums;margin:11px 0 4px;overflow-wrap:anywhere}#sqAdmin .am-card-icon{color:#c8a45d;font-size:18px}.am-card-detail{color:#748398;font-size:10px}.am-card-feature{border-color:#b9954d66;background:linear-gradient(145deg,#2a2418,#11151b)}
+#sqAdmin .am-wallet{border:1px solid #b9954d55;border-radius:18px;padding:clamp(13px,2vw,21px);background:linear-gradient(145deg,#171a1c,#10151d);box-shadow:0 15px 45px #0003}#sqAdmin .am-wallet-metrics{grid-template-columns:repeat(auto-fit,minmax(180px,1fr))}#sqAdmin .am-wallet-metrics .am-card strong{font-size:23px}#sqAdmin .am-wallet-metrics .am-card>span{font-size:9px;color:#8e9bab;letter-spacing:.1em}
+#sqAdmin .am-wallet-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}#sqAdmin .am-form{background:#0c121a;border:1px solid #ffffff15;border-radius:13px;padding:14px;display:grid;gap:10px;align-content:start}#sqAdmin .am-form h3,#sqAdmin .am-list-title{margin:0 0 3px;color:#e6d5b2;font-size:13px}#sqAdmin .am-form label{display:grid;gap:5px;color:#aeb9c8;font-size:10px;font-weight:700}#sqAdmin .am-form input,#sqAdmin .am-form select{width:100%;min-width:0;background:#080d14;border:1px solid #ffffff24;color:#f0f3f7;border-radius:9px;padding:11px;font:13px Inter,system-ui,sans-serif}#sqAdmin .am-form input:focus,#sqAdmin .am-form select:focus{outline:1px solid #c29a52;border-color:#c29a52}#sqAdmin .am-inline-status{margin:12px 0 17px}
+#sqAdmin .am-two-col{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}#sqAdmin .am-list-title{margin:0 0 9px}.am-list{display:grid;gap:8px}.am-row{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:11px 13px;background:#0e151f;border:1px solid #ffffff12;border-radius:10px;min-width:0}.am-row>span:first-child{min-width:0;overflow-wrap:anywhere}.am-row b{font-size:11px;color:#dce4ee}.am-row small{display:block;color:#8190a2;font-size:9px;margin-top:3px}.am-row time{color:#c4ceda;text-align:right;font-size:10px;white-space:nowrap}.am-row time small{white-space:normal}.am-row-end{display:grid;justify-items:end;gap:6px}.am-row-actions{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end}.am-row-actions button{font-size:10px;padding:7px 9px}.am-empty,.am-loading{padding:16px;border:1px dashed #ffffff20;border-radius:11px;color:#8e9bab;font-size:11px;text-align:center}
+#sqAdmin .am-service-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:9px}.am-service{display:flex;align-items:center;gap:10px;padding:12px;background:#101721;border:1px solid #ffffff12;border-radius:11px}.am-service b{font-size:11px;color:#dbe3ec;display:block}.am-service small{color:#8290a1;font-size:10px}.am-service-dot{width:8px;height:8px;border-radius:50%;flex:0 0 auto}.am-service-dot.good{background:#5acb8a;box-shadow:0 0 10px #5acb8a88}.am-service-dot.bad{background:#e16e6e;box-shadow:0 0 10px #e16e6e88}.am-service-dot.unknown{background:#9aa4b2}
+#sqAdmin .am-foot{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;color:#778699;font-size:9px;border-top:1px solid #ffffff15;padding:15px 0 7px;margin:22px 0 5px}#sqAdmin .am-foot b{color:#d9bd82}
+@media(max-width:700px){#sqAdmin .am-wallet-grid,#sqAdmin .am-two-col{grid-template-columns:1fr}#sqAdmin .am-head{align-items:flex-start}#sqAdmin .am-actions{width:100%;justify-content:space-between}#sqAdmin .am-brand{font-size:16px}}
+@media(max-width:480px){#sqAdmin{padding:10px}#sqAdmin .am-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}#sqAdmin .am-card{padding:11px;min-height:94px}#sqAdmin .am-card strong{font-size:21px}#sqAdmin .am-section h2{font-size:18px}#sqAdmin .am-row{align-items:flex-start;flex-direction:column}#sqAdmin .am-row time{text-align:left;white-space:normal}#sqAdmin .am-row-end{justify-items:start}#sqAdmin .am-row-actions{justify-content:flex-start}#sqAdmin .am-live{display:none}#sqAdmin .am-nav{gap:5px}#sqAdmin .am-nav a{padding:6px 9px;font-size:10px}}
+@media(prefers-reduced-motion:reduce){#sqAdmin button{transition:none}}
 
-/* v148 audited platform wallet controls */
-#sqAdmin .am-wallet{border:1px solid #b9954d55;border-radius:15px;padding:14px;background:#10151d}
-#sqAdmin .am-wallet-form{display:flex;gap:10px;align-items:end;flex-wrap:wrap;margin:12px 0}
-#sqAdmin .am-wallet-form label{display:grid;gap:5px;color:#aeb9c8;flex:1;min-width:170px;font-size:12px}
-#sqAdmin .am-wallet-form input,#sqAdmin .am-wallet-form select{width:100%;min-width:0;background:#090e15;border:1px solid #ffffff24;color:#f0f3f7;border-radius:9px;padding:10px;font:14px Cairo,system-ui,sans-serif}
-#sqAdmin .am-wallet .am-row{align-items:center;flex-wrap:wrap}
-#sqAdmin .am-wallet .am-row button{margin:3px}
+/* v154 account monitoring */
+#sqAdmin .am-search-form{display:grid;gap:9px;max-width:720px;margin:0 0 14px;padding:18px;border:1px solid var(--am-line);border-radius:16px;background:var(--am-panel)}
+#sqAdmin .am-search-form label{font-size:12px;color:var(--am-muted);font-weight:700;letter-spacing:.04em}
+#sqAdmin .am-search-row{display:flex;gap:10px;align-items:center}
+#sqAdmin .am-search-row input{flex:1;min-width:0;min-height:44px;padding:10px 13px;border:1px solid var(--am-line);border-radius:10px;background:var(--am-input,rgba(255,255,255,.04));color:inherit;font:inherit}
+#sqAdmin .am-account-card{padding:20px;border:1px solid var(--am-line);border-radius:18px;background:var(--am-panel)}
+#sqAdmin .am-account-heading{display:flex;justify-content:space-between;gap:16px;align-items:flex-start}
+#sqAdmin .am-account-heading h3{margin:6px 0;font-size:22px}
+#sqAdmin .am-account-heading p,#sqAdmin .am-account-note{color:var(--am-muted);font-size:12px;line-height:1.6}
+#sqAdmin .am-account-facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:12px;margin:18px 0;padding:16px 0;border-top:1px solid var(--am-line);border-bottom:1px solid var(--am-line)}
+#sqAdmin .am-account-facts span{display:grid;gap:5px;min-width:0}
+#sqAdmin .am-account-facts small{color:var(--am-muted);font-size:11px}
+#sqAdmin .am-account-facts b{font-size:12px;overflow-wrap:anywhere}
+#sqAdmin .am-account-card h4{margin:0 0 12px;font-size:14px}
+#sqAdmin .am-account-metrics{grid-template-columns:repeat(auto-fit,minmax(135px,1fr))}
+#sqAdmin .am-account-metrics .am-card strong{font-size:24px}
+#sqAdmin .am-chip-alert{border-color:rgba(220,90,90,.4);color:#ff9b9b}
+#sqAdmin .am-report-row{align-items:flex-start}
+#sqAdmin .am-report-row>span:first-child{display:grid;gap:5px;min-width:0}
+#sqAdmin .am-report-row small{color:var(--am-muted);font-size:11px}
+#sqAdmin .am-report-meta{display:grid;gap:5px;text-align:right;white-space:nowrap}
+#sqAdmin .am-report-meta b{font-size:11px}
+#sqAdmin .am-report-meta time{font-size:11px;color:var(--am-muted)}
+@media(max-width:520px){#sqAdmin .am-search-row{align-items:stretch;flex-direction:column}#sqAdmin .am-search-row button{width:100%}#sqAdmin .am-report-row{flex-direction:column}#sqAdmin .am-report-meta{text-align:left;white-space:normal}#sqAdmin .am-account-heading{flex-direction:column}}
