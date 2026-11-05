@@ -65,6 +65,19 @@ async function startServer() {
   const page = await browser.newPage();
   const pageErrors = [];
   page.on('pageerror', (e) => pageErrors.push(String(e)));
+  cleanup = async () => {
+    try { await browser.close(); } catch (_) {}
+    if (server) server.kill('SIGKILL');
+  };
+
+  // The app pulls Firebase/Three from CDNs; on a 1-vCPU box that can stall the
+  // renderer, so every external host is answered locally with a stub. This keeps
+  // the check about THE SQUAD's own code and its honest no-session behaviour.
+  await page.route(/^https?:\/\/(?!127\.0\.0\.1|localhost)/, (route) => {
+    const type = route.request().resourceType();
+    if (type === 'script') return route.fulfill({ status: 200, contentType: 'text/javascript', body: '/* cdn stub */' });
+    return route.fulfill({ status: 200, contentType: 'text/plain', body: '' });
+  });
 
   try {
     // domcontentloaded is enough; the page's CDN <script> tags must not gate us.
