@@ -8,32 +8,32 @@
 <meta name="theme-color" content="#050505"><meta name="color-scheme" content="dark light">
 <script>try{var t=localStorage.theme||"dark";document.documentElement.dataset.theme=t=="auto"?(matchMedia("(prefers-color-scheme: light)").matches?"light":"dark"):t}catch(e){document.documentElement.dataset.theme="dark"}</script>
 <script>/* v144: detect constrained devices before styles render. */(()=>{try{const c=navigator.hardwareConcurrency||8,m=navigator.deviceMemory||8,d=navigator.connection&&navigator.connection.saveData; if(c<=4||m<=4||d)document.documentElement.classList.add("squad-lite");}catch(e){}})();</script>
-<link rel="manifest" href="chanse1/manifest.json">
-<link rel="icon" type="image/svg+xml" href="chanse4/icon.svg">
-<link rel="icon" type="image/png" sizes="192x192" href="chanse3/icon-192.png">
-<link rel="apple-touch-icon" href="chanse2/apple-touch-icon.png">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/svg+xml" href="icon.svg">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://www.gstatic.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Sora:wght@500;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="chanse4/tokens.css">
-<link rel="stylesheet" href="chanse1/squad.css">
-<link rel="stylesheet" href="chanse4/ui2.css">
-<link rel="stylesheet" href="chanse1/gold.css">
-<link rel="stylesheet" href="chanse1/v27.css">
-<link rel="stylesheet" href="chanse3/luxe.css">
-<link rel="stylesheet" href="chanse2/living-palace.css">
-<link rel="stylesheet" href="chanse1/living-palace-premium.css">
-<link rel="stylesheet" href="chanse2/premium-refinement-v89.css">
-<link rel="stylesheet" href="chanse1/auth.css">
-<link rel="stylesheet" href="chanse4/auth-v119.css">
-<link rel="stylesheet" href="chanse3/auth-v121.css">
-<link rel="stylesheet" href="chanse2/stage4-chat-ui.css">
-<link rel="stylesheet" href="chanse3/admin-monitor.css">
-<link rel="stylesheet" href="chanse3/quality-polish-v120.css">
-<link rel="stylesheet" href="chanse3/social-expansion.css">
-<link rel="stylesheet" href="chanse2/performance-v144.css">
-<link rel="stylesheet" href="chanse4/platform-redesign-v151.css">
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="squad.css">
+<link rel="stylesheet" href="ui2.css">
+<link rel="stylesheet" href="gold.css">
+<link rel="stylesheet" href="v27.css">
+<link rel="stylesheet" href="luxe.css">
+<link rel="stylesheet" href="living-palace.css">
+<link rel="stylesheet" href="living-palace-premium.css">
+<link rel="stylesheet" href="premium-refinement-v89.css">
+<link rel="stylesheet" href="auth.css">
+<link rel="stylesheet" href="auth-v119.css">
+<link rel="stylesheet" href="auth-v121.css">
+<link rel="stylesheet" href="stage4-chat-ui.css">
+<link rel="stylesheet" href="admin-monitor.css">
+<link rel="stylesheet" href="quality-polish-v120.css">
+<link rel="stylesheet" href="social-expansion.css">
+<link rel="stylesheet" href="performance-v144.css">
+<link rel="stylesheet" href="platform-redesign-v151.css">
 <link rel="stylesheet" href="v192-login-lamp-restore.css">
 </head>
 <body>
@@ -107,7 +107,7 @@
    <a class="dr-shortcut" href="#" data-hub="cafe"><i>◈</i><span>The Café<small>Meet your friends</small></span></a>
    <a class="dr-shortcut" href="#" data-hub="cinema"><i>▣</i><span>Cinema<small>Watch together</small></span></a>
    <a class="dr-shortcut" href="#" data-social="messages"><i>✉</i><span>Conversations<small>Your messages and calls</small></span></a>
-   <a class="dr-shortcut" href="chanse3/services-hub.html"><i>✧</i><span>Services Hub<small>Assistants, stores and games</small></span></a>
+   <a class="dr-shortcut" href="services-hub.html"><i>✧</i><span>Services Hub<small>Assistants, stores and games</small></span></a>
   </div><div class="dr-side-card"><h3>Suggested for You</h3><div class="dr-empty"><strong>Discover Your Community</strong>Suggestions will appear here when platform data is connected.</div></div></aside>
   <nav class="dr-mobile-nav" aria-label="Mobile navigation">
    <button class="active" data-social="feed"><svg viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5V21h-6v-6H9v6H3z"/></svg>Home</button>
@@ -115,7 +115,7 @@
    <button class="create" data-social="create" aria-label="Create"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
    <button data-social="explore"><svg viewBox="0 0 24 24"><circle cx="10.8" cy="10.8" r="7.3"/><path d="m16.2 16.2 4.3 4.3M13.5 8.5l-1.8 4.8-4.8 1.8 1.8-4.8z"/></svg>Explore</button>
    <button data-social="profile"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M4.5 21c.5-4.2 3-6.3 7.5-6.3s7 2.1 7.5 6.3"/></svg>My Profile</button>
-   <a class="dr-shortcut" href="chanse3/services-hub.html">Services Hub</a>
+   <a class="dr-shortcut" href="services-hub.html">Services Hub</a>
   </nav>
  </div>
  <aside id="side">
@@ -159,14 +159,14 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-functions-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
-<script src="chanse4/firebase-config.js"></script>
-<script src="chanse3/acct.js"></script>
-<script src="chanse1/time.js"></script><script src="chanse1/app.js"></script>
-<script src="chanse1/auth.js"></script>
-<script src="chanse2/stories.js"></script>
-<script src="chanse3/calls.js"></script><script src="chanse3/cafe.js"></script><script src="chanse2/extras.js"></script><script src="chanse4/games.js"></script>
-<script src="chanse1/push.js"></script>
-<script src="chanse3/bot.js"></script><script src="chanse4/channel.js"></script><script src="chanse2/cafe2.js"></script><script src="chanse3/cafe3.js"></script><script src="chanse1/community.js"></script><script src="chanse3/plus.js"></script><script src="chanse1/theme.js"></script><script src="chanse1/look.js"></script><script src="chanse3/chatx.js"></script><script src="chanse3/settings.js"></script><script src="chanse1/ads.js"></script><script src="chanse3/accounts.js"></script><script src="chanse3/social-feed.js"></script><script src="chanse3/social-expansion.js"></script><script src="chanse1/ui2.js"></script><script src="chanse2/profile.js"></script><script src="chanse3/stage4-chat-ui.js"></script><link rel="stylesheet" href="chanse4/stage4-extras.css"><script src="chanse2/stage4-extras.js"></script><script src="chanse3/living-palace-engine.js"></script><script src="chanse4/cinema.js"></script>
+<script src="firebase-config.js"></script>
+<script src="acct.js"></script>
+<script src="time.js"></script><script src="app.js"></script>
+<script src="auth.js"></script>
+<script src="stories.js"></script>
+<script src="calls.js"></script><script src="cafe.js"></script><script src="extras.js"></script><script src="games.js"></script>
+<script src="push.js"></script>
+<script src="bot.js"></script><script src="channel.js"></script><script src="cafe2.js"></script><script src="cafe3.js"></script><script src="community.js"></script><script src="plus.js"></script><script src="theme.js"></script><script src="look.js"></script><script src="chatx.js"></script><script src="settings.js"></script><script src="ads.js"></script><script src="accounts.js"></script><script src="social-feed.js"></script><script src="social-expansion.js"></script><script src="ui2.js"></script><script src="profile.js"></script><script src="stage4-chat-ui.js"></script><link rel="stylesheet" href="stage4-extras.css"><script src="stage4-extras.js"></script><script src="living-palace-engine.js"></script><script src="cinema.js"></script>
 <style>#squadOffline{position:fixed;z-index:99999;inset-inline:12px;top:calc(8px + env(safe-area-inset-top,0px));margin:auto;width:max-content;max-width:calc(100% - 24px);padding:8px 14px;border:1px solid #d9b76d;border-radius:999px;background:#171717;color:#f5d98e;font:600 12px Cairo,sans-serif;box-shadow:0 5px 22px #0008}#squadOffline[hidden]{display:none}</style><div id="squadOffline" role="status" aria-live="polite" hidden>You are offline — saved content is available; messaging and multiplayer are temporarily paused.</div>
 <script>/* v112: مؤشر اتصال واضح، مع استمرار فتح الواجهة المحفوظة دون إنترنت. */(()=>{const el=document.getElementById('squadOffline');function sync(){if(el)el.hidden=navigator.onLine}addEventListener('online',sync);addEventListener('offline',sync);sync()})();</script>
 <script>
@@ -185,7 +185,7 @@
  window.SQUAD_LOAD_WORLD=()=>load('world.js');
  window.SQUAD_LOAD_DISTRICT=()=>load('district-core.js').then(()=>load('district.js'));
 })();
-</script><script src="chanse4/welcome.js"></script><script src="chanse1/luxe.js"></script>
+</script><script src="welcome.js"></script><script src="luxe.js"></script>
 <script>
 /* تحديث تلقائي خفيف: ملف manifest واحد بدل تنزيل عشرات الملفات دوريًا. حدّث version.json مع كل نشر. */
 (()=>{let base=null,pending=false;const safeToReload=()=>{const chat=document.getElementById('chat'),city=document.getElementById('dst');const typing=document.activeElement&&(document.activeElement.matches('input,textarea,[contenteditable=true]'));return !(chat&&chat.classList.contains('open'))&&!(city&&!city.hidden)&&!typing&&!window.SQUAD_CALL_ACTIVE&&!window.DISTRICT_SESSION_ACTIVE};const chk=async()=>{try{const r=await fetch('version.json',{cache:'no-store'});if(!r.ok)return;const t=await r.text();if(base===null)base=t;else if(t!==base){pending=true;const e=document.getElementById('ts');if(e){e.textContent='A new update is ready. It will install when your call, city session, or chat is safe to close.';e.hidden=false;if(safeToReload())setTimeout(()=>{if(safeToReload())location.reload()},1200)}}}catch(e){}};setTimeout(chk,10000);setInterval(()=>{if(pending&&safeToReload())location.reload();else chk()},480000);document.addEventListener('visibilitychange',()=>{if(document.hidden)return;if(pending&&safeToReload())location.reload();else chk()})})();
@@ -194,7 +194,7 @@
 /* v90: real home-hub shortcuts connected to existing destinations */
 (()=>{const h=document.getElementById('squadHub');if(!h)return;h.addEventListener('click',async e=>{const b=e.target.closest('[data-hub]');if(!b)return;const k=b.dataset.hub;try{if(k==='city'){await window.SQUAD_LOAD_DISTRICT();window.DISTRICT&&DISTRICT.enter({})}else if(k==='cafe'){await window.SQUAD_LOAD_WORLD();window.WORLD&&WORLD.enter()}else{const n=document.querySelector(`#nav [data-go=\"${k}\"]`);if(n)n.click()}}catch(err){console.error('lazy game load',err);window.toast&&toast('تعذر تحميل اللعبة. راجع اتصال الإنترنت وحاول مرة أخرى.')}})})();
 </script>
-<script src="chanse3/admin-monitor.js"></script>
-<script src="chanse2/auth-scene.js" defer></script>
+<script src="admin-monitor.js"></script>
+<script src="auth-scene.js" defer></script>
 </body>
 </html>
