@@ -1,0 +1,83 @@
+/* THE SQUAD — v195 social hub styles (friends, requests, suggestions, notifications).
+ * Layered on the v193 design tokens; no new colours are introduced, everything
+ * resolves through --dr-* so the palette stays in one place.
+ */
+
+/* ---------------------------------------------------------------- panels */
+.sq-panel { padding: 16px 18px; }
+.sq-panel h3 { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin: 0 0 12px; font-size: 15px; }
+.sq-panel h4.sq-subhead {
+  margin: 14px 0 6px; font-size: 11px; font-weight: 700;
+  letter-spacing: .12em; text-transform: uppercase; color: var(--dr-muted);
+}
+.sq-inline-btn { margin-inline-start: auto; padding: 6px 11px; font-size: 12px; }
+.sq-muted { margin: 10px 0 0; color: var(--dr-muted); font-size: 13px; line-height: 1.7; }
+
+/* ---------------------------------------------------------------- people */
+.sq-list { display: grid; gap: 8px; }
+.sq-person {
+  display: flex; align-items: center; gap: 11px;
+  padding: 9px 11px;
+  border: 1px solid var(--dr-line);
+  border-radius: var(--dr-r-md, 14px);
+  background: linear-gradient(160deg, var(--dr-panel-2), var(--dr-panel));
+  min-width: 0;
+}
+.sq-person-id { flex: 1; min-width: 0; }
+.sq-person-id b { display: block; font-size: 13.5px; color: var(--dr-ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sq-person-id small { display: block; margin-top: 2px; font-size: 11.5px; color: var(--dr-muted); }
+.sq-person-id p { margin: 2px 0 0; font-size: 12.5px; color: var(--dr-muted); line-height: 1.5; }
+.sq-row-actions { display: flex; gap: 6px; flex-shrink: 0; flex-wrap: wrap; }
+.sq-row-actions button { padding: 7px 12px; font-size: 12px; border-radius: 10px; }
+.sq-person .dr-avatar { flex-shrink: 0; }
+
+/* --------------------------------------------------------------- search */
+.sq-field-label { display: block; margin-bottom: 6px; font-size: 12px; color: var(--dr-muted); }
+.sq-result-list { display: grid; gap: 8px; margin-top: 10px; }
+.sq-result-list .sq-person { animation: sq-fade-in .18s ease-out; }
+
+@keyframes sq-fade-in { from { opacity: 0; transform: translateY(3px); } to { opacity: 1; transform: none; } }
+
+/* ---------------------------------------------------------- notifications */
+.sq-notice {
+  display: flex; align-items: flex-start; gap: 11px;
+  padding: 11px 12px;
+  border: 1px solid var(--dr-line);
+  border-radius: var(--dr-r-md, 14px);
+  background: var(--dr-panel);
+}
+.sq-notice.is-unread {
+  border-color: color-mix(in srgb, var(--dr-blue) 45%, transparent);
+  background: linear-gradient(160deg, var(--dr-blue-soft, rgba(91, 141, 239, .1)), var(--dr-panel));
+}
+.sq-notice-icon {
+  flex-shrink: 0; width: 30px; height: 30px; display: grid; place-items: center;
+  border-radius: 50%; background: var(--dr-panel-2);
+  font-size: 13px; line-height: 1;
+}
+.sq-notice.is-unread .sq-notice-icon { background: var(--dr-blue-soft, rgba(91, 141, 239, .18)); }
+.sq-notice .sq-person-id { flex: 1; }
+.sq-notice > small { flex-shrink: 0; font-size: 11px; color: var(--dr-muted); }
+.sq-notice .sq-person-id b { overflow: visible; white-space: normal; }
+
+/* ---------------------------------------------------------------- states */
+.sq-state { text-align: center; }
+.sq-state p { margin: 0; }
+.sq-state[role="status"] { color: var(--dr-muted); }
+
+/* --------------------------------------------------------------- mobile */
+@media (max-width: 760px) {
+  .sq-panel { padding: 13px 13px; }
+  .sq-person { flex-wrap: wrap; gap: 9px; padding: 9px; }
+  .sq-person-id { flex: 1 1 60%; }
+  .sq-row-actions { width: 100%; }
+  .sq-row-actions button { flex: 1; min-height: var(--dr-tap, 44px); }
+  .sq-inline-btn { margin-inline-start: 0; }
+  .sq-notice > small { width: 100%; padding-inline-start: 41px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sq-result-list .sq-person { animation: none; }
+}
+
+[dir="rtl"] .sq-notice > small { text-align: start; }
