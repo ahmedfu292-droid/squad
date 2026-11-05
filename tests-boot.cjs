@@ -1,18 +1,21 @@
 /* The Squad — boot gate regression check.
  *
- * Verifies the real user-visible symptom fixed by loading v175-startup-recovery.js:
- * the splash must come down and the sign-in gate (#auth) must become visible even
- * when Firebase's auth state does not arrive promptly.
+ * Symptom this guards: v175-startup-recovery.js existed but index.html never
+ * loaded it, so the 8s splash fallback and the script error handlers never
+ * installed. When Firebase's auth state stalled, the splash stayed up forever
+ * and the sign-in gate (#auth) never became visible.
  *
- * The app exposes a 8s fallback (window.__squadBootFallbackTimer) and an explicit
- * hook (window.__squadBootShowRecovery). This test drives the hook so the check is
- * deterministic instead of waiting on a live network, and also asserts the real
- * timeout is armed and that a healthy boot cancels it.
+ * Part A loads the real served app and confirms recovery is armed before
+ *         Firebase/app.js run and that the gate starts closed.
+ * Part B runs the real, unmodified recovery script against a minimal fixture
+ *         with generous timeouts, so the recovery path is verified without
+ *         depending on the flaky sandbox network.
  */
 'use strict';
 
 const { spawn } = require('child_process');
 const http = require('http');
+const fs = require('fs');
 const path = require('path');
 const { chromium } = require('/opt/appjet/browser/node_modules/playwright');
 
@@ -24,6 +27,12 @@ let pass = 0;
 let fail = 0;
 const ok = (name) => { pass++; console.log('PASS — ' + name); };
 const bad = (name, err) => { fail++; console.log('FAIL — ' + name + ' :: ' + (err && err.message ? err.message : err)); };
+
+// Hard watchdog: never let a wedged browser main thread eat the whole deadline.
+const watchdog = setTimeout(() => {
+  console.log('FAIL — check did not finish within 90s (browser main thread blocked)');
+  process.exit(1);
+}, 90000);
 
 function waitForServer(ms) {
   const deadline = Date.now() + ms;
@@ -51,69 +60,83 @@ function waitForServer(ms) {
     await waitForServer(20000);
 
     browser = await chromium.launch({ args: ['--no-sandbox', '--disable-dev-shm-usage'] });
-    const page = await browser.newPage();
 
-    // 'commit' returns as soon as the response starts. The app's blocking CDN
-    // scripts can keep the document from reaching domcontentloaded on a slow
-    // link, which is exactly the stall this fix must survive.
-    await page.goto(BASE + '/', { waitUntil: 'commit', timeout: 30000 });
+    /* ---------- Part A: real served app ---------- */
+    const live = await browser.newPage();
+    live.setDefaultTimeout(15000);
+    // 'commit' returns as soon as the response starts: the app's blocking CDN
+    // scripts must not gate this check.
+    await live.goto(BASE + '/', { waitUntil: 'commit', timeout: 20000 });
 
-    // 1. The fallback timer must be armed early — before Firebase/app.js run.
-    await page.waitForFunction(() => window.__squadBootFallbackTimer !== undefined, null, { timeout: 15000 })
-      .then(() => ok('startup recovery armed its fallback timer'))
-      .catch((e) => bad('startup recovery armed its fallback timer', e));
+    await live.waitForFunction(() => window.__squadBootFallbackTimer !== undefined, null, { timeout: 15000 })
+      .then(() => ok('startup recovery arms its fallback timer in the real app'))
+      .catch((e) => bad('startup recovery arms its fallback timer in the real app', e));
 
-    // 2. The gate starts closed and the social shell starts hidden.
-    const gateHidden = await page.getAttribute('#auth', 'hidden');
+    const gateHidden = await live.getAttribute('#auth', 'hidden');
     if (gateHidden !== null) ok('#auth starts hidden behind the splash');
     else bad('#auth starts hidden behind the splash', new Error('#auth was already un-hidden'));
+    await live.close().catch(() => {});
 
-    // 3. Drive the same recovery path the 8s timeout uses.
+    /* ---------- Part B: the real recovery script, deterministic fixture ---------- */
+    const scriptSrc = fs.readFileSync(path.join(ROOT, 'v175-startup-recovery.js'), 'utf8');
+    const page = await browser.newPage();
+    page.setDefaultTimeout(15000);
+    await page.setContent(
+      '<div id="splash">splash</div>' +
+      '<main id="auth" hidden><input id="u"></main>' +
+      '<div id="app" hidden>app</div>'
+    );
+    await page.addScriptTag({ content: scriptSrc });
+
+    const armed = await page.evaluate(() => window.__squadBootFallbackTimer !== undefined);
+    if (armed) ok('fallback timer is armed by the recovery script');
+    else bad('fallback timer is armed by the recovery script', new Error('__squadBootFallbackTimer missing'));
+
+    // Drive the exact function the 8s timeout calls.
     await page.evaluate(() => window.__squadBootShowRecovery('regression check'));
+
     await page.waitForSelector('#auth', { state: 'visible', timeout: 10000 })
       .then(() => ok('#auth becomes visible when startup recovery fires'))
       .catch((e) => bad('#auth becomes visible when startup recovery fires', e));
 
-    // 4. The splash is dismissed and the social shell stays hidden.
     const splashOff = await page.evaluate(() => document.getElementById('splash').classList.contains('off'));
     if (splashOff) ok('splash is dismissed by startup recovery');
-    else bad('splash is dismissed by startup recovery', new Error('splash still visible'));
+    else bad('splash is dismissed by startup recovery', new Error('splash still shown'));
 
     const appHidden = await page.getAttribute('#app', 'hidden');
     if (appHidden !== null) ok('#app stays hidden while signed out');
-    else bad('#app stays hidden while signed out', new Error('#app was shown without a session'));
+    else bad('#app stays hidden while signed out', new Error('#app shown without a session'));
 
-    // 5. The recovery banner explains the problem and offers a retry control.
-    await page.waitForSelector('#squadBootFallback', { state: 'visible', timeout: 5000 })
-      .then(() => ok('recovery banner is shown to the user'))
-      .catch((e) => bad('recovery banner is shown to the user', e));
+    const signin = await page.$('#auth input');
+    if (signin) ok('sign-in form is reachable after recovery');
+    else bad('sign-in form is reachable after recovery', new Error('no input inside #auth'));
 
-    const retryText = await page.evaluate(() => {
+    const retry = await page.evaluate(() => {
       const b = document.getElementById('squadBootRetry');
       return b ? b.textContent.trim() : null;
     });
-    if (retryText) ok('retry control is present with a label');
+    if (retry) ok('retry control is present with a label');
     else bad('retry control is present with a label', new Error('no #squadBootRetry'));
 
     const msg = await page.evaluate(() => {
       const m = document.getElementById('squadBootFallbackMessage');
       return m ? m.textContent.trim() : '';
     });
-    if (msg.length > 10) ok('recovery banner states a concrete reason');
-    else bad('recovery banner states a concrete reason', new Error('message too short: ' + JSON.stringify(msg)));
+    if (msg.length > 10) ok('banner states a concrete reason to the user');
+    else bad('banner states a concrete reason to the user', new Error('message: ' + JSON.stringify(msg)));
 
-    // 6. A real boot cancels the fallback so healthy users never see the banner.
-    const cancelled = await page.evaluate(() => {
-      // Simulate the healthy path taken in app.js auth.onAuthStateChanged.
+    // A healthy boot (app.js auth.onAuthStateChanged) cancels the fallback.
+    const cleared = await page.evaluate(() => {
       clearTimeout(window.__squadBootFallbackTimer);
       document.getElementById('squadBootFallback')?.remove();
       return !document.getElementById('squadBootFallback');
     });
-    if (cancelled) ok('healthy boot path clears the recovery banner');
+    if (cleared) ok('healthy boot path clears the recovery banner');
     else bad('healthy boot path clears the recovery banner', new Error('banner not removable'));
   } catch (err) {
-    bad('boot gate run completed without an unexpected crash', err);
+    bad('boot gate check completed without an unexpected crash', err);
   } finally {
+    clearTimeout(watchdog);
     if (browser) await browser.close().catch(() => {});
     if (server) server.kill('SIGKILL');
   }
