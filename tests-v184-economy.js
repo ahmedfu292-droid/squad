@@ -168,7 +168,12 @@ check('nascent UI has real navigation entries, not dead buttons', () => {
 });
 
 /* -------------------------------------------------------------- reporting */
-const failed = results.filter((r) => r[0] === 'FAIL');
-for (const [state, name] of results) console.log(state + ' — ' + name);
-console.log('\n' + (results.length - failed.length) + '/' + results.length + ' checks passed');
-if (failed.length) process.exit(1);
+run().then(() => {
+  const failed = results.filter((r) => r[0] === 'FAIL');
+  for (const [state, name] of results) console.log(state + ' — ' + name);
+  console.log('\n' + (results.length - failed.length) + '/' + results.length + ' checks passed');
+  if (failed.length) process.exit(1);
+}).catch((err) => {
+  console.error('runner crashed:', err);
+  process.exit(1);
+});
