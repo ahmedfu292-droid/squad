@@ -19,6 +19,8 @@ const checks = [];
 
 function pass(name) { checks.push(['PASS', name]); }
 function fail(name, err) { checks.push(['FAIL', name + ' :: ' + (err && err.message ? err.message : String(err))]); }
+// Progress markers on stderr so a hang is visible instead of silent.
+function step(msg) { process.stderr.write('[ui] ' + msg + '\n'); }
 
 // Self-contained: bring up the app's own static server so the check is one command.
 async function startServer() {
