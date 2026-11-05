@@ -32,6 +32,16 @@ const watchdog = setTimeout(async () => {
 }, 95000);
 watchdog.unref();
 
+// Bounded wrapper: Playwright's count()/isVisible()/textContent() take no deadline,
+// so an unresponsive renderer would hang the runner forever instead of failing.
+function withTimeout(promise, ms, label) {
+  let timer;
+  const guard = new Promise((_, reject) => {
+    timer = setTimeout(() => reject(new Error(label + ' did not respond within ' + ms + 'ms')), ms);
+  });
+  return Promise.race([promise, guard]).finally(() => clearTimeout(timer));
+}
+
 async function startServer() {
   if (process.env.BASE_URL) return null;
   const proc = spawn(process.execPath, ['server.mjs'], {
