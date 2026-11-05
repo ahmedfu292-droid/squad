@@ -118,8 +118,16 @@ async function startServer() {
     assert.ok(hrefs.length, 'served HTML links no local stylesheet at all');
     let css = '';
     for (const href of hrefs) css += await (await fetch(new URL(href.replace(/^\.\//, ''), BASE))).text();
-    for (const needle of ['[dir="rtl"]', 'max-width:760px', '.dr-mobile-nav', '.sq-state.is-error', 'prefers-reduced-motion']) {
-      assert.ok(css.includes(needle), 'served CSS is missing the v193 rule ' + needle);
+    // Minified output strips quotes from attribute selectors, so match by pattern.
+    const mustHave = [
+      ['RTL rules', /\[dir=.?rtl.?\]/],
+      ['mobile breakpoint', /max-width:\s*760px/],
+      ['mobile bottom nav', /\.dr-mobile-nav/],
+      ['error state', /\.sq-state\.is-error/],
+      ['reduced-motion rules', /prefers-reduced-motion/],
+    ];
+    for (const [label, re] of mustHave) {
+      assert.ok(re.test(css), 'served CSS is missing the v193 ' + label);
     }
     const tokRes = await fetch(new URL('tokens.css', BASE));
     assert.strictEqual(tokRes.status, 200, 'tokens.css returned ' + tokRes.status);
