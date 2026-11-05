@@ -1,6 +1,16 @@
 /* The Squad — v193 responsive + RTL + shared state layer.
    Presentation only; loaded last so it refines earlier stylesheets. */
 
+/* 0 — bridge the shell's legacy --sq-* variables onto the v193 tokens.
+   platform-redesign-v151.css defines these in :root; this file loads later,
+   so the same-specificity declarations below win. */
+:root{
+  --sq-bg:var(--dr-bg);--sq-panel:var(--dr-panel);--sq-panel-2:var(--dr-panel-2);
+  --sq-line:var(--dr-line);--sq-text:var(--dr-ink);--sq-muted:var(--dr-muted);
+  --sq-gold:var(--dr-gold);--sq-gold-hi:var(--dr-gold-hi);
+  --sq-radius:var(--dr-r-lg);--sq-shadow:var(--dr-shadow);
+}
+
 /* 1 — interaction basics -------------------------------------------------- */
 :where(a,button,input,textarea,select,[tabindex]):focus-visible{outline:2px solid var(--dr-blue-hi);outline-offset:2px;border-radius:10px}
 :where(button,input,textarea,select){font-family:var(--dr-font-ui)}
