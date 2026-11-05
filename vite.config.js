@@ -32,7 +32,9 @@ const EXCLUDE_PATTERNS = [
   /^verify-test\.js$/,
 ];
 
-const STATIC_EXT = /\.(?:js|css|json|png|jpe?g|webp|svg|gif|ico|woff2?|rules|txt)$/i;
+// Extra entry pages are served as-is; index.html is emitted by Vite itself.
+const STATIC_EXT = /\.(?:html|js|css|json|png|jpe?g|webp|svg|gif|ico|woff2?|rules|txt)$/i;
+const VITE_EMITTED = new Set(['index.html']);
 
 async function collect(dir, base = '') {
   const out = [];
@@ -45,6 +47,7 @@ async function collect(dir, base = '') {
       continue;
     }
     if (!STATIC_EXT.test(entry.name)) continue;
+    if (VITE_EMITTED.has(rel)) continue;
     if (EXCLUDE_PATTERNS.some((re) => re.test(rel))) continue;
     out.push(rel);
   }
