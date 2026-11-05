@@ -19,9 +19,18 @@ const ui = fs.readFileSync(path.join(root, 'economy-ui.js'), 'utf8');
 const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
 
 const results = [];
+const queue = [];
+// Registers an assertion. Async cases are awaited in run() so a rejection can
+// never escape as an unhandled promise (which would look like a crash, not a fail).
 function check(name, fn) {
-  try { fn(); results.push(['PASS', name]); }
-  catch (err) { results.push(['FAIL', name + ' :: ' + err.message]); }
+  queue.push([name, fn]);
+}
+
+async function run() {
+  for (const [name, fn] of queue) {
+    try { await fn(); results.push(['PASS', name]); }
+    catch (err) { results.push(['FAIL', name + ' :: ' + (err && err.message ? err.message : String(err))]); }
+  }
 }
 
 /* ------------------------------------------------------------ pure logic */
