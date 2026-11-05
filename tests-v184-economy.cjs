@@ -5,18 +5,29 @@
  *   2. the Firestore Rules text, which is the real server-side enforcement layer
  *   3. honest-failure behaviour (unavailable db must throw, never silently succeed)
  *
- * Run: node tests-v184-economy.js
+ * Run: node tests-v184-economy.cjs
  */
 const fs = require('fs');
 const assert = require('assert');
 const path = require('path');
+const vm = require('vm');
 
 const root = __dirname;
-const E = require(path.join(root, 'economy-core.js'));
 const rules = fs.readFileSync(path.join(root, 'firestore.rules'), 'utf8');
 const core = fs.readFileSync(path.join(root, 'economy-core.js'), 'utf8');
 const ui = fs.readFileSync(path.join(root, 'economy-ui.js'), 'utf8');
 const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
+
+// package.json sets "type": "module", so economy-core.js (a browser UMD script)
+// cannot be require()d. Evaluate it the way the browser does: as a classic
+// script with a global `self`. This also proves the UMD wrapper really exports.
+const sandbox = { console };
+sandbox.self = sandbox;
+sandbox.window = sandbox; // no firebase here => database calls must fail loudly
+vm.createContext(sandbox);
+vm.runInContext(core, sandbox, { filename: 'economy-core.js' });
+const E = sandbox.SquadEconomy;
+assert.ok(E && typeof E.purchase === 'function', 'economy-core.js did not export SquadEconomy');
 
 const results = [];
 const queue = [];
