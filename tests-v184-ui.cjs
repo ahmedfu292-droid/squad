@@ -88,11 +88,15 @@ async function startServer() {
     fail('app loads in a real browser', err);
   }
 
+  page.setDefaultTimeout(10000);
+
   for (const route of ['wallet', 'market']) {
     try {
-      const el = page.locator('#social-rail [data-social="' + route + '"]').first();
-      assert.ok((await el.count()) > 0, route + ' entry missing from #social-rail');
-      assert.ok(await el.isVisible(), route + ' entry not visible');
+      const sel = '#social-rail [data-social="' + route + '"]';
+      const count = await withTimeout(page.locator(sel).count(), 10000, route + ' count()');
+      assert.ok(count > 0, route + ' entry missing from #social-rail');
+      const visible = await withTimeout(page.locator(sel).first().isVisible(), 10000, route + ' isVisible()');
+      assert.ok(visible, route + ' entry not visible');
       pass(route + ' rail entry exists and is visible');
     } catch (err) { fail(route + ' rail entry exists and is visible', err); }
   }
