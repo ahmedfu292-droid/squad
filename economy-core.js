@@ -174,6 +174,10 @@
     const { db, uid } = need();
     const quantity = qty === undefined ? 1 : qty;
     if (!itemId || typeof itemId !== 'string') throw new Error('منتج غير صالح');
+    // Quantity is deliberately fixed at 1. Firestore Rules verify the debit as
+    // balance == old - catalogPrice; a qty multiplier would be a value the rules
+    // cannot recompute during a batch, so allowing it would be an unenforced hole.
+    if (quantity !== 1) throw new Error('الشراء عنصر واحد في المرة');
 
     const itemSnap = await db.doc('storeItems/' + itemId).get();
     if (!itemSnap.exists) throw new Error('المنتج غير متاح');
