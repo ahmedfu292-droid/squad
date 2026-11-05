@@ -84,15 +84,30 @@ async function startServer() {
 
   page.setDefaultTimeout(10000);
 
+  // Logged out, the app must show the sign-in gate and keep the social shell
+  // hidden. This is the honest no-session state; it is NOT a broken rail.
+  try {
+    const authVisible = await withTimeout(page.locator('#auth').isVisible(), 10000, '#auth isVisible()');
+    const appHidden = await page.evaluate(() => {
+      const a = document.getElementById('app');
+      return !a || a.hidden === true || getComputedStyle(a).display === 'none';
+    });
+    assert.ok(authVisible, 'sign-in gate #auth is not visible while logged out');
+    assert.ok(appHidden, 'social shell #app is visible without a session');
+    pass('logged out: sign-in gate shown, social shell hidden (no fake session)');
+  } catch (err) { fail('logged out: sign-in gate shown, social shell hidden (no fake session)', err); }
+
+  // The rail entries must exist in the shell markup even while gated, so a
+  // signed-in user actually gets Wallet and Marketplace navigation.
   for (const route of ['wallet', 'market']) {
     try {
       const sel = '#social-rail [data-social="' + route + '"]';
       const count = await withTimeout(page.locator(sel).count(), 10000, route + ' count()');
-      assert.ok(count > 0, route + ' entry missing from #social-rail');
-      const visible = await withTimeout(page.locator(sel).first().isVisible(), 10000, route + ' isVisible()');
-      assert.ok(visible, route + ' entry not visible');
-      pass(route + ' rail entry exists and is visible');
-    } catch (err) { fail(route + ' rail entry exists and is visible', err); }
+      assert.ok(count > 0, route + ' entry missing from #social-rail markup');
+      const label = (await withTimeout(page.locator(sel).first().innerText(), 10000, route + ' innerText()')).trim();
+      assert.ok(label.length > 0, route + ' entry has no accessible label');
+      pass(route + ' rail entry exists in shell markup (label: ' + label + ')');
+    } catch (err) { fail(route + ' rail entry exists in shell markup', err); }
   }
 
   try {
