@@ -110,12 +110,16 @@ async function startServer() {
   // v193 Phase 2: the design-system layer must ship with the page and must
   // actually carry the midnight-navy palette plus real RTL/mobile rules.
   try {
-    assert.ok(/href="squad-responsive-v193\.css"/.test(html), 'index.html does not link squad-responsive-v193.css');
-    const cssRes = await fetch(new URL('squad-responsive-v193.css', BASE));
-    assert.strictEqual(cssRes.status, 200, 'squad-responsive-v193.css returned ' + cssRes.status);
-    const css = await cssRes.text();
-    for (const needle of ['[dir="rtl"]', '@media(max-width:760px)', '.dr-mobile-nav', '.sq-state.is-error', 'prefers-reduced-motion']) {
-      assert.ok(css.includes(needle), 'responsive layer is missing ' + needle);
+    // Vite inlines every linked stylesheet into one hashed asset, so the served
+    // document has no per-file <link>. Assert against what the browser really loads.
+    const hrefs = [...html.matchAll(/<link[^>]+rel="stylesheet"[^>]*>/g)]
+      .map((m) => (m[0].match(/href="([^"]+)"/) || [])[1])
+      .filter((h) => h && !/^https?:/.test(h));
+    assert.ok(hrefs.length, 'served HTML links no local stylesheet at all');
+    let css = '';
+    for (const href of hrefs) css += await (await fetch(new URL(href.replace(/^\.\//, ''), BASE))).text();
+    for (const needle of ['[dir="rtl"]', 'max-width:760px', '.dr-mobile-nav', '.sq-state.is-error', 'prefers-reduced-motion']) {
+      assert.ok(css.includes(needle), 'served CSS is missing the v193 rule ' + needle);
     }
     const tokRes = await fetch(new URL('tokens.css', BASE));
     assert.strictEqual(tokRes.status, 200, 'tokens.css returned ' + tokRes.status);
