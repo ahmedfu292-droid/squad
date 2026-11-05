@@ -22,6 +22,9 @@
     if (!v) return 0;
     if (typeof v === 'number') return v > 1e12 ? v : v * 1000;
     if (v instanceof Date) return v.getTime();
+    // Duck-type getTime too: a Date from another realm (worker, vm sandbox,
+    // iframe) fails `instanceof Date` but is still a valid timestamp.
+    if (typeof v.getTime === 'function') { try { return v.getTime() || 0; } catch (e) { return 0; } }
     if (typeof v.toMillis === 'function') { try { return v.toMillis() || 0; } catch (e) { return 0; } }
     if (typeof v.seconds === 'number') return v.seconds * 1000;
     if (typeof v.toDate === 'function') { try { return v.toDate().getTime() || 0; } catch (e) { return 0; } }

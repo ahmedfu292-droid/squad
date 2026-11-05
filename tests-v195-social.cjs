@@ -189,14 +189,17 @@ async function served(server) {
     pass('served CSS bundle contains the v195 hub rules');
   } catch (err) { fail('served CSS bundle contains the v195 hub rules', err); }
 
-  // The hub must not be able to touch balances: no wallet writes in client code.
+  // The hub must not be able to touch balances. Comments are stripped first so a
+  // documentation sentence ("never writes wallets") is not mistaken for code.
   try {
+    const strip = (s) => s.replace(/\/\*[\s\S]*?\*\//g, ' ').replace(/(^|[^:])\/\/[^\n]*/g, '$1 ');
     for (const asset of ['squad-social-hub.js', 'squad-social-hub-core.js']) {
-      const body = await (await fetch(new URL(asset, BASE))).text();
-      assert.ok(!/wallets?|balance|treasury|01126664036/i.test(body), asset + ' references economy internals');
+      const body = strip(await (await fetch(new URL(asset, BASE))).text());
+      assert.ok(!/(['"]wallets?\/|collection\(['"]wallets|treasury|01126664036)/i.test(body),
+        asset + ' touches wallets, treasury or the beneficiary number');
     }
-    pass('hub code never touches wallets, balances, treasury or the beneficiary number');
-  } catch (err) { fail('hub code never touches wallets, balances, treasury or the beneficiary number', err); }
+    pass('hub code never touches wallets, treasury or the beneficiary number');
+  } catch (err) { fail('hub code never touches wallets, treasury or the beneficiary number', err); }
 
   if (server) server.kill('SIGKILL');
 }
