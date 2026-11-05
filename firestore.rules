@@ -864,5 +864,107 @@ service cloud.firestore {
       allow delete: if signed() && request.auth.uid == ownerUid;
     }
 
+    // ================= v184: VIRTUAL ECONOMY (server-enforced) =================
+    // Virtual currency only. No real-money collection, payout or provider is
+    // implemented anywhere in this repository.
+    //
+    // Trust model: there are no deployed Cloud Functions, so these rules are the
+    // trusted server-side layer. They run atomically on Google's servers and
+    // cannot be bypassed from the browser. Every balance mutation must satisfy
+    // an exact, computable equation — never a client-chosen delta.
+
+    function isAdmin() {
+      return signed() && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+    function validInt(v, lo, hi) { return v is int && v >= lo && v <= hi; }
+    function itemPrice(itemId) {
+      return get(/databases/$(database)/documents/storeItems/$(itemId)).data.price;
+    }
+
+    // Admin roster. Owner-provisioned from the console only; no client can write.
+    match /admins/{uid} {
+      allow read: if signed() && request.auth.uid == uid;
+      allow write: if false;
+    }
+
+    // Catalog. Prices are admin-controlled, which is what makes the debit
+    // equation below unforgeable: a user cannot choose how much to pay.
+    match /storeItems/{itemId} {
+      allow read: if signed();
+      allow create, update: if isAdmin()
+        && request.resource.data.keys().hasOnly(['name','description','category','price','available','image','updatedAt'])
+        && request.resource.data.name is string && request.resource.data.name.size() > 0 && request.resource.data.name.size() <= 80
+        && request.resource.data.description is string && request.resource.data.description.size() <= 600
+        && request.resource.data.category is string && request.resource.data.category.size() <= 40
+        && validInt(request.resource.data.price, 1, 100000000)
+        && request.resource.data.available is bool
+        && request.resource.data.image is string && request.resource.data.image.size() <= 300
+        && request.resource.data.updatedAt == request.time;
+      allow delete: if isAdmin();
+    }
+
+    // Wallets hold virtual units only. Users may read their own; only admins
+    // provision a wallet or adjust it outside a catalog purchase.
+    match /wallets/{uid} {
+      allow read: if signed() && (request.auth.uid == uid || isAdmin());
+      allow create: if isAdmin()
+        && request.resource.data.balance is int && validInt(request.resource.data.balance, 0, 1000000000);
+      // A user-initiated debit is permitted only for an exact catalog purchase:
+      // new balance == old balance - price of the named catalog item, never negative.
+      allow update: if signed() && request.auth.uid == uid
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['balance','lastPurchaseItem','updatedAt'])
+        && request.resource.data.lastPurchaseItem is string
+        && exists(/databases/$(database)/documents/storeItems/$(request.resource.data.lastPurchaseItem))
+        && get(/databases/$(database)/documents/storeItems/$(request.resource.data.lastPurchaseItem)).data.available == true
+        && request.resource.data.balance == resource.data.balance - itemPrice(request.resource.data.lastPurchaseItem)
+        && request.resource.data.balance >= 0
+        && request.resource.data.updatedAt == request.time;
+      // Admin adjustments stay bounded and audited by reason.
+      allow update: if isAdmin()
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['balance','lastGrantReason','updatedAt'])
+        && validInt(request.resource.data.balance, 0, 1000000000)
+        && request.resource.data.lastGrantReason is string
+        && request.resource.data.lastGrantReason.size() <= 200
+        && request.resource.data.updatedAt == request.time;
+      allow delete: if false;
+    }
+
+    // Inventory. Create-only and priced from the catalog, so a second purchase
+    // of the same item is rejected by the server instead of double-charging.
+    match /inventory/{uid}/owned/{itemId} {
+      allow read: if signed() && request.auth.uid == uid;
+      allow create: if signed() && request.auth.uid == uid
+        && request.resource.data.keys().hasOnly(['itemId','name','price','category','qty','purchasedAt'])
+        && request.resource.data.itemId == itemId
+        && exists(/databases/$(database)/documents/storeItems/$(itemId))
+        && request.resource.data.price == itemPrice(itemId)
+        && validInt(request.resource.data.qty, 1, 99)
+        && request.resource.data.name is string && request.resource.data.name.size() <= 80
+        && request.resource.data.category is string && request.resource.data.category.size() <= 40
+        && request.resource.data.purchasedAt == request.time;
+      // Immutable: ownership cannot be rewritten or quietly removed by the owner.
+      allow update, delete: if false;
+    }
+
+    // Order ledger. Append-only; total is recomputed from the catalog, so a
+    // client cannot record a cheaper order than the price it actually paid.
+    match /orders/{orderId} {
+      allow read: if signed() && (resource.data.uid == request.auth.uid || isAdmin());
+      allow create: if signed()
+        && request.resource.data.keys().hasOnly(['orderId','uid','itemId','itemName','unitPrice','qty','total','status','currency','createdAt'])
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.currency == 'virtual'
+        && request.resource.data.status == 'completed'
+        && request.resource.data.itemId is string
+        && exists(/databases/$(database)/documents/storeItems/$(request.resource.data.itemId))
+        && request.resource.data.unitPrice == itemPrice(request.resource.data.itemId)
+        && validInt(request.resource.data.qty, 1, 99)
+        && request.resource.data.total == request.resource.data.unitPrice * request.resource.data.qty
+        && request.resource.data.itemName is string && request.resource.data.itemName.size() <= 80
+        && request.resource.data.orderId == orderId
+        && request.resource.data.createdAt == request.time;
+      allow update, delete: if false;
+    }
+
   }
 }
