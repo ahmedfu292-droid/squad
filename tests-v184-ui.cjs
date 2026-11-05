@@ -107,6 +107,26 @@ async function startServer() {
     pass('startup recovery is loaded before Firebase/app.js and served');
   } catch (err) { fail('startup recovery is loaded before Firebase/app.js and served', err); }
 
+  // v193 Phase 2: the design-system layer must ship with the page and must
+  // actually carry the midnight-navy palette plus real RTL/mobile rules.
+  try {
+    assert.ok(/href="squad-responsive-v193\.css"/.test(html), 'index.html does not link squad-responsive-v193.css');
+    const cssRes = await fetch(new URL('squad-responsive-v193.css', BASE));
+    assert.strictEqual(cssRes.status, 200, 'squad-responsive-v193.css returned ' + cssRes.status);
+    const css = await cssRes.text();
+    for (const needle of ['[dir="rtl"]', '@media(max-width:760px)', '.dr-mobile-nav', '.sq-state.is-error', 'prefers-reduced-motion']) {
+      assert.ok(css.includes(needle), 'responsive layer is missing ' + needle);
+    }
+    const tokRes = await fetch(new URL('tokens.css', BASE));
+    assert.strictEqual(tokRes.status, 200, 'tokens.css returned ' + tokRes.status);
+    const tok = await tokRes.text();
+    for (const token of ['--dr-bg:#070b18', '--dr-panel:#111b32', '--dr-blue-hi:#38bdf8', '--dr-violet:#8b5cf6', '--dr-warning:#f59e0b']) {
+      assert.ok(tok.includes(token), 'tokens.css is missing the remapped token ' + token);
+    }
+    assert.ok(!/#080909/i.test(tok), 'tokens.css still defines the retired Dark Room background');
+    pass('v193 design system ships with navy tokens and RTL/mobile rules');
+  } catch (err) { fail('v193 design system ships with navy tokens and RTL/mobile rules', err); }
+
   // The beneficiary number must never reach client-served code.
   try {
     const prohibited = ['01126664036'];
