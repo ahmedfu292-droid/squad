@@ -22,11 +22,14 @@ const fail = (n, e) => checks.push(['FAIL', n + ' :: ' + (e && e.message ? e.mes
 const step = (m) => process.stderr.write('[ui] ' + m + '\n');
 
 // Hard watchdog: a hang must not look like a silent timeout in CI.
-const watchdog = setTimeout(() => {
-  console.error('[ui] WATCHDOG: exceeded 100s, aborting');
+// Also clears the browser and server child processes it spawned.
+let cleanup = () => {};
+const watchdog = setTimeout(async () => {
+  console.error('[ui] WATCHDOG: exceeded 95s, aborting');
+  try { await cleanup(); } catch (_) {}
   for (const [s, n] of checks) console.log(s + ' — ' + n);
   process.exit(1);
-}, 100000);
+}, 95000);
 watchdog.unref();
 
 async function startServer() {
