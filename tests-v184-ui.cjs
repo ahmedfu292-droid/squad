@@ -89,6 +89,24 @@ async function startServer() {
     pass('app loads the economy scripts at boot');
   } catch (err) { fail('app loads the economy scripts at boot', err); }
 
+  // v193 boot guard: v175-startup-recovery.js arms the 8s splash fallback and the
+  // script error handlers. If it is not loaded BEFORE Firebase/app.js, a stalled
+  // auth state leaves the splash up forever and #auth never becomes visible.
+  try {
+    const recovery = html.indexOf('v175-startup-recovery.js');
+    const firebaseCfg = html.indexOf('firebase-config.js');
+    const appJs = html.indexOf('src="app.js"');
+    assert.ok(recovery > -1, 'index.html does not load v175-startup-recovery.js (splash fallback missing)');
+    assert.ok(firebaseCfg > -1 && appJs > -1, 'firebase-config.js or app.js missing from index.html');
+    assert.ok(recovery < firebaseCfg, 'startup recovery must load before firebase-config.js');
+    assert.ok(recovery < appJs, 'startup recovery must load before app.js');
+    const res = await fetch(new URL('v175-startup-recovery.js', BASE));
+    assert.strictEqual(res.status, 200, 'v175-startup-recovery.js returned ' + res.status);
+    const src = await res.text();
+    assert.ok(/__squadBootFallbackTimer/.test(src), 'recovery script does not arm the fallback timer');
+    pass('startup recovery is loaded before Firebase/app.js and served');
+  } catch (err) { fail('startup recovery is loaded before Firebase/app.js and served', err); }
+
   // The beneficiary number must never reach client-served code.
   try {
     const prohibited = ['01126664036'];
