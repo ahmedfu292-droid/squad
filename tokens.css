@@ -1,15 +1,38 @@
-/* The Squad — Dark Room Design Tokens | v94 */
+/* The Squad — Design Tokens | v193
+   Palette remapped to the premium midnight-navy / electric-blue identity.
+   Token NAMES are unchanged so every existing consumer keeps working. */
 :root{
- --dr-bg:#080909;--dr-bg-2:#101211;--dr-panel:#151816;--dr-panel-2:#1b1f1b;--dr-panel-glass:rgba(20,23,20,.88);
- --dr-ink:#f4f0e7;--dr-muted:#a49c8c;--dr-muted-2:#746f65;--dr-line:rgba(210,177,112,.18);--dr-line-soft:rgba(255,255,255,.075);
- --dr-gold:#c9a66b;--dr-gold-hi:#f0d59a;--dr-gold-deep:#80633c;--dr-gold-wash:rgba(201,166,107,.12);
- --dr-danger:#d77c70;--dr-success:#9dbb91;--dr-blue:#8da8bd;
- --dr-font-ar:'IBM Plex Sans Arabic','Cairo',sans-serif;--dr-font-latin:'Manrope','Sora',sans-serif;
- --dr-text-xs:11px;--dr-text-sm:13px;--dr-text:15px;--dr-text-lg:18px;--dr-title:24px;--dr-display:32px;
- --dr-space-1:4px;--dr-space-2:8px;--dr-space-3:12px;--dr-space-4:16px;--dr-space-5:20px;--dr-space-6:24px;--dr-space-8:32px;--dr-space-10:40px;
- --dr-r-xs:8px;--dr-r-sm:12px;--dr-r-md:17px;--dr-r-lg:22px;--dr-r-xl:28px;--dr-r-pill:999px;
- --dr-shadow:0 18px 55px rgba(0,0,0,.38);--dr-shadow-gold:0 0 30px rgba(201,166,107,.12);--dr-inset:inset 0 1px 0 rgba(255,255,255,.035);
- --dr-ease:cubic-bezier(.2,.75,.25,1);--dr-fast:150ms;--dr-mid:260ms;--dr-slow:520ms;
- --dr-nav-h:72px;--dr-top-h:64px;--dr-content:680px;--dr-sidebar:248px;
- color-scheme:dark;
+  /* surfaces */
+  --dr-bg:#070b18;--dr-bg-2:#0b1224;--dr-panel:#111b32;--dr-panel-2:#172541;
+  --dr-panel-glass:rgba(17,27,50,.86);--dr-glass:rgba(23,37,65,.62);
+  /* text */
+  --dr-ink:#f8fafc;--dr-muted:#94a3b8;--dr-muted-2:#64748b;
+  /* borders */
+  --dr-line:rgba(125,155,196,.20);--dr-line-soft:rgba(255,255,255,.07);
+  /* premium accent — champagne gold, used sparingly */
+  --dr-gold:#c5a46d;--dr-gold-hi:#e7d3a8;--dr-gold-deep:#8a6f42;--dr-gold-wash:rgba(197,164,109,.12);
+  /* brand accents */
+  --dr-blue:#5b8def;--dr-blue-hi:#38bdf8;--dr-blue-accent:#2563eb;--dr-blue-soft:rgba(37,99,235,.16);
+  --dr-violet:#8b5cf6;--dr-violet-soft:rgba(139,92,246,.16);
+  /* status */
+  --dr-success:#10b981;--dr-success-soft:rgba(16,185,129,.14);
+  --dr-warning:#f59e0b;--dr-warning-soft:rgba(245,158,11,.14);
+  --dr-danger:#e0525b;--dr-danger-soft:rgba(224,82,91,.14);
+  /* type */
+  --dr-font-ar:'IBM Plex Sans Arabic','Cairo',sans-serif;--dr-font-latin:'Manrope','Sora','Inter',sans-serif;
+  --dr-font-ui:'Inter','Segoe UI',Arial,sans-serif;
+  --dr-text-xs:11px;--dr-text-sm:13px;--dr-text:15px;--dr-text-lg:18px;--dr-title:24px;--dr-display:32px;
+  /* spacing */
+  --dr-space-1:4px;--dr-space-2:8px;--dr-space-3:12px;--dr-space-4:16px;--dr-space-5:20px;--dr-space-6:24px;--dr-space-8:32px;--dr-space-10:40px;
+  /* radii */
+  --dr-r-xs:8px;--dr-r-sm:12px;--dr-r-md:17px;--dr-r-lg:22px;--dr-r-xl:28px;--dr-r-pill:999px;
+  /* elevation */
+  --dr-shadow:0 18px 55px rgba(2,6,16,.55);--dr-shadow-gold:0 12px 38px rgba(197,164,109,.14);--dr-inset:inset 0 1px 0 rgba(255,255,255,.04);
+  /* motion */
+  --dr-ease:cubic-bezier(.2,.75,.25,1);--dr-fast:150ms;--dr-mid:260ms;--dr-slow:520ms;
+  /* layout */
+  --dr-nav-h:72px;--dr-top-h:64px;--dr-content:680px;--dr-sidebar:248px;--dr-tap:44px;
+  /* stacking */
+  --dr-z-nav:20;--dr-z-top:30;--dr-z-drawer:60;--dr-z-modal:80;--dr-z-toast:100;
+  color-scheme:dark;
 }

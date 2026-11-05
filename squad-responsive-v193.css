@@ -1,0 +1,93 @@
+/* The Squad — v193 responsive + RTL + shared state layer.
+   Presentation only; loaded last so it refines earlier stylesheets. */
+
+/* 1 — interaction basics -------------------------------------------------- */
+:where(a,button,input,textarea,select,[tabindex]):focus-visible{outline:2px solid var(--dr-blue-hi);outline-offset:2px;border-radius:10px}
+:where(button,input,textarea,select){font-family:var(--dr-font-ui)}
+:where(button,[role="button"],a){touch-action:manipulation}
+img,video,canvas{max-width:100%;height:auto}
+.dr-post,.dr-panel,.dr-side-card,#dr-screen{overflow-wrap:anywhere}
+
+/* 2 — empty / loading / error states ------------------------------------- */
+.sq-state,.sq-empty{display:grid;gap:8px;justify-items:center;padding:34px 20px;border:1px dashed var(--dr-line);border-radius:var(--dr-r-md);background:linear-gradient(160deg,var(--dr-panel-2),var(--dr-panel));color:var(--dr-muted);text-align:center}
+.sq-state strong,.sq-empty strong{color:var(--dr-ink);font-size:15px;font-weight:700}
+.sq-state p,.sq-empty p{margin:0;max-width:46ch;font-size:13px;line-height:1.65}
+.sq-state.is-error{border-color:rgba(224,82,91,.5);background:linear-gradient(160deg,var(--dr-danger-soft),var(--dr-panel));color:#f0b6ba}
+.sq-state.is-error strong{color:#ffd9db}
+.sq-state.is-success{border-color:rgba(16,185,129,.5);color:#a9e8cf}
+.sq-state.is-success strong{color:#c6f5e2}
+.sq-state.is-warning{border-color:rgba(245,158,11,.5);color:#f1cf94}
+.sq-state.is-warning strong{color:#fbe3b6}
+.sq-skeleton{position:relative;display:block;overflow:hidden;min-height:14px;border-radius:12px;background:var(--dr-panel-2)}
+.sq-skeleton::after{content:"";position:absolute;inset:0;transform:translateX(-100%);background:linear-gradient(90deg,transparent,rgba(255,255,255,.07),transparent);animation:sqShimmer 1.5s var(--dr-ease) infinite}
+@keyframes sqShimmer{to{transform:translateX(100%)}}
+.sq-spinner{width:22px;height:22px;border:2px solid var(--dr-line);border-top-color:var(--dr-blue-hi);border-radius:50%;animation:sqSpin .9s linear infinite}
+@keyframes sqSpin{to{transform:rotate(360deg)}}
+
+/* 3 — tablet --------------------------------------------------------------- */
+@media(max-width:1120px){
+  .dr-top{padding-top:14px}
+  .dr-actions{flex-wrap:wrap;gap:8px}
+  .dr-post-head,.dr-panel{padding-inline:15px}
+}
+
+/* 4 — mobile --------------------------------------------------------------- */
+@media(max-width:760px){
+  :root{--dr-nav-h:60px}
+  /* 16px keeps iOS from zooming on focus */
+  #social-main input,#social-main textarea,#social-main select,#auth input,#auth select{font-size:16px}
+  .dr-top{position:sticky;top:0;z-index:var(--dr-z-top);gap:10px}
+  .dr-top h1{font-size:21px;line-height:1.25;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .dr-top p{max-width:52vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  /* bottom navigation: real 44px targets, safe-area aware */
+  .dr-mobile-nav{position:fixed;inset-inline:0;bottom:0;z-index:var(--dr-z-nav);display:grid;grid-template-columns:repeat(5,1fr);align-items:center;gap:2px;margin:0;padding:6px 4px calc(6px + env(safe-area-inset-bottom));border-top:1px solid var(--dr-line);background:rgba(7,11,24,.96);backdrop-filter:blur(18px)}
+  .dr-mobile-nav button,.dr-mobile-nav .dr-shortcut{display:grid;justify-items:center;align-content:center;gap:3px;min-height:var(--dr-tap);min-width:0;padding:4px 2px;border:0;border-radius:12px;background:transparent;color:var(--dr-muted);font:600 10px/1.2 var(--dr-font-ui);text-align:center}
+  .dr-mobile-nav button svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.7}
+  .dr-mobile-nav button.active,.dr-mobile-nav button.on{color:var(--dr-gold-hi);background:var(--dr-gold-wash)}
+  .dr-mobile-nav button.create{color:#17140f;background:linear-gradient(135deg,var(--dr-gold-hi),var(--dr-gold))}
+  /* keep content clear of the fixed bar */
+  #social-shell{padding-bottom:calc(var(--dr-nav-h) + 26px + env(safe-area-inset-bottom))!important}
+  /* cards and lists stack instead of overflowing */
+  .dr-panel,.dr-post,.dr-feature-card{border-radius:var(--dr-r-md)!important}
+  .dr-secondary,.dr-primary,.dr-icon-btn{min-height:var(--dr-tap)}
+  .sq-table{display:block;width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .sq-modal,.dr-modal,.dr-dialog{width:calc(100vw - 24px);max-height:calc(100dvh - 32px);overflow-y:auto}
+  /* chat composer sits above the nav bar */
+  #dr-chat-composer,.sq-composer{position:sticky;bottom:calc(var(--dr-nav-h) + 8px + env(safe-area-inset-bottom));z-index:5}
+}
+
+/* 5 — small phones --------------------------------------------------------- */
+@media(max-width:400px){
+  .dr-mobile-nav button,.dr-mobile-nav .dr-shortcut{font-size:9px}
+  .dr-top h1{font-size:19px}
+}
+
+/* 6 — RTL (Arabic) --------------------------------------------------------- */
+[dir="rtl"] body,[dir="rtl"] #app{direction:rtl;text-align:right}
+[dir="rtl"] .dr-nav button,[dir="rtl"] .dr-message-link,[dir="rtl"] .dr-shortcut,[dir="rtl"] .dr-side-card,[dir="rtl"] .dr-top,[dir="rtl"] #dr-screen,[dir="rtl"] .dr-post,{text-align:start}
+[dir="rtl"] .dr-nav button,[dir="rtl"] .dr-message-link{justify-content:flex-start}
+[dir="rtl"] .dr-count{margin-inline-start:auto}
+@media(min-width:1121px){
+  [dir="rtl"] #social-shell{grid-template-columns:286px minmax(0,1fr) 248px}
+}
+@media(max-width:1120px){
+  [dir="rtl"] #social-shell{grid-template-columns:220px minmax(0,1fr)}
+}
+/* user text fields follow the document direction, but identifiers stay LTR */
+[dir="rtl"] textarea,[dir="rtl"] input:not([type="email"]):not([type="url"]):not([type="tel"]):not([type="password"]){direction:rtl;text-align:right}
+[dir="rtl"] input[type="email"],[dir="rtl"] input[type="url"],[dir="rtl"] input[type="tel"],[dir="rtl"] input[type="password"],[dir="rtl"] input[dir="ltr"],[dir="rtl"] [dir="ltr"]{direction:ltr;text-align:left}
+/* mixed Arabic/Latin content keeps sensible ordering */
+[dir="rtl"] .sq-bidi,.sq-bidi{unicode-bidi:plaintext}
+/* logical borders for cards that were authored with physical sides */
+[dir="rtl"] .dr-post-head,[dir="rtl"] .dr-panel>*{border-inline-start-width:1px;border-inline-end-width:0}
+[dir="rtl"] .dr-mobile-nav{direction:rtl}
+
+/* 7 — respect reduced motion ---------------------------------------------- */
+@media(prefers-reduced-motion:reduce){
+  .sq-skeleton::after,.sq-spinner{animation:none!important}
+}
+
+/* 8 — higher contrast preference ------------------------------------------ */
+@media(prefers-contrast:more){
+  :root{--dr-muted:#b3c0d1;--dr-line:rgba(150,180,220,.38)}
+}
