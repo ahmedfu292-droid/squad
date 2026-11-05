@@ -16,7 +16,21 @@
  */
 const assert = require('assert');
 const { spawn } = require('child_process');
-const Core = require('./squad-social-hub-core.js');
+const fs = require('fs');
+const path = require('path');
+const vm = require('vm');
+
+// package.json sets "type": "module", so require() would treat the UMD file as
+// ESM and hand back an empty namespace. Evaluate it in a sandbox instead: that
+// is exactly the <script> context the browser gives it.
+const coreSandbox = {};
+vm.runInNewContext(
+  fs.readFileSync(path.join(__dirname, 'squad-social-hub-core.js'), 'utf8'),
+  coreSandbox,
+  { filename: 'squad-social-hub-core.js' }
+);
+const Core = coreSandbox.SquadSocialHubCore;
+assert.ok(Core, 'squad-social-hub-core.js did not expose SquadSocialHubCore');
 
 const PORT = 3102;
 const BASE = process.env.BASE_URL_SOCIAL || 'http://127.0.0.1:' + PORT + '/';
