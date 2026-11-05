@@ -7,18 +7,41 @@
  *   4. with no Firebase session the screen shows an HONEST error state —
  *      it never renders fake balances or fake catalog items
  *
- * Run: node tests-v184-ui.cjs   (expects a server on BASE_URL, default :3000)
+ * Run: node tests-v184-ui.cjs   (starts its own server on :3100 unless BASE_URL is set)
  */
 const assert = require('assert');
+const { spawn } = require('child_process');
 const { chromium } = require('/opt/appjet/browser/node_modules/playwright');
 
-const BASE = process.env.BASE_URL || 'http://127.0.0.1:3000/';
+const OWN_PORT = 3100;
+const BASE = process.env.BASE_URL || ('http://127.0.0.1:' + OWN_PORT + '/');
 const checks = [];
 
 function pass(name) { checks.push(['PASS', name]); }
 function fail(name, err) { checks.push(['FAIL', name + ' :: ' + (err && err.message ? err.message : String(err))]); }
 
+// Self-contained: bring up the app's own static server so the check is one command.
+async function startServer() {
+  if (process.env.BASE_URL) return null;
+  const proc = spawn(process.execPath, ['server.mjs'], {
+    cwd: __dirname,
+    env: Object.assign({}, process.env, { PORT: String(OWN_PORT) }),
+    stdio: 'ignore',
+  });
+  const deadline = Date.now() + 15000;
+  while (Date.now() < deadline) {
+    try {
+      const res = await fetch(BASE);
+      if (res.ok) return proc;
+    } catch (_) { /* not up yet */ }
+    await new Promise((r) => setTimeout(r, 150));
+  }
+  proc.kill('SIGKILL');
+  throw new Error('server did not become ready on ' + BASE);
+}
+
 (async () => {
+  const server = await startServer();
   const browser = await chromium.launch({ args: ['--no-sandbox'] });
   const page = await browser.newPage();
 
