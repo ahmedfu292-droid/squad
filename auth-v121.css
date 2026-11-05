@@ -1,7 +1,7 @@
 /* v121 — exact login-scene art after the lamp pull; authentication logic untouched. */
 #auth.dark-room{--gold:#d8bd83;--gold-hi:#f0dcae;position:fixed;inset:0;z-index:500;min-height:100dvh;overflow:auto;padding:0;background:#07090e!important;color:#f7f2e8}
 #auth.dark-room .room-scene{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none;background:radial-gradient(ellipse at 78% 65%,rgba(113,83,48,.13),transparent 37%),linear-gradient(110deg,#08090b 0%,#101116 55%,#090a0c 100%);transition:background .7s ease}
-#auth.dark-room.is-lit .room-scene{background-image:linear-gradient(90deg,rgba(3,5,10,.05),rgba(3,5,10,.08)),url('assets/design/auth-login-v121.png');background-size:cover;background-position:center center;background-repeat:no-repeat}
+#auth.dark-room.is-lit .room-scene{background-image:linear-gradient(90deg,rgba(3,5,10,.05),rgba(3,5,10,.08)),url('assets/design/auth-lamp-v118.jpg');background-size:cover;background-position:center center;background-repeat:no-repeat}
 #auth.dark-room.is-lit .room-wall,#auth.dark-room.is-lit .room-door-shadow,#auth.dark-room.is-lit .room-dust,#auth.dark-room.is-lit .room-desk,#auth.dark-room.is-lit .lamp-halo,#auth.dark-room.is-lit .desk-lamp,#auth.dark-room.is-lit .lamp-pull,#auth.dark-room.is-lit .lamp-hint,#auth.dark-room.is-lit .lamp-sound{opacity:0;visibility:hidden;pointer-events:none;transition:opacity .35s ease,visibility .35s ease}
 #auth.dark-room .room-brand{z-index:2}
 #auth.dark-room.is-lit .room-brand{opacity:0;visibility:hidden}

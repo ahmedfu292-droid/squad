@@ -8,7 +8,7 @@ const F=[
  './','index.html','manifest.json','version.json','services-hub.html','stage4-chat-ui.js','stage4-chat-ui.css','stage4-extras.js','stage4-extras.css','tokens.css','squad.css','app.js','social-feed.js','stories.js','calls.js',
  'cafe.js','extras.js','games.js','channel.js','cafe2.js','community.js','plus.js','bot.js','cafe3.js',
  'theme.js','look.js','chatx.js','settings.js','ads.js','accounts.js','acct.js','auth.js','auth.css',
- 'auth-scene.js','auth-v119.css','auth-v121.css','assets/design/auth-login-v121.png','quality-polish-v120.css','ui2.js','ui2.css','v27.css','premium-refinement-v89.css','profile.js',
+ 'auth-scene.js','auth-v119.css','auth-v121.css','assets/design/auth-lamp-v118.jpg','quality-polish-v120.css','ui2.js','ui2.css','v27.css','premium-refinement-v89.css','profile.js',
  'cinema.js','time.js','welcome.js','luxe.js','luxe.css','gold.css','push.js','firebase-config.js',
  'performance-v144.css','icon.svg','icon-192.png','icon-512.png','icon-maskable-512.png','apple-touch-icon.png','badge-96.png',
  'manifest.json','living-palace.css','living-palace-premium.css','living-palace.js',
