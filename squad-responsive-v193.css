@@ -64,7 +64,7 @@ img,video,canvas{max-width:100%;height:auto}
 
 /* 6 — RTL (Arabic) --------------------------------------------------------- */
 [dir="rtl"] body,[dir="rtl"] #app{direction:rtl;text-align:right}
-[dir="rtl"] .dr-nav button,[dir="rtl"] .dr-message-link,[dir="rtl"] .dr-shortcut,[dir="rtl"] .dr-side-card,[dir="rtl"] .dr-top,[dir="rtl"] #dr-screen,[dir="rtl"] .dr-post,{text-align:start}
+[dir="rtl"] .dr-nav button,[dir="rtl"] .dr-message-link,[dir="rtl"] .dr-shortcut,[dir="rtl"] .dr-side-card,[dir="rtl"] .dr-top,[dir="rtl"] #dr-screen,[dir="rtl"] .dr-post{text-align:start}
 [dir="rtl"] .dr-nav button,[dir="rtl"] .dr-message-link{justify-content:flex-start}
 [dir="rtl"] .dr-count{margin-inline-start:auto}
 @media(min-width:1121px){
